@@ -1,0 +1,15 @@
+name: PlotBuild
+main: com.mcmiddleearth.plotbuild.PlotBuildPlugin
+version: 0.1
+description: PlotBuild plugin
+commands:
+    plot:
+        description: manage PlotBuild plugin
+        usage: TBA
+permissions:
+    plotbuild.staff:
+        default: op
+        children:
+            plotbuild.user: true
+    plotbuild.user:
+        default: true
