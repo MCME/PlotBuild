@@ -5,6 +5,7 @@
  */
 package com.mcmiddleearth.plotbuild.plotbuild;
 
+import com.mcmiddleearth.plotbuild.constants.BorderType;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
@@ -36,8 +37,20 @@ public class PlotBuild {
     @Setter
     private boolean locked = false;
     
-    public PlotBuild(String name) {
+    @Getter
+    private final boolean priv;
+    
+    @Getter
+    private final BorderType borderType;
+    
+    @Getter
+    private final int borderHeight;
+    
+    public PlotBuild(String name, BorderType borderType, int borderHeight, boolean priv) {
         this.name = name;
+        this.borderType = borderType;
+        this.priv = priv;
+        this.borderHeight = borderHeight;
     }
     
 }

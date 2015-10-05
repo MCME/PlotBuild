@@ -44,7 +44,7 @@ public abstract class AbstractCommand {
             return;
         }
         
-        if(p != null && hasPermissions(p)) {
+        if(p != null && !hasPermissions(p)) {
             sendNoPermsErrorMessage(p);
             return;
         }
