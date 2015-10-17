@@ -10,6 +10,7 @@ import com.mcmiddleearth.plotbuild.data.Selection;
 import com.mcmiddleearth.plotbuild.exceptions.InvalidPlotLocationException;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.plotbuild.PlotBuild;
+import com.mcmiddleearth.plotbuild.utils.MessageUtil;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -76,23 +77,23 @@ public class PlotNew extends AbstractCommand {
     }
         
     protected void sendPlotbuildNotFoundMessage(CommandSender cs){
-        cs.sendMessage("No plotbuild with this name.");
+        MessageUtil.sendErrorMessage(cs, "No plotbuild with this name.");
     }   
 
     protected void sendNoCurrentPlotbuildMessage(CommandSender cs){
-        cs.sendMessage("No current plotbuild.");
+        MessageUtil.sendErrorMessage(cs, "No current plotbuild.");
     }   
 
     protected void sendInvalidSelectionMessage(CommandSender cs){
-        cs.sendMessage("Invalid selection for a plot. Choose two corners with feather.");
+        MessageUtil.sendErrorMessage(cs, "Invalid selection for a plot. Choose two corners with feather.");
     }   
     
     protected void sendPlotCreatedMessage(CommandSender cs){
-        cs.sendMessage("Plot created.");
+        MessageUtil.sendInfoMessage(cs, "Plot created.");
     }   
     
     protected void sentPlotErrorMessage(CommandSender cs){
-        cs.sendMessage("There was an error. No plot created.");
+        MessageUtil.sendErrorMessage(cs, "There was an error. No plot created.");
     }   
     
 }
