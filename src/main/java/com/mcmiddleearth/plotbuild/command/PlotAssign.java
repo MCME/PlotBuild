@@ -6,6 +6,7 @@
 package com.mcmiddleearth.plotbuild.command;
 
 import com.mcmiddleearth.plotbuild.constants.PlotState;
+import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
 import org.bukkit.Bukkit;
@@ -14,7 +15,7 @@ import org.bukkit.entity.Player;
 
 /**
  *
- * @author Ivan1pl
+ * @author Ivan1pl, Eriol_Eandur
  */
 public class PlotAssign extends InsidePlotCommand {
     
@@ -48,6 +49,7 @@ public class PlotAssign extends InsidePlotCommand {
             plot.invite(assignedPlayer);
         }
         sendAssignedMessage(cs, assignedPlayer.getDisplayName());
+        PluginData.saveData();
         }
   
     private void sendPlayerNotFoundMessage(CommandSender cs) {

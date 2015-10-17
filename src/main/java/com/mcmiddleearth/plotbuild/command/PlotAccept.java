@@ -6,6 +6,7 @@
 package com.mcmiddleearth.plotbuild.command;
 
 import com.mcmiddleearth.plotbuild.constants.PlotState;
+import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
 import org.bukkit.command.CommandSender;
@@ -33,6 +34,7 @@ public class PlotAccept extends InsidePlotCommand {
         }
         plot.accept();
         sendAcceptMessage(cs);
+        PluginData.saveData();
     }
 
     private void sendAcceptMessage(CommandSender cs) {

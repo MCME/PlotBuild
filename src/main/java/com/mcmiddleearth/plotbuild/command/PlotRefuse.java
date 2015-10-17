@@ -5,6 +5,7 @@
  */
 package com.mcmiddleearth.plotbuild.command;
 
+import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
 import org.bukkit.command.CommandSender;
@@ -28,6 +29,7 @@ public class PlotRefuse extends InsidePlotCommand {
         }
         plot.refuse();
         sendRefuseMessgage(cs);
+        PluginData.saveData();
     }
 
     private void sendRefuseMessgage(CommandSender cs) {

@@ -29,6 +29,7 @@ public class PlotCurrent extends AbstractCommand {
         } else {
             sendCurrentPlotbuildSetMessage(cs);
             PluginData.setCurrentPlotbuild((Player) cs, plotbuild);
+            PluginData.saveData();
         }
     }
     
