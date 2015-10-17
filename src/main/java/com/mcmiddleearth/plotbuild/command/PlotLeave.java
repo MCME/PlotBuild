@@ -5,13 +5,18 @@
  */
 package com.mcmiddleearth.plotbuild.command;
 
+import com.mcmiddleearth.plotbuild.constants.PlotState;
+import com.mcmiddleearth.plotbuild.data.PluginData;
+import com.mcmiddleearth.plotbuild.plotbuild.Plot;
+import com.mcmiddleearth.plotbuild.utils.MessageUtil;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 /**
  *
  * @author Ivan1pl
  */
-public class PlotLeave extends AbstractCommand {
+public class PlotLeave extends InsidePlotCommand {
     
     public PlotLeave(String... permissionNodes) {
         super(0, true, permissionNodes);
@@ -19,7 +24,25 @@ public class PlotLeave extends AbstractCommand {
     
     @Override
     protected void execute(CommandSender cs, String... args) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Plot plot = checkInOwnedPlot((Player) cs);
+        if(plot==null) {
+            return;
+        }
+        if(plot.getOwners().size()<2) {
+            sendNoMoreOwnersMessage(cs);
+            return;
+        }
+        plot.leave((Player)cs);
+        sendPlotLeaveMessage(cs);
     }
     
+    private void sendNoMoreOwnersMessage(CommandSender cs) {
+        MessageUtil.sendErrorMessage(cs, "You are no other owners of this plot. Try /plot unclaim instead.");
+    }
+
+    private void sendPlotLeaveMessage(CommandSender cs) {
+        MessageUtil.sendInfoMessage(cs, "You left this plot.");
+    }
+
+  
 }

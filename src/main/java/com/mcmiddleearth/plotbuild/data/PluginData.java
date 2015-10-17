@@ -55,4 +55,15 @@ public class PluginData {
         }
         return null;
     }
+    
+    public static Plot getIntersectingPlot(Selection selection, boolean cuboid) {
+        for(PlotBuild plotbuild : plotbuildsList) {
+            for(Plot plot : plotbuild.getPlots()) {
+                if(plot.isIntersecting(selection,cuboid)) {
+                    return plot;
+                }
+            }
+        }
+        return null;
+    }
 }
