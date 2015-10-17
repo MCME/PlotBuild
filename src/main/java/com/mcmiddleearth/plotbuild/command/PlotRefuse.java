@@ -6,6 +6,7 @@
 package com.mcmiddleearth.plotbuild.command;
 
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
+import com.mcmiddleearth.plotbuild.utils.MessageUtil;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -26,6 +27,11 @@ public class PlotRefuse extends InsidePlotCommand {
             return;
         }
         plot.refuse();
+        sendRefuseMessgage(cs);
+    }
+
+    private void sendRefuseMessgage(CommandSender cs) {
+        MessageUtil.sendInfoMessage(cs, "You refused this plot.");
     }
     
 }

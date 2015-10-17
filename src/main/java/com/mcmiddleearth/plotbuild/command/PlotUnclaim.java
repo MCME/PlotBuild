@@ -49,7 +49,7 @@ public class PlotUnclaim extends InsidePlotCommand {
     }
 
     private void sendPlotUnclaimedMessage(CommandSender cs) {
-        MessageUtil.sendInfoMessage(cs, "There are more owners of this plot. Try to use /leave instead.");
+        MessageUtil.sendInfoMessage(cs, "You unlcaimed this plot.");
     }
     
 }

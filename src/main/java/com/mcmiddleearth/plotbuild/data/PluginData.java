@@ -93,7 +93,7 @@ public class PluginData {
     public static Plot getIntersectingPlot(Selection selection, boolean cuboid) {
         for(PlotBuild plotbuild : plotbuildsList) {
             for(Plot plot : plotbuild.getPlots()) {
-                if(plot.isIntersecting(selection,cuboid)) {
+                if(plot.getState()!=PlotState.REMOVED && plot.isIntersecting(selection,cuboid)) {
                     return plot;
                 }
             }

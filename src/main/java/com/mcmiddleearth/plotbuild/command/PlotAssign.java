@@ -41,7 +41,12 @@ public class PlotAssign extends InsidePlotCommand {
             sendAlreadyMemberMessage(cs, assignedPlayer.getDisplayName());
             return;
         }
-        plot.invite(assignedPlayer);
+        if(plot.getState()==PlotState.UNCLAIMED) {
+            plot.claim(assignedPlayer);
+        }
+        else {
+            plot.invite(assignedPlayer);
+        }
         sendAssignedMessage(cs, assignedPlayer.getDisplayName());
         }
   

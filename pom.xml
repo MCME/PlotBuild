@@ -10,8 +10,6 @@
     </properties>
     
     <build>
-    <!-- <sourceDirectory>${project.build.directory}/generated-sources/delombok</sourceDirectory> -->
-        
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -20,26 +18,8 @@
                 <configuration>
                     <source>1.7</source>
                     <target>1.7</target>
-                    <debug>false</debug>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.projectlombok</groupId>
-                <artifactId>lombok-maven-plugin</artifactId>
-                <version>1.16.6.1</version>
-                <executions>
-                    <execution>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>delombok</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <addOutputDirectory>false</addOutputDirectory>
-                    <sourceDirectory>src/main/java</sourceDirectory>
-                </configuration>
-            </plugin>        
         </plugins>
     </build>
     <repositories>
@@ -69,5 +49,4 @@
             <type>jar</type>
         </dependency>
     </dependencies>
-    <name>PlotBuild</name>
 </project>
