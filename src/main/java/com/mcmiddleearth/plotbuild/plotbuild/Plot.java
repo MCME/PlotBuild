@@ -13,8 +13,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
@@ -31,7 +33,7 @@ public class Plot {
     private Location corner2;
     
     @Getter
-    private final List <Player> owners = new ArrayList <>();
+    private List <OfflinePlayer> owners = new ArrayList <>();
     
     /*
     @Getter
@@ -50,9 +52,11 @@ public class Plot {
     @Getter
     private PlotState state;
     
-    private final List <Location> border = new ArrayList <>();
+    @Getter
+    private List <Location> border = new ArrayList <>();
     
     @Getter
+    @Setter
     private PlotBuild plotbuild;
     
     public Plot(PlotBuild plotbuild, Location corner1, Location corner2) throws InvalidPlotLocationException {
@@ -68,6 +72,14 @@ public class Plot {
                                                         Math.max(corner1.getBlockZ(), corner2.getBlockZ()));
         this.state = PlotState.UNCLAIMED;
         placeBorder();
+    }
+    
+    public Plot(Location corner1, Location corner2, List <OfflinePlayer> owners, PlotState state, List <Location> border) {
+        this.corner1 = corner1;
+        this.corner2 = corner2;
+        this.owners = owners;
+        this.state = state;
+        this.border = border;
     }
     
     public boolean isInside(Location location) {
