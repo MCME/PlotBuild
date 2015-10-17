@@ -5,6 +5,9 @@
  */
 package com.mcmiddleearth.plotbuild.command;
 
+import com.mcmiddleearth.plotbuild.data.PluginData;
+import com.mcmiddleearth.plotbuild.plotbuild.PlotBuild;
+import com.mcmiddleearth.plotbuild.utils.MessageUtil;
 import org.bukkit.command.CommandSender;
 
 /**
@@ -19,7 +22,20 @@ public class PlotCurrent extends AbstractCommand {
     
     @Override
     protected void execute(CommandSender cs, String... args) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        PlotBuild plotbuild = PluginData.getPlotBuild(args[0]);
+        if(plotbuild == null) {
+            sendNoPlotbuildFoundMessage(cs);
+        } else {
+            sendCurrentPlotbuildSetMessage(cs);
+        }
+    }
+    
+    private void sendNoPlotbuildFoundMessage(CommandSender cs) {
+        MessageUtil.sendErrorMessage(cs, "No plotbuild with this name.");
+    }
+    
+    private void sendCurrentPlotbuildSetMessage(CommandSender cs) {
+        MessageUtil.sendInfoMessage(cs, "Current plotbuild set.");
     }
     
 }

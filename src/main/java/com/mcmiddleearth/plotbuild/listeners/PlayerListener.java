@@ -28,22 +28,34 @@ public class PlayerListener implements Listener{
         if(player.getItemInHand().getType().equals(Material.FEATHER)) {
             if(event.getAction().equals(Action.LEFT_CLICK_BLOCK)){
         	selection.setFirstPoint(event.getClickedBlock().getLocation());
-        	sendFirstPointSetMessage(player);
+        	sendFirstPointSetMessage(player, selection);
             }
             else if(event.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
         	selection.setSecondPoint(event.getClickedBlock().getLocation());
-        	sendSecondPointSetMessage(player);
+        	sendSecondPointSetMessage(player, selection);
             }
             event.setCancelled(true);
         }
     }
     
-    private void sendFirstPointSetMessage(Player player) {
-        MessageUtil.sendInfoMessage(player, "First point set.");
+    private void sendFirstPointSetMessage(Player player, Selection sel) {
+        String message = "First point set";
+        if(sel.isValid()) {
+            message += " (area: " + Integer.toString(sel.getArea()) + " blocks, volume: "
+                    + Integer.toString(sel.getVolume()) + " blocks)";
+        }
+        message += ".";
+        MessageUtil.sendInfoMessage(player, message);
     }
     
-    private void sendSecondPointSetMessage(Player player) {
-        MessageUtil.sendInfoMessage(player, "Second point set.");
+    private void sendSecondPointSetMessage(Player player, Selection sel) {
+        String message = "Second point set";
+        if(sel.isValid()) {
+            message += " (area: " + Integer.toString(sel.getArea()) + " blocks, volume: "
+                    + Integer.toString(sel.getVolume()) + " blocks)";
+        }
+        message += ".";
+        MessageUtil.sendInfoMessage(player, message);
     }
 
 }

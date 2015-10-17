@@ -6,10 +6,12 @@
 package com.mcmiddleearth.plotbuild.plotbuild;
 
 import com.mcmiddleearth.plotbuild.constants.BorderType;
+import com.mcmiddleearth.plotbuild.constants.PlotState;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 /**
@@ -22,16 +24,20 @@ public class PlotBuild {
     private final String name;
     
     @Getter
-    private final List <Plot> plots = new ArrayList <>();
+    @Setter
+    private List <Plot> plots = new ArrayList <>();
     
     @Getter
-    private final List <Player> staffList = new ArrayList <>();
+    @Setter
+    private List <OfflinePlayer> staffList = new ArrayList <>();
     
     @Getter
-    private final List <Player> bannedPlayers = new ArrayList <>();
+    @Setter
+    private List <OfflinePlayer> bannedPlayers = new ArrayList <>();
     
     @Getter
-    private final List <String> history = new ArrayList <>();
+    @Setter
+    private List <String> history = new ArrayList <>();
     
     @Getter
     @Setter
@@ -57,6 +63,16 @@ public class PlotBuild {
         this.borderHeight = borderHeight;
     }
     
+    public int countUnclaimedPlots() {
+        int result = 0;
+        for(Plot p : plots) {
+            if(p.getState() == PlotState.UNCLAIMED) {
+                result++;
+            }
+        }
+        return result;
+    }
+    
     public boolean isMember(Player player) {
         for(Plot plot : plots) {
             if(plot.getOwners().contains(player)) {
@@ -65,4 +81,5 @@ public class PlotBuild {
         }
         return false;
     }
+    
 }
