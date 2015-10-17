@@ -242,7 +242,7 @@ public class PluginData {
         File plotDir = new File(plotBuildDir, name);
         plotDir.mkdirs();
         List <Plot> plots = loadPlots(plotDir);
-        PlotBuild plotbuild = new PlotBuild(name, borderType, borderHeight, priv);
+        PlotBuild plotbuild = new PlotBuild(name, borderType, borderHeight, priv, false);
         for(Plot p : plots) {
             p.setPlotbuild(plotbuild);
         }

@@ -74,6 +74,14 @@ public class Plot {
         placeBorder();
     }
     
+    public Plot(Location corner1, Location corner2, List <OfflinePlayer> owners, PlotState state, List <Location> border) {
+        this.corner1 = corner1;
+        this.corner2 = corner2;
+        this.owners = owners;
+        this.state = state;
+        this.border = border;
+    }
+    
     public boolean isInside(Location location) {
         if(    location.getBlockX() <= corner1.getBlockX() || location.getBlockX() >= corner2.getBlockX()
            ||  location.getBlockZ() <= corner1.getBlockZ() || location.getBlockZ() >= corner2.getBlockZ()){
