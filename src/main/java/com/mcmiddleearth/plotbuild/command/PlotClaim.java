@@ -5,11 +5,15 @@
  */
 package com.mcmiddleearth.plotbuild.command;
 
+import com.mcmiddleearth.plotbuild.constants.PlotState;
+import com.mcmiddleearth.plotbuild.data.PluginData;
+import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 /**
  *
- * @author Ivan1pl
+ * @author Ivan1pl, Eriol_Eandur
  */
 public class PlotClaim extends AbstractCommand {
     
@@ -19,7 +23,40 @@ public class PlotClaim extends AbstractCommand {
     
     @Override
     protected void execute(CommandSender cs, String... args) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Plot plot = PluginData.getPlotAt(((Player) cs).getLocation());
+        if(plot!=null) {
+            if(plot.getState()==PlotState.UNCLAIMED) {
+                plot.claim((Player) cs);
+                sendPlotClaimedMessage(cs);
+            }
+            else {
+                if(plot.getOwners().contains((Player)cs)) {
+                    sendAlreadyOwnerMessage(cs);
+                }
+                else {
+                    sendPlotAlreadyClaimedMessage(cs);
+                }
+            }
+        }
+        else {
+            sendNotInPlotMessage(cs);
+        }
+    }
+
+    private void sendPlotClaimedMessage(CommandSender cs) {
+        cs.sendMessage("You claimed this plot.");    
+    }
+
+    private void sendPlotAlreadyClaimedMessage(CommandSender cs) {
+        cs.sendMessage("This plot was already claimed by an other player, you can ask him to invite you.");    
+    }
+
+    private void sendNotInPlotMessage(CommandSender cs) {
+        cs.sendMessage("You are not in a plot.");    
+    }
+
+    private void sendAlreadyOwnerMessage(CommandSender cs) {
+        cs.sendMessage("You are already owner of this plot.");    
     }
     
 }
