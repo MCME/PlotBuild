@@ -49,6 +49,7 @@ public class PlotCreate extends AbstractCommand {
                 isPrivate = true;
             }
             if(args[i].equalsIgnoreCase("-3D")) {
+                MessageUtil.sendInfoMessage(cs, "cuboid");
                 isCuboid = true;
             }
             try {

@@ -55,6 +55,12 @@ public class PlotNew extends AbstractCommand {
         //check plot location and create plot
         Selection selection = PluginData.getCurrentSelection((Player) cs);
         if(selection.isValid()) {
+            
+            Plot intersectingPlot = PluginData.getIntersectingPlot(selection, plotbuild.isCuboid());
+            if(intersectingPlot!=null) {
+                sendPlotIntersectingMessage(cs, intersectingPlot.getPlotbuild().getName());
+                return;
+            }
             Plot newPlot=null;
             try {
                 newPlot = new Plot(plotbuild, selection.getFirstPoint(),selection.getSecondPoint());
@@ -95,5 +101,9 @@ public class PlotNew extends AbstractCommand {
     protected void sentPlotErrorMessage(CommandSender cs){
         MessageUtil.sendErrorMessage(cs, "There was an error. No plot created.");
     }   
+
+    private void sendPlotIntersectingMessage(CommandSender cs, String name) {
+        MessageUtil.sendErrorMessage(cs, "Your selection intersects with a plot from plotbuild "+name+". No plot created.");
+    }
     
 }

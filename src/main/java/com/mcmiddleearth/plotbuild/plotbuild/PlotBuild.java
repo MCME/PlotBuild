@@ -57,4 +57,12 @@ public class PlotBuild {
         this.borderHeight = borderHeight;
     }
     
+    public boolean isMember(Player player) {
+        for(Plot plot : plots) {
+            if(plot.getOwners().contains(player)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

@@ -5,13 +5,17 @@
  */
 package com.mcmiddleearth.plotbuild.command;
 
+import com.mcmiddleearth.plotbuild.data.PluginData;
+import com.mcmiddleearth.plotbuild.plotbuild.Plot;
+import com.mcmiddleearth.plotbuild.utils.MessageUtil;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 /**
  *
  * @author Ivan1pl
  */
-public class PlotFinish extends AbstractCommand {
+public class PlotFinish extends InsidePlotCommand {
     
     public PlotFinish(String... permissionNodes) {
         super(0, true, permissionNodes);
@@ -19,7 +23,16 @@ public class PlotFinish extends AbstractCommand {
     
     @Override
     protected void execute(CommandSender cs, String... args) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Plot plot = checkInOwnedPlot((Player) cs);
+        if(plot==null) {
+            return;
+        }
+        plot.finish();
+        sendFinishedMessage(cs);
+    }
+
+    private void sendFinishedMessage(CommandSender cs) {
+        MessageUtil.sendInfoMessage(cs, "You marked this plot as finished. Please wait for a staff to review it.");
     }
     
 }
