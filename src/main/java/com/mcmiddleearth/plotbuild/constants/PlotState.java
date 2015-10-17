@@ -17,7 +17,7 @@ public enum PlotState {
     CLAIMED   (10),
     FINISHED  (11),
     REFUSED   (4),
-    ACCEPTED  (13);
+    REMOVED  (13);
     
     @Getter
     private final int state;
