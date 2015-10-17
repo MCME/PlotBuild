@@ -10,8 +10,6 @@ import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.plotbuild.PlotBuild;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -41,20 +39,27 @@ public class PlotCreate extends AbstractCommand {
         BorderType borderType = BorderType.GROUND;
     	int borderHeight = ((Player)cs).getLocation().getBlockY();
     	boolean isPrivate = false;
+        boolean isCuboid = false;
 	for(int i = 1; i<args.length;i++){
             BorderType newBorderType = BorderType.fromString(args[i]);
-            if(newBorderType!=null)
-                    borderType = newBorderType;
-            if(args[i].equalsIgnoreCase("-p"))
-                    isPrivate = true;
+            if(newBorderType!=null) {
+                borderType = newBorderType;
+            }
+            if(args[i].equalsIgnoreCase("-p")) {
+                isPrivate = true;
+            }
+            if(args[i].equalsIgnoreCase("-3D")) {
+                MessageUtil.sendInfoMessage(cs, "cuboid");
+                isCuboid = true;
+            }
             try {
-                    borderHeight = Integer.parseInt(args[i]);
+                borderHeight = Integer.parseInt(args[i]);
             }
             catch(NumberFormatException e){}
         }
        
         //create new plotbuild
-        PlotBuild newPlotbuild = new PlotBuild(name, borderType, borderHeight, isPrivate);
+        PlotBuild newPlotbuild = new PlotBuild(name, borderType, borderHeight, isPrivate, isCuboid);
 	boolean success = plotbuildsList.add(newPlotbuild);
         if(success){
             PluginData.setCurrentPlotbuild((Player) cs, newPlotbuild);

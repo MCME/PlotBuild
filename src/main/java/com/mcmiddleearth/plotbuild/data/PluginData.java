@@ -90,6 +90,17 @@ public class PluginData {
         return null;
     }
     
+    public static Plot getIntersectingPlot(Selection selection, boolean cuboid) {
+        for(PlotBuild plotbuild : plotbuildsList) {
+            for(Plot plot : plotbuild.getPlots()) {
+                if(plot.isIntersecting(selection,cuboid)) {
+                    return plot;
+                }
+            }
+        }
+        return null;
+    }
+    
     public static PlotBuild getPlotBuild(String name) {
         for(PlotBuild plotbuild : plotbuildsList) {
             if(plotbuild.getName().equalsIgnoreCase(name)) {

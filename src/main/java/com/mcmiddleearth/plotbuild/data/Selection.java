@@ -26,8 +26,8 @@ public class Selection {
 
     public boolean isValid(){
         return  firstPoint != null 
-             && secondPoint != null
-             && firstPoint.getWorld() == secondPoint.getWorld();
+            && secondPoint != null
+            && firstPoint.getWorld() == secondPoint.getWorld();
     }
     
     public int getArea() {
