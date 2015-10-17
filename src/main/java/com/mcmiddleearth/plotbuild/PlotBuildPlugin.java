@@ -6,7 +6,9 @@
 package com.mcmiddleearth.plotbuild;
 
 import com.mcmiddleearth.plotbuild.command.PlotCommandExecutor;
+import com.mcmiddleearth.plotbuild.listeners.PlayerListener;
 import lombok.Getter;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -22,7 +24,8 @@ public class PlotBuildPlugin extends JavaPlugin {
     public void onEnable() {
         pluginInstance = this;
         this.saveDefaultConfig();
+        getServer().getPluginManager().registerEvents(new PlayerListener(), this);
         getCommand("plot").setExecutor(new PlotCommandExecutor());
     }
-    
+     
 }

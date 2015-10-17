@@ -5,17 +5,19 @@
  */
 package com.mcmiddleearth.plotbuild.data;
 
+import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.plotbuild.PlotBuild;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.Getter;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 /**
  *
- * @author Ivan1pl
+ * @author Ivan1pl, Eriol_Eandur
  */
 public class PluginData {
     
@@ -24,6 +26,8 @@ public class PluginData {
     
     private static final Map <Player, PlotBuild> currentPlotbuild = new LinkedHashMap <>();
     
+    private static final Map <Player, Selection> selections = new LinkedHashMap <>();
+
     public static void setCurrentPlotbuild(Player p, PlotBuild plotbuild) {
         currentPlotbuild.put(p, plotbuild);
     }
@@ -32,4 +36,23 @@ public class PluginData {
         return currentPlotbuild.get(p);
     }
     
+    public static Selection getCurrentSelection(Player p){
+        Selection selection = selections.get(p);
+        if(selection == null) {
+            selection = new Selection();
+            selections.put(p, selection);
+        }
+        return selection;
+    }
+    
+    public static Plot getPlotAt(Location location) {
+        for(PlotBuild plotbuild : plotbuildsList) {
+            for(Plot plot : plotbuild.getPlots()) {
+                if(plot.isInside(location)) {
+                    return plot;
+                }
+            }
+        }
+        return null;
+    }
 }
