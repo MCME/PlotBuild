@@ -6,6 +6,7 @@
 package com.mcmiddleearth.plotbuild.plotbuild;
 
 import com.mcmiddleearth.plotbuild.constants.BorderType;
+import com.mcmiddleearth.plotbuild.constants.PlotState;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
@@ -22,7 +23,8 @@ public class PlotBuild {
     private final String name;
     
     @Getter
-    private final List <Plot> plots = new ArrayList <>();
+    @Setter
+    private List <Plot> plots = new ArrayList <>();
     
     @Getter
     @Setter
@@ -33,7 +35,8 @@ public class PlotBuild {
     private List <OfflinePlayer> bannedPlayers = new ArrayList <>();
     
     @Getter
-    private final List <String> history = new ArrayList <>();
+    @Setter
+    private List <String> history = new ArrayList <>();
     
     @Getter
     @Setter
@@ -53,6 +56,16 @@ public class PlotBuild {
         this.borderType = borderType;
         this.priv = priv;
         this.borderHeight = borderHeight;
+    }
+    
+    public int countUnclaimedPlots() {
+        int result = 0;
+        for(Plot p : plots) {
+            if(p.getState() == PlotState.UNCLAIMED) {
+                result++;
+            }
+        }
+        return result;
     }
     
 }

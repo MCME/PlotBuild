@@ -15,7 +15,8 @@ import org.bukkit.entity.Player;
  */
 public class MessageUtil {
     
-    private static final String PREFIX = "[PlotBuild] ";
+    private static final String PREFIX   = "[PlotBuild] ";
+    private static final String NOPREFIX = "    ";
     
     public static void sendErrorMessage(CommandSender sender, String message) {
         if (sender instanceof Player) {
@@ -30,6 +31,14 @@ public class MessageUtil {
             sender.sendMessage(ChatColor.AQUA + PREFIX + message);
         } else {
             sender.sendMessage(PREFIX + message);
+        }
+    }
+    
+    public static void sendNoPrefixInfoMessage(CommandSender sender, String message) {
+        if (sender instanceof Player) {
+            sender.sendMessage(ChatColor.AQUA + NOPREFIX + message);
+        } else {
+            sender.sendMessage(NOPREFIX + message);
         }
     }
     

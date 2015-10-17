@@ -29,10 +29,21 @@ public class ListUtil {
     
     public static List <OfflinePlayer> playerListFromString(String uuids) {
         ArrayList <OfflinePlayer> players = new ArrayList<>();
-        for(String uuid : Splitter.on(';').split(uuids)) {
-            players.add(Bukkit.getOfflinePlayer(UUID.fromString(uuid)));
+        if(uuids.length() > 0) {
+            for(String uuid : Splitter.on(';').split(uuids)) {
+                players.add(Bukkit.getOfflinePlayer(UUID.fromString(uuid)));
+            }
         }
         return players;
+    }
+    
+    public static List <Integer> integersFromString(String string, char delim) {
+        List <String> strList = Splitter.on(delim).splitToList(string);
+        ArrayList <Integer> list = new ArrayList<>();
+        for(String s : strList) {
+            list.add(Integer.parseInt(s));
+        }
+        return list;
     }
     
 }
