@@ -57,18 +57,25 @@ public class Plot {
         }
         this.plotbuild = plotbuild;
         this.corner1 = new Location(corner1.getWorld(), Math.min(corner1.getBlockX(), corner2.getBlockX()),
-                                                        0, 
+                                                        Math.min(corner1.getBlockY(), corner2.getBlockY()),
                                                         Math.min(corner1.getBlockZ(), corner2.getBlockZ()));
         this.corner2 = new Location(corner1.getWorld(), Math.max(corner1.getBlockX(), corner2.getBlockX()),
-                                                        0, 
+                                                        Math.max(corner1.getBlockY(), corner2.getBlockY()), 
                                                         Math.max(corner1.getBlockZ(), corner2.getBlockZ()));
         this.state = PlotState.UNCLAIMED;
         placeBorder();
     }
     
     public boolean isInside(Location location) {
-        return location.getBlockX() >= corner1.getBlockX() && location.getBlockX() <= corner2.getBlockX()
-           &&  location.getBlockZ() >= corner1.getBlockZ() && location.getBlockZ() <= corner2.getBlockZ();
+        if(    location.getBlockX() <= corner1.getBlockX() || location.getBlockX() >= corner2.getBlockX()
+           ||  location.getBlockZ() <= corner1.getBlockZ() || location.getBlockZ() >= corner2.getBlockZ()){
+            return false;
+        }
+        if( plotbuild.isCuboid()
+            && (location.getBlockY() <= corner1.getBlockY() || location.getBlockY() >= corner2.getBlockY())) {
+            return false;
+        }
+        return true;
     }
     
     public void claim(Player player){

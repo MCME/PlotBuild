@@ -41,15 +41,19 @@ public class PlotBuild {
     private final boolean priv;
     
     @Getter
+    private final boolean cuboid;
+    
+    @Getter
     private final BorderType borderType;
     
     @Getter
     private final int borderHeight;
     
-    public PlotBuild(String name, BorderType borderType, int borderHeight, boolean priv) {
+    public PlotBuild(String name, BorderType borderType, int borderHeight, boolean priv, boolean cuboid) {
         this.name = name;
         this.borderType = borderType;
         this.priv = priv;
+        this.cuboid = cuboid;
         this.borderHeight = borderHeight;
     }
     
