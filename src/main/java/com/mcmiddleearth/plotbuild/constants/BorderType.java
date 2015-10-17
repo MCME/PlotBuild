@@ -25,7 +25,7 @@ public enum BorderType {
     
     public static BorderType fromString(String value) {
         for(BorderType bt : BorderType.values()) {
-            if(bt.getType().equals(value)) {
+            if(bt.getType().equalsIgnoreCase(value)) {
                 return bt;
             }
         }
