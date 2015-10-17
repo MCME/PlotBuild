@@ -29,6 +29,7 @@ public class PlotClaim extends AbstractCommand {
             if(plot.getState()==PlotState.UNCLAIMED) {
                 plot.claim((Player) cs);
                 sendPlotClaimedMessage(cs);
+                PluginData.saveData();
             }
             else {
                 if(plot.getOwners().contains((Player)cs)) {

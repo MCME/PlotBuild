@@ -21,7 +21,7 @@ public class MessageUtil {
         if (sender instanceof Player) {
             sender.sendMessage(ChatColor.RED + PREFIX + message);
         } else {
-            sender.sendMessage(message);
+            sender.sendMessage(PREFIX + message);
         }
     }
     
@@ -29,7 +29,7 @@ public class MessageUtil {
         if (sender instanceof Player) {
             sender.sendMessage(ChatColor.AQUA + PREFIX + message);
         } else {
-            sender.sendMessage(message);
+            sender.sendMessage(PREFIX + message);
         }
     }
     

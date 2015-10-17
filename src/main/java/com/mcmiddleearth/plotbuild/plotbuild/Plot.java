@@ -12,6 +12,7 @@ import java.util.List;
 import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
@@ -28,7 +29,7 @@ public class Plot {
     private Location corner2;
     
     @Getter
-    private final List <Player> owners = new ArrayList <>();
+    private final List <OfflinePlayer> owners = new ArrayList <>();
     
     /*
     @Getter
@@ -47,6 +48,7 @@ public class Plot {
     @Getter
     private PlotState state;
     
+    @Getter
     private final List <Location> border = new ArrayList <>();
     
     private PlotBuild plotbuild;

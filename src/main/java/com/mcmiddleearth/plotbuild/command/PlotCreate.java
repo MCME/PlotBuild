@@ -58,7 +58,9 @@ public class PlotCreate extends AbstractCommand {
 	boolean success = plotbuildsList.add(newPlotbuild);
         if(success){
             PluginData.setCurrentPlotbuild((Player) cs, newPlotbuild);
+            newPlotbuild.getStaffList().add((Player) cs);
             sendPlotbuildCreatedMessage(cs);
+            PluginData.saveData();
         }
         else {
             sendPlotbuildCreateErrorMessage(cs);

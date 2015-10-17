@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
-import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
 
 /**
  *
@@ -25,10 +25,12 @@ public class PlotBuild {
     private final List <Plot> plots = new ArrayList <>();
     
     @Getter
-    private final List <Player> staffList = new ArrayList <>();
+    @Setter
+    private List <OfflinePlayer> staffList = new ArrayList <>();
     
     @Getter
-    private final List <Player> bannedPlayers = new ArrayList <>();
+    @Setter
+    private List <OfflinePlayer> bannedPlayers = new ArrayList <>();
     
     @Getter
     private final List <String> history = new ArrayList <>();
