@@ -5,6 +5,7 @@
  */
 package com.mcmiddleearth.plotbuild.command;
 
+import com.mcmiddleearth.plotbuild.utils.MessageUtil;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -62,11 +63,11 @@ public class PlotCommandExecutor implements CommandExecutor {
     }
     
     private void sendNoSubcommandErrorMessage(CommandSender cs) {
-        cs.sendMessage("You're missing subcommand name for this command.");
+        MessageUtil.sendErrorMessage(cs, "You're missing subcommand name for this command.");
     }
     
     private void sendSubcommandNotFoundErrorMessage(CommandSender cs) {
-        cs.sendMessage("Subcommand not found.");
+        MessageUtil.sendErrorMessage(cs, "Subcommand not found.");
     }
     
     private void addCommandHandler(String name, AbstractCommand handler) {
