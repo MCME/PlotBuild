@@ -158,6 +158,7 @@ public class PluginData {
             writer.println(ListUtil.playerListToString(plotbuild.getBannedPlayers()));
             writer.println(plotbuild.isLocked());
             writer.println(plotbuild.isPriv());
+            writer.println(plotbuild.isCuboid());
             writer.println(plotbuild.getBorderType());
             writer.println(plotbuild.getBorderHeight());
             for(String entry : plotbuild.getHistory()) {
@@ -231,6 +232,8 @@ public class PluginData {
         scanner.nextLine();
         boolean priv = scanner.nextBoolean();
         scanner.nextLine();
+        boolean cuboid = scanner.nextBoolean();
+        scanner.nextLine();
         BorderType borderType = BorderType.fromString(scanner.nextLine());
         int borderHeight = scanner.nextInt();
         scanner.nextLine();
@@ -242,7 +245,7 @@ public class PluginData {
         File plotDir = new File(plotBuildDir, name);
         plotDir.mkdirs();
         List <Plot> plots = loadPlots(plotDir);
-        PlotBuild plotbuild = new PlotBuild(name, borderType, borderHeight, priv, false);
+        PlotBuild plotbuild = new PlotBuild(name, borderType, borderHeight, priv, cuboid);
         for(Plot p : plots) {
             p.setPlotbuild(plotbuild);
         }
