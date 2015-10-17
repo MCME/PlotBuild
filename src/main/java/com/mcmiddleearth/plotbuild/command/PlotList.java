@@ -5,6 +5,9 @@
  */
 package com.mcmiddleearth.plotbuild.command;
 
+import com.mcmiddleearth.plotbuild.data.PluginData;
+import com.mcmiddleearth.plotbuild.plotbuild.PlotBuild;
+import com.mcmiddleearth.plotbuild.utils.MessageUtil;
 import org.bukkit.command.CommandSender;
 
 /**
@@ -19,7 +22,15 @@ public class PlotList extends AbstractCommand {
     
     @Override
     protected void execute(CommandSender cs, String... args) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        MessageUtil.sendInfoMessage(cs, "Running plotbuilds:");
+        if(PluginData.getPlotbuildsList().isEmpty()) {
+            MessageUtil.sendNoPrefixInfoMessage(cs, "There are no plotbuilds running. Check again later.");
+        } else {
+            for(PlotBuild plotbuild : PluginData.getPlotbuildsList()) {
+                MessageUtil.sendNoPrefixInfoMessage(cs, plotbuild.getName() + " (unclaimed plots: " +
+                        Integer.toString(plotbuild.countUnclaimedPlots()) + ")");
+            }
+        }
     }
     
 }
