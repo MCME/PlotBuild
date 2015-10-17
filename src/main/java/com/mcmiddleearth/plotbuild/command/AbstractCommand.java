@@ -5,6 +5,7 @@
  */
 package com.mcmiddleearth.plotbuild.command;
 
+import com.mcmiddleearth.plotbuild.utils.MessageUtil;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.command.CommandSender;
@@ -60,15 +61,15 @@ public abstract class AbstractCommand {
     protected abstract void execute(CommandSender cs, String... args);
     
     protected void sendPlayerOnlyErrorMessage(CommandSender cs) {
-        cs.sendMessage("You have to be logged in to run this command.");
+        MessageUtil.sendErrorMessage(cs, "You have to be logged in to run this command.");
     }
     
     protected void sendNoPermsErrorMessage(CommandSender cs) {
-        cs.sendMessage("You don't have permission to run this command.");
+        MessageUtil.sendErrorMessage(cs, "You don't have permission to run this command.");
     }
     
     protected void sendMissingArgumentErrorMessage(CommandSender cs) {
-        cs.sendMessage("You're missing arguments for this command.");
+        MessageUtil.sendErrorMessage(cs, "You're missing arguments for this command.");
     }
     
     private boolean hasPermissions(Player p) {

@@ -120,14 +120,14 @@ public class Plot {
     }
     
     private void placeBorder(){
-		for(int i = corner1.getBlockX()-1; i<=corner2.getBlockX()+1;i++){
-			this.placeWoolBlock(i, plotbuild.getBorderHeight(), corner1.getBlockZ()-1);
-			this.placeWoolBlock(i, plotbuild.getBorderHeight(), corner2.getBlockZ()+1);
-		}
-		for(int i = corner1.getBlockZ(); i<=corner2.getBlockZ();i++){
-			this.placeWoolBlock(corner1.getBlockX()-1, plotbuild.getBorderHeight(), i);
-			this.placeWoolBlock(corner2.getBlockX()+1, plotbuild.getBorderHeight(), i);
-		}  
+        for(int i = corner1.getBlockX()-1; i<=corner2.getBlockX()+1;i++){
+            this.placeWoolBlock(i, plotbuild.getBorderHeight(), corner1.getBlockZ()-1);
+            this.placeWoolBlock(i, plotbuild.getBorderHeight(), corner2.getBlockZ()+1);
+        }
+        for(int i = corner1.getBlockZ(); i<=corner2.getBlockZ();i++){
+            this.placeWoolBlock(corner1.getBlockX()-1, plotbuild.getBorderHeight(), i);
+            this.placeWoolBlock(corner2.getBlockX()+1, plotbuild.getBorderHeight(), i);
+        }  
     }
  
     @SuppressWarnings("deprecation")

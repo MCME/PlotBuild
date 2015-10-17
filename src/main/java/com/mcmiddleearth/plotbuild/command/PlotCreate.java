@@ -8,6 +8,7 @@ package com.mcmiddleearth.plotbuild.command;
 import com.mcmiddleearth.plotbuild.constants.BorderType;
 import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.plotbuild.PlotBuild;
+import com.mcmiddleearth.plotbuild.utils.MessageUtil;
 import java.util.List;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -69,14 +70,14 @@ public class PlotCreate extends AbstractCommand {
     }
     
     protected void sendNameExistsErrorMessage(CommandSender cs){
-        cs.sendMessage("A Plotbuild with the given name already exists.");
+        MessageUtil.sendErrorMessage(cs, "A Plotbuild with the given name already exists.");
     }
 
     protected void sendPlotbuildCreateErrorMessage(CommandSender cs){
-        cs.sendMessage("There was an error. No plotbuild created.");
+        MessageUtil.sendErrorMessage(cs, "There was an error. No plotbuild created.");
     }
 
     protected void sendPlotbuildCreatedMessage(CommandSender cs){
-        cs.sendMessage("Plotbuild created.");
+        MessageUtil.sendInfoMessage(cs, "Plotbuild created.");
     }   
 }

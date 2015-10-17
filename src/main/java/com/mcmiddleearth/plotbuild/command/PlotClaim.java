@@ -8,6 +8,7 @@ package com.mcmiddleearth.plotbuild.command;
 import com.mcmiddleearth.plotbuild.constants.PlotState;
 import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
+import com.mcmiddleearth.plotbuild.utils.MessageUtil;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -44,19 +45,19 @@ public class PlotClaim extends AbstractCommand {
     }
 
     private void sendPlotClaimedMessage(CommandSender cs) {
-        cs.sendMessage("You claimed this plot.");    
+        MessageUtil.sendInfoMessage(cs, "You claimed this plot.");
     }
 
     private void sendPlotAlreadyClaimedMessage(CommandSender cs) {
-        cs.sendMessage("This plot was already claimed by an other player, you can ask him to invite you.");    
+        MessageUtil.sendErrorMessage(cs, "This plot was already claimed by an other player, you can ask him to invite you.");
     }
 
     private void sendNotInPlotMessage(CommandSender cs) {
-        cs.sendMessage("You are not in a plot.");    
+        MessageUtil.sendErrorMessage(cs, "You are not in a plot.");
     }
 
     private void sendAlreadyOwnerMessage(CommandSender cs) {
-        cs.sendMessage("You are already owner of this plot.");    
+        MessageUtil.sendErrorMessage(cs, "You are already owner of this plot.");
     }
     
 }
