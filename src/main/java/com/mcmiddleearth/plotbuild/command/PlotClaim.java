@@ -46,6 +46,7 @@ public class PlotClaim extends InsidePlotCommand {
         }
         plot.claim((Player) cs);
         sendPlotClaimedMessage(cs);
+        PluginData.saveData();
     }
 
     private void sendPlotClaimedMessage(CommandSender cs) {

@@ -29,4 +29,13 @@ public class Selection {
             && secondPoint != null
             && firstPoint.getWorld() == secondPoint.getWorld();
     }
+    
+    public int getArea() {
+        return (Math.abs(firstPoint.getBlockX() - secondPoint.getBlockX()) + 1) *
+               (Math.abs(firstPoint.getBlockZ() - secondPoint.getBlockZ()) + 1);
+    }
+    
+    public int getVolume() {
+        return (Math.abs(firstPoint.getBlockY() - secondPoint.getBlockY()) + 1) * getArea();
+    }
 }

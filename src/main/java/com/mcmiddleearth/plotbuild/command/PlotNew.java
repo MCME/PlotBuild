@@ -70,6 +70,7 @@ public class PlotNew extends AbstractCommand {
             boolean success = plotbuild.getPlots().add(newPlot);
             if(success) {
                 sendPlotCreatedMessage(cs);
+                PluginData.saveData();
             }
             else {
                 sentPlotErrorMessage(cs);
