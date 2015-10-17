@@ -5,13 +5,15 @@
  */
 package com.mcmiddleearth.plotbuild.command;
 
+import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 /**
  *
  * @author Ivan1pl
  */
-public class PlotDelete extends AbstractCommand {
+public class PlotDelete extends InsidePlotCommand {
     
     public PlotDelete(String... permissionNodes) {
         super(0, true, permissionNodes);
@@ -19,7 +21,15 @@ public class PlotDelete extends AbstractCommand {
     
     @Override
     protected void execute(CommandSender cs, String... args) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Plot plot = checkInPlot((Player) cs);
+        if(plot==null) {
+            return;
+        }
+        boolean keep=false;
+        if(args.length > 0 && args[0].equalsIgnoreCase("-k")) {
+            keep = true;
+        }
+        plot.delete(keep);
     }
     
 }

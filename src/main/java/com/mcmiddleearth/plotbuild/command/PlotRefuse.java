@@ -5,13 +5,15 @@
  */
 package com.mcmiddleearth.plotbuild.command;
 
+import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 /**
  *
  * @author Ivan1pl
  */
-public class PlotRefuse extends AbstractCommand {
+public class PlotRefuse extends InsidePlotCommand {
     
     public PlotRefuse(String... permissionNodes) {
         super(0, true, permissionNodes);
@@ -19,7 +21,11 @@ public class PlotRefuse extends AbstractCommand {
     
     @Override
     protected void execute(CommandSender cs, String... args) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Plot plot = checkInPlot((Player) cs);
+        if(plot==null) {
+            return;
+        }
+        plot.refuse();
     }
     
 }
