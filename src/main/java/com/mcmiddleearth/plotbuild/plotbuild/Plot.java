@@ -238,8 +238,6 @@ public class Plot {
         sel.setFirstPoint(corner1);
         sel.setSecondPoint(corner2);
         if(restoreData.size() != sel.getArea() * (maxy - miny + 1)) {
-            PlotBuildPlugin.getPluginInstance().getLogger().info("Restore size: " + Integer.toString(restoreData.size()) +
-                    ", Plot size: " + Integer.toString(sel.getArea() * (maxy - miny + 1)));
             throw new InvalidRestoreDataException();
         }
         int listindex = 0;
