@@ -28,6 +28,9 @@ public abstract class AbstractCommand {
     @Setter
     private String usageDescription;
     
+    @Setter
+    private boolean additionalPermissionsEnabled = false;
+    
     public AbstractCommand(int minArgs, boolean playerOnly, String... permissionNodes) {
         this.minArgs = minArgs;
         this.playerOnly = playerOnly;
@@ -72,10 +75,15 @@ public abstract class AbstractCommand {
         MessageUtil.sendErrorMessage(cs, "You're missing arguments for this command.");
     }
     
+    protected boolean hasAdditionalPermissions(Player p, String permission) {
+        return false;
+    }
+    
     private boolean hasPermissions(Player p) {
         if(permissionNodes != null) {
             for(String permission : permissionNodes) {
-                if(!p.hasPermission(permission)) {
+                if (!p.hasPermission(permission) &&
+                    !(additionalPermissionsEnabled && hasAdditionalPermissions(p, permission))) {
                     return false;
                 }
             }
