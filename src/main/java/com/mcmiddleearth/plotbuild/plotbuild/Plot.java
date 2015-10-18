@@ -5,10 +5,13 @@
  */
 package com.mcmiddleearth.plotbuild.plotbuild;
 
+import com.mcmiddleearth.plotbuild.PlotBuildPlugin;
 import com.mcmiddleearth.plotbuild.command.PlotNew;
 import com.mcmiddleearth.plotbuild.constants.PlotState;
+import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.data.Selection;
 import com.mcmiddleearth.plotbuild.exceptions.InvalidPlotLocationException;
+import com.mcmiddleearth.plotbuild.exceptions.InvalidRestoreDataException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -18,7 +21,9 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 /**
  *
@@ -154,20 +159,20 @@ public class Plot {
         coloriseBorder();
     }
     
-    public void accept(){
+    public void accept() throws InvalidRestoreDataException{
         delete(true);
     }
     
-    public void clear(boolean unclaim) {
+    public void clear(boolean unclaim) throws InvalidRestoreDataException {
         if(unclaim) {
             unclaim();
         }
-        //TODO reset plot
+        reset();
     }
     
-    public void delete(boolean keep){
+    public void delete(boolean keep) throws InvalidRestoreDataException{
         if(!keep) {
-            //TODO reset plot
+            reset();
         }
         state = PlotState.REMOVED;
         removeBorder();
@@ -219,6 +224,35 @@ public class Plot {
             block.setData((byte) 0);
         }
         border.removeAll(border);
+    }
+    
+    private void reset() throws InvalidRestoreDataException {
+        List <ItemStack> restoreData = PluginData.getRestoreData(plotbuild, this);
+        int miny = 0;
+        int maxy = getCorner1().getWorld().getMaxHeight()-1;
+        if(getPlotbuild().isCuboid()) {
+            miny = getCorner1().getBlockY();
+            maxy = getCorner2().getBlockY();
+        }
+        Selection sel = new Selection();
+        sel.setFirstPoint(corner1);
+        sel.setSecondPoint(corner2);
+        if(restoreData.size() != sel.getArea() * (maxy - miny + 1)) {
+            throw new InvalidRestoreDataException();
+        }
+        int listindex = 0;
+        for(int x = getCorner1().getBlockX(); x <= getCorner2().getBlockX(); ++x) {
+            for(int y = miny; y <= maxy; ++y) {
+                for(int z = getCorner1().getBlockZ(); z <= getCorner2().getBlockZ(); ++z) {
+                    Location loc = new Location(getCorner1().getWorld(), x, y, z);
+                    loc.getBlock().setType(restoreData.get(listindex).getType(), false);
+                    BlockState bstate = loc.getBlock().getState();
+                    bstate.setData(restoreData.get(listindex).getData());
+                    bstate.update(true);
+                    listindex++;
+                }
+            }
+        }
     }
     
 }

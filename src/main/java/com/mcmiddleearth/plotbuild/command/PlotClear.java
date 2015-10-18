@@ -6,8 +6,11 @@
 package com.mcmiddleearth.plotbuild.command;
 
 import com.mcmiddleearth.plotbuild.data.PluginData;
+import com.mcmiddleearth.plotbuild.exceptions.InvalidRestoreDataException;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -35,7 +38,12 @@ public class PlotClear extends InsidePlotCommand {
         else {
             sendClearMessage(cs);
         }
-        plot.clear(unclaim);
+        try {
+            plot.clear(unclaim);
+        } catch (InvalidRestoreDataException ex) {
+            Logger.getLogger(PlotClear.class.getName()).log(Level.SEVERE, null, ex);
+            sendRestoreErrorMessage(cs);
+        }
         PluginData.saveData();
     }
 
@@ -44,7 +52,7 @@ public class PlotClear extends InsidePlotCommand {
     }
 
     private void sendClearMessage(CommandSender cs) {
-        MessageUtil.sendInfoMessage(cs, "You clearedthis plot.");
+        MessageUtil.sendInfoMessage(cs, "You cleared this plot.");
     }
     
 }
