@@ -7,12 +7,13 @@ package com.mcmiddleearth.plotbuild.plotbuild;
 
 import com.mcmiddleearth.plotbuild.constants.BorderType;
 import com.mcmiddleearth.plotbuild.constants.PlotState;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 
 /**
  *
@@ -22,6 +23,12 @@ public class PlotBuild {
     
     @Getter
     private final String name;
+    
+    int maxUsedID=0;
+    
+    @Getter
+    @Setter
+    private String info;
     
     @Getter
     @Setter
@@ -81,5 +88,10 @@ public class PlotBuild {
         }
         return false;
     }
-    
+     
+    private final static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yy'-'MM'-'dd' | 'HH':'mm ");
+
+    public void log(String entry) {
+        history.add(LocalDateTime.now().format(formatter)+entry);
+    }
 }

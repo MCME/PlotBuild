@@ -33,10 +33,10 @@ public abstract class PlotBuildCommand extends AbstractCommand{
         }
         else{
             plotbuild=PluginData.getPlotBuild(args[nameIndex]);
-        }
-        if(plotbuild == null){
-            sendNoPlotbuildFoundMessage(player);
-            return null;
+            if(plotbuild == null){
+                sendNoPlotbuildFoundMessage(player);
+                return null;
+            }
         }
         return plotbuild;
     }

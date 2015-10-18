@@ -37,6 +37,7 @@ public class PlotAddstaff extends PlotBuildCommand {
         }
         plotbuild.getStaffList().add(newStaff);
         sendAddStaffMessgage(cs, newStaff.getName(), plotbuild.getName());
+        plotbuild.log(((Player) cs).getName()+" added "+newStaff.getName()+" to staff.");
         PluginData.saveData();
     }
 

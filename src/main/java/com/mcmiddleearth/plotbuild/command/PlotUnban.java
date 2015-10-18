@@ -46,6 +46,7 @@ public class PlotUnban extends PlotBuildCommand {
         }
         plotbuild.getBannedPlayers().remove(banned);
         sendUnbannedMessage(cs,banned.getName(),plotbuild.getName());
+        plotbuild.log(((Player) cs).getName()+" unbanned "+banned.getName()+".");
         PluginData.saveData();
     }
 

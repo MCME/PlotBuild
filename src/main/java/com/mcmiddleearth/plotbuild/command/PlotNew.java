@@ -55,6 +55,7 @@ public class PlotNew extends PlotBuildCommand {
             boolean success = plotbuild.getPlots().add(newPlot);
             if(success) {
                 sendPlotCreatedMessage(cs);
+                newPlot.getPlotbuild().log(((Player) cs).getName()+" added plot "+newPlot.getID()+".");
                 PluginData.saveData();
             }
             else {

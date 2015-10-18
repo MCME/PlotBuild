@@ -33,6 +33,7 @@ public class PlotRefuse extends InsidePlotCommand {
         }
         plot.refuse();
         sendRefuseMessgage(cs);
+        plot.getPlotbuild().log(((Player) cs).getName()+" refused plot "+plot.getID()+".");
         PluginData.saveData();
     }
 
