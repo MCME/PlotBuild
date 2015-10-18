@@ -19,12 +19,16 @@ public class PlotClear extends InsidePlotCommand {
     
     public PlotClear(String... permissionNodes) {
         super(0, true, permissionNodes);
+        setAdditionalPermissionsEnabled(true);
     }
     
     @Override
     protected void execute(CommandSender cs, String... args) {
         Plot plot = checkInPlot((Player) cs);
         if(plot==null) {
+            return;
+        }
+        if(!hasPermissionsForPlotBuild((Player) cs, plot.getPlotbuild())) {
             return;
         }
         boolean unclaim=false;

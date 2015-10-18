@@ -73,7 +73,7 @@ public class PlotBuild {
         return result;
     }
     
-    public boolean isMember(Player player) {
+    public boolean isMember(OfflinePlayer player) {
         for(Plot plot : plots) {
             if(plot.getOwners().contains(player)) {
                 return true;

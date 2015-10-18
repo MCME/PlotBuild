@@ -28,6 +28,10 @@ public class PlotClaim extends InsidePlotCommand {
         if(plot==null) {
             return;
         }
+        if(plot.getPlotbuild().isPriv()) {
+            sendPlotbuildPrivateMessage(cs);
+            return;
+        }
         if(plot.getPlotbuild().isLocked()) {
             sendPlotbuildLockedMessage(cs);
             return;
@@ -42,6 +46,10 @@ public class PlotClaim extends InsidePlotCommand {
         }
         if(plot.getPlotbuild().isMember((Player) cs)) {
             sendAlreadyMemberMessage(cs);
+            return;
+        }
+        if(plot.getPlotbuild().getBannedPlayers().contains((Player) cs)) {
+            sendPlayerBannedMessage(cs);
             return;
         }
         plot.claim((Player) cs);
@@ -68,5 +76,10 @@ public class PlotClaim extends InsidePlotCommand {
     private void sendPlotbuildLockedMessage(CommandSender cs) {
         MessageUtil.sendErrorMessage(cs, "You can not claim a plot at the moment as this plotbuild is locked. Try again later.");
     }
-    
+ 
+    protected void sendPlayerBannedMessage(CommandSender cs) {
+        MessageUtil.sendErrorMessage(cs, "You are banned from this plotbuild.");
+    }
+
+
 }

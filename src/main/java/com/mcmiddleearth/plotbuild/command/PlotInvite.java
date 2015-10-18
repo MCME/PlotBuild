@@ -8,7 +8,9 @@ package com.mcmiddleearth.plotbuild.command;
 import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
+import java.util.List;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -28,30 +30,34 @@ public class PlotInvite extends InsidePlotCommand {
         if(plot==null) {
             return;
         }
+        if(plot.getPlotbuild().isPriv()) {
+            sendPlotbuildPrivateMessage(cs);
+            return;
+        }
         if(plot.getPlotbuild().isLocked()) {
             sendPlotbuildLockedMessage(cs);
             return;
         }
-        Player invitedPlayer = Bukkit.getPlayer(args[0]);
+        OfflinePlayer invitedPlayer = Bukkit.getPlayer(args[0]);
         if(invitedPlayer==null) {
             sendPlayerNotFoundMessage(cs);
             return;
         }
         if(plot.getOwners().contains(invitedPlayer)) {
-            sendAlreadyOwnerMessage(cs, invitedPlayer.getDisplayName());
+            sendAlreadyOwnerMessage(cs, invitedPlayer.getName());
             return;
         }
         if(plot.getPlotbuild().isMember(invitedPlayer)) {
-            sendAlreadyMemberMessage(cs, invitedPlayer.getDisplayName());
+            sendAlreadyMemberMessage(cs, invitedPlayer.getName());
+            return;
+        }
+        if(plot.getPlotbuild().getBannedPlayers().contains(invitedPlayer)) {
+            sendPlayerBannedMessage(cs, invitedPlayer.getName());
             return;
         }
         plot.invite(invitedPlayer);
-        sendInvitedMessage(cs, invitedPlayer.getDisplayName());
+        sendInvitedMessage(cs, invitedPlayer.getName());
         PluginData.saveData();
-    }
-
-    private void sendPlayerNotFoundMessage(CommandSender cs) {
-        MessageUtil.sendErrorMessage(cs, "Player not found.");
     }
 
     private void sendAlreadyMemberMessage(CommandSender cs, String name) {
@@ -69,4 +75,8 @@ public class PlotInvite extends InsidePlotCommand {
         MessageUtil.sendErrorMessage(cs, "You can not invite players to a plot at the moment as this plotbuild is locked. Try again later.");
     }
     
+    private void sendPlayerBannedMessage(CommandSender cs, String name) {
+        MessageUtil.sendErrorMessage(cs, name +" is banned from this plotbuild.");
+    }
+
 }

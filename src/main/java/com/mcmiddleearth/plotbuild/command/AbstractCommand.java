@@ -5,6 +5,7 @@
  */
 package com.mcmiddleearth.plotbuild.command;
 
+import com.mcmiddleearth.plotbuild.plotbuild.PlotBuild;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
 import lombok.Getter;
 import lombok.Setter;
@@ -75,15 +76,26 @@ public abstract class AbstractCommand {
         MessageUtil.sendErrorMessage(cs, "You're missing arguments for this command.");
     }
     
-    protected boolean hasAdditionalPermissions(Player p, String permission) {
-        return false;
+    protected void sendPlayerNotFoundMessage(CommandSender cs) {
+        MessageUtil.sendErrorMessage(cs, "Player not found. Try again when the Player is online.");
+    }
+    
+    protected boolean hasPermissionsForPlotBuild(Player p, PlotBuild plotbuild) {
+        if(permissionNodes != null && !plotbuild.getStaffList().contains(p)) {
+            for(String permission : permissionNodes) {
+                if (!p.hasPermission(permission)) {
+                    sendNoPermsErrorMessage(p);
+                    return false;
+                }
+            }
+        }
+        return true;
     }
     
     private boolean hasPermissions(Player p) {
-        if(permissionNodes != null) {
+        if(permissionNodes != null && !additionalPermissionsEnabled) {
             for(String permission : permissionNodes) {
-                if (!p.hasPermission(permission) &&
-                    !(additionalPermissionsEnabled && hasAdditionalPermissions(p, permission))) {
+                if (!p.hasPermission(permission)) {
                     return false;
                 }
             }
