@@ -34,6 +34,7 @@ public class PlotFinish extends InsidePlotCommand {
         }
         plot.finish();
         sendFinishedMessage(cs);
+        PluginData.saveData();
     }
 
     private void sendFinishedMessage(CommandSender cs) {

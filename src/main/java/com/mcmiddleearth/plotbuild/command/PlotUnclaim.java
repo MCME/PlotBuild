@@ -38,6 +38,7 @@ public class PlotUnclaim extends InsidePlotCommand {
         }
         plot.unclaim();
         sendPlotUnclaimedMessage(cs);
+        PluginData.saveData();
     }
 
    private void sendNotClaimedMessage(CommandSender cs) {

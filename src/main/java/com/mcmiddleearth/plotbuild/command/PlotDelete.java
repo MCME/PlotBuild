@@ -5,6 +5,7 @@
  */
 package com.mcmiddleearth.plotbuild.command;
 
+import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
 import org.bukkit.command.CommandSender;
@@ -35,6 +36,7 @@ public class PlotDelete extends InsidePlotCommand {
             sendDeleteMessage(cs);
         }
         plot.delete(keep);
+        PluginData.saveData();
     }
 
     private void sendDeleteMessage(CommandSender cs) {
