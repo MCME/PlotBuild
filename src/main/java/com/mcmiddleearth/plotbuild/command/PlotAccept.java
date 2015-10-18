@@ -7,8 +7,11 @@ package com.mcmiddleearth.plotbuild.command;
 
 import com.mcmiddleearth.plotbuild.constants.PlotState;
 import com.mcmiddleearth.plotbuild.data.PluginData;
+import com.mcmiddleearth.plotbuild.exceptions.InvalidRestoreDataException;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -36,7 +39,11 @@ public class PlotAccept extends InsidePlotCommand {
             sendNotFinishedMessage(cs);
             return;
         }
-        plot.accept();
+        try {
+            plot.accept();
+        } catch (InvalidRestoreDataException ex) {
+            Logger.getLogger(PlotAccept.class.getName()).log(Level.SEVERE, null, ex);
+        }
         sendAcceptMessage(cs);
         PluginData.saveData();
     }

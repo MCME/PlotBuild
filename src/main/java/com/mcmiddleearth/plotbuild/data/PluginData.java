@@ -30,9 +30,11 @@ import java.util.logging.Logger;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 /**
  *
@@ -146,6 +148,25 @@ public class PluginData {
         }
     }
     
+    public static List <ItemStack> getRestoreData(PlotBuild plotbuild, Plot plot) {
+        File plotDir = new File(plotBuildDir, plotbuild.getName());
+        File plotRestoreData = new File(plotDir, Integer.toString(plotbuild.getPlots().indexOf(plot)) + ".r");
+        ArrayList <ItemStack> ret = new ArrayList<>();
+        try {
+            Scanner scanner = new Scanner(plotRestoreData);
+            scanner.nextLine();
+            while(scanner.hasNext()) {
+                Material material = Material.valueOf(scanner.nextLine());
+                short data = scanner.nextShort();
+                scanner.nextLine();
+                ret.add(new ItemStack(material, data));
+            }
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(PluginData.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return ret;
+    }
+    
     private static void savePlotBuild(PlotBuild plotbuild) throws IOException {
         File plotBuildFile = new File(plotBuildDir, plotbuild.getName()+".pb");
         File plotDir = new File(plotBuildDir, plotbuild.getName());
@@ -212,14 +233,21 @@ public class PluginData {
         PrintWriter writer = new PrintWriter(fw);
         World world = plot.getCorner1().getWorld();
         writer.println(world.getName());
+        int miny = 0;
+        int maxy = world.getMaxHeight()-1;
+        if(plot.getPlotbuild().isCuboid()) {
+            miny = plot.getCorner1().getBlockY();
+            maxy = plot.getCorner2().getBlockY();
+        }
         for(int x = plot.getCorner1().getBlockX(); x <= plot.getCorner2().getBlockX(); ++x) {
-            for(int y = 0; y <= world.getMaxHeight(); ++y) {
+            for(int y = miny; y <= maxy; ++y) {
                 for(int z = plot.getCorner1().getBlockZ(); z <= plot.getCorner2().getBlockZ(); ++z) {
                     writer.println(world.getBlockAt(x, y, z).getType());
                     writer.println(world.getBlockAt(x, y, z).getState().getData().toItemStack().getDurability());
                 }
             }
         }
+        writer.close();
     }
     
     private static void loadPlotBuild(File f) throws FileNotFoundException {

@@ -6,8 +6,11 @@
 package com.mcmiddleearth.plotbuild.command;
 
 import com.mcmiddleearth.plotbuild.data.PluginData;
+import com.mcmiddleearth.plotbuild.exceptions.InvalidRestoreDataException;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -39,7 +42,12 @@ public class PlotDelete extends InsidePlotCommand {
         else {
             sendDeleteMessage(cs);
         }
-        plot.delete(keep);
+        try {
+            plot.delete(keep);
+        } catch (InvalidRestoreDataException ex) {
+            Logger.getLogger(PlotDelete.class.getName()).log(Level.SEVERE, null, ex);
+            sendRestoreErrorMessage(cs);
+        }
         PluginData.saveData();
     }
 
