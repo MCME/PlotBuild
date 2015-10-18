@@ -5,6 +5,7 @@
  */
 package com.mcmiddleearth.plotbuild.command;
 
+import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
 import org.bukkit.Bukkit;
@@ -27,6 +28,10 @@ public class PlotInvite extends InsidePlotCommand {
         if(plot==null) {
             return;
         }
+        if(plot.getPlotbuild().isLocked()) {
+            sendPlotbuildLockedMessage(cs);
+            return;
+        }
         Player invitedPlayer = Bukkit.getPlayer(args[0]);
         if(invitedPlayer==null) {
             sendPlayerNotFoundMessage(cs);
@@ -42,10 +47,11 @@ public class PlotInvite extends InsidePlotCommand {
         }
         plot.invite(invitedPlayer);
         sendInvitedMessage(cs, invitedPlayer.getDisplayName());
+        PluginData.saveData();
     }
 
     private void sendPlayerNotFoundMessage(CommandSender cs) {
-        MessageUtil.sendErrorMessage(cs, "No player found.");
+        MessageUtil.sendErrorMessage(cs, "Player not found.");
     }
 
     private void sendAlreadyMemberMessage(CommandSender cs, String name) {
@@ -58,6 +64,9 @@ public class PlotInvite extends InsidePlotCommand {
 
     private void sendInvitedMessage(CommandSender cs, String name) {
         MessageUtil.sendInfoMessage(cs, "You invited "+ name+" to this plot.");
+    }
+    private void sendPlotbuildLockedMessage(CommandSender cs) {
+        MessageUtil.sendErrorMessage(cs, "You can not invite players to a plot at the moment as this plotbuild is locked. Try again later.");
     }
     
 }

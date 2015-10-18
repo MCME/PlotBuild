@@ -34,6 +34,7 @@ public class PlotLeave extends InsidePlotCommand {
         }
         plot.leave((Player)cs);
         sendPlotLeaveMessage(cs);
+        PluginData.saveData();
     }
     
     private void sendNoMoreOwnersMessage(CommandSender cs) {

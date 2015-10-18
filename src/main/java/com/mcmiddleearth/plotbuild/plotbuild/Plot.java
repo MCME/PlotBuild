@@ -155,7 +155,21 @@ public class Plot {
     }
     
     public void accept(){
-        state = PlotState.ACCEPTED;
+        delete(true);
+    }
+    
+    public void clear(boolean unclaim) {
+        if(unclaim) {
+            unclaim();
+        }
+        //TODO reset plot
+    }
+    
+    public void delete(boolean keep){
+        if(!keep) {
+            //TODO reset plot
+        }
+        state = PlotState.REMOVED;
         removeBorder();
     }
     

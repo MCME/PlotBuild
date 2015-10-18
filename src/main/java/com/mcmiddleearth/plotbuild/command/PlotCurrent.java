@@ -9,6 +9,7 @@ import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.plotbuild.PlotBuild;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 /**
  *
@@ -27,6 +28,8 @@ public class PlotCurrent extends AbstractCommand {
             sendNoPlotbuildFoundMessage(cs);
         } else {
             sendCurrentPlotbuildSetMessage(cs);
+            PluginData.setCurrentPlotbuild((Player) cs, plotbuild);
+            PluginData.saveData();
         }
     }
     

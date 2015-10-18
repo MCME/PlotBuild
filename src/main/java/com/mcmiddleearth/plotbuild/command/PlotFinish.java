@@ -5,6 +5,7 @@
  */
 package com.mcmiddleearth.plotbuild.command;
 
+import com.mcmiddleearth.plotbuild.constants.PlotState;
 import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
@@ -27,12 +28,21 @@ public class PlotFinish extends InsidePlotCommand {
         if(plot==null) {
             return;
         }
+        if(plot.getState()==PlotState.FINISHED) {
+            sendPlotAlreadyFinishedMessage(cs);
+            return;
+        }
         plot.finish();
         sendFinishedMessage(cs);
+        PluginData.saveData();
     }
 
     private void sendFinishedMessage(CommandSender cs) {
         MessageUtil.sendInfoMessage(cs, "You marked this plot as finished. Please wait for a staff to review it.");
+    }
+
+    private void sendPlotAlreadyFinishedMessage(CommandSender cs) {
+        MessageUtil.sendErrorMessage(cs, "This plot is already marked as finished.");
     }
     
 }

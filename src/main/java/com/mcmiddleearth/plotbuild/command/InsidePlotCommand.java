@@ -5,6 +5,7 @@
  */
 package com.mcmiddleearth.plotbuild.command;
 
+import com.mcmiddleearth.plotbuild.constants.PlotState;
 import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
@@ -24,8 +25,9 @@ public abstract class InsidePlotCommand extends AbstractCommand {
 
     protected Plot checkInPlot(Player player) {
         Plot plot = PluginData.getPlotAt((player).getLocation());
-        if(plot == null) {
+        if(plot == null || plot.getState()==PlotState.REMOVED) {
             sendNotInPlotMessage(player);
+            return null;
         }
         return plot;
     }
