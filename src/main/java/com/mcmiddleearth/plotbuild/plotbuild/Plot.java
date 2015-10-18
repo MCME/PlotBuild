@@ -5,6 +5,7 @@
  */
 package com.mcmiddleearth.plotbuild.plotbuild;
 
+import com.mcmiddleearth.plotbuild.PlotBuildPlugin;
 import com.mcmiddleearth.plotbuild.command.PlotNew;
 import com.mcmiddleearth.plotbuild.constants.PlotState;
 import com.mcmiddleearth.plotbuild.data.PluginData;
@@ -228,7 +229,7 @@ public class Plot {
     private void reset() throws InvalidRestoreDataException {
         List <ItemStack> restoreData = PluginData.getRestoreData(plotbuild, this);
         int miny = 0;
-        int maxy = getCorner1().getWorld().getMaxHeight();
+        int maxy = getCorner1().getWorld().getMaxHeight()-1;
         if(getPlotbuild().isCuboid()) {
             miny = getCorner1().getBlockY();
             maxy = getCorner2().getBlockY();
@@ -236,7 +237,9 @@ public class Plot {
         Selection sel = new Selection();
         sel.setFirstPoint(corner1);
         sel.setSecondPoint(corner2);
-        if(restoreData.size() < sel.getVolume()) {
+        if(restoreData.size() != sel.getArea() * (maxy - miny + 1)) {
+            PlotBuildPlugin.getPluginInstance().getLogger().info("Restore size: " + Integer.toString(restoreData.size()) +
+                    ", Plot size: " + Integer.toString(sel.getArea() * (maxy - miny + 1)));
             throw new InvalidRestoreDataException();
         }
         int listindex = 0;

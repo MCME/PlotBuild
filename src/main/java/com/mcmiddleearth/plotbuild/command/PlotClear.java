@@ -52,7 +52,7 @@ public class PlotClear extends InsidePlotCommand {
     }
 
     private void sendClearMessage(CommandSender cs) {
-        MessageUtil.sendInfoMessage(cs, "You clearedthis plot.");
+        MessageUtil.sendInfoMessage(cs, "You cleared this plot.");
     }
     
 }

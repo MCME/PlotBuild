@@ -234,7 +234,7 @@ public class PluginData {
         World world = plot.getCorner1().getWorld();
         writer.println(world.getName());
         int miny = 0;
-        int maxy = world.getMaxHeight();
+        int maxy = world.getMaxHeight()-1;
         if(plot.getPlotbuild().isCuboid()) {
             miny = plot.getCorner1().getBlockY();
             maxy = plot.getCorner2().getBlockY();
@@ -247,6 +247,7 @@ public class PluginData {
                 }
             }
         }
+        writer.close();
     }
     
     private static void loadPlotBuild(File f) throws FileNotFoundException {
