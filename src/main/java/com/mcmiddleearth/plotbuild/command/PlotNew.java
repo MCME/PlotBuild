@@ -21,37 +21,22 @@ import org.bukkit.entity.Player;
  *
  * @author Ivan1pl, Eriol_Eandur
  */
-public class PlotNew extends AbstractCommand {
+public class PlotNew extends PlotBuildCommand {
     
     public PlotNew(String... permissionNodes) {
         super(0, true, permissionNodes);
+        setAdditionalPermissionsEnabled(true);
     }
     
     @Override
     protected void execute(CommandSender cs, String... args) {
-        //setting plotbuild
-        PlotBuild plotbuild = null;
-        if(args.length == 0){
-            plotbuild = PluginData.getCurrentPlotbuild((Player) cs);
-            if(plotbuild == null){
-                sendNoCurrentPlotbuildMessage(cs);
-                return;
-            }
+        PlotBuild plotbuild = checkPlotBuild((Player) cs, 0, args);
+        if(plotbuild == null) {
+            return;
         }
-        else{
-            List <PlotBuild> plotbuilds = PluginData.getPlotbuildsList();
-            for(PlotBuild searchPBuild : plotbuilds){
-                if(searchPBuild.getName().equalsIgnoreCase(args[0])){
-                    plotbuild = searchPBuild;
-                    break;
-                }
-            }
-            if(plotbuild == null){
-                sendPlotbuildNotFoundMessage(cs);
-                return;
-            }
+        if(!hasPermissionsForPlotBuild((Player) cs, plotbuild)) {
+            return;
         }
-        
         //check plot location and create plot
         Selection selection = PluginData.getCurrentSelection((Player) cs);
         if(selection.isValid()) {
@@ -83,7 +68,7 @@ public class PlotNew extends AbstractCommand {
                    
     }
         
-    protected void sendPlotbuildNotFoundMessage(CommandSender cs){
+    protected void sendNoPlotbuildFoundMessage(CommandSender cs){
         MessageUtil.sendErrorMessage(cs, "No plotbuild with this name.");
     }   
 

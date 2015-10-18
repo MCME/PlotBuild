@@ -23,12 +23,16 @@ public class PlotAccept extends InsidePlotCommand {
     
     public PlotAccept(String... permissionNodes) {
         super(0, true, permissionNodes);
+        setAdditionalPermissionsEnabled(true);
     }
     
     @Override
     protected void execute(CommandSender cs, String... args) {
         Plot plot = checkInPlot((Player) cs);
         if(plot==null) {
+            return;
+        }
+        if(!hasPermissionsForPlotBuild((Player) cs, plot.getPlotbuild())) {
             return;
         }
         if(plot.getState()!=PlotState.FINISHED) {

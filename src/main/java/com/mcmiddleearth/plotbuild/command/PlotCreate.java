@@ -73,7 +73,7 @@ public class PlotCreate extends AbstractCommand {
     }
     
     protected void sendNameExistsErrorMessage(CommandSender cs){
-        MessageUtil.sendErrorMessage(cs, "A Plotbuild with the given name already exists.");
+        MessageUtil.sendErrorMessage(cs, "A Plotbuild with that name already exists.");
     }
 
     protected void sendPlotbuildCreateErrorMessage(CommandSender cs){

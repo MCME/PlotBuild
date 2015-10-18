@@ -10,6 +10,7 @@ import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -21,6 +22,7 @@ public class PlotAssign extends InsidePlotCommand {
     
     public PlotAssign(String... permissionNodes) {
         super(1, true, permissionNodes);
+        setAdditionalPermissionsEnabled(true);
     }
     
     @Override
@@ -29,17 +31,24 @@ public class PlotAssign extends InsidePlotCommand {
         if(plot==null) {
             return;
         }
-        Player assignedPlayer = Bukkit.getPlayer(args[0]);
+        if(!hasPermissionsForPlotBuild((Player) cs, plot.getPlotbuild())) {
+            return;
+        }
+        OfflinePlayer assignedPlayer = Bukkit.getPlayer(args[0]);
         if(assignedPlayer==null) {
             sendPlayerNotFoundMessage(cs);
             return;
         }
         if(plot.getOwners().contains(assignedPlayer)) {
-            sendAlreadyOwnerMessage(cs, assignedPlayer.getDisplayName());
+            sendAlreadyOwnerMessage(cs, assignedPlayer.getName());
             return;
         }
         if(plot.getPlotbuild().isMember(assignedPlayer)) {
-            sendAlreadyMemberMessage(cs, assignedPlayer.getDisplayName());
+            sendAlreadyMemberMessage(cs, assignedPlayer.getName());
+            return;
+        }
+        if(plot.getPlotbuild().getBannedPlayers().contains(assignedPlayer)) {
+            sendPlayerBannedMessage(cs, assignedPlayer.getName());
             return;
         }
         if(plot.getState()==PlotState.UNCLAIMED) {
@@ -48,14 +57,10 @@ public class PlotAssign extends InsidePlotCommand {
         else {
             plot.invite(assignedPlayer);
         }
-        sendAssignedMessage(cs, assignedPlayer.getDisplayName());
+        sendAssignedMessage(cs, assignedPlayer.getName());
         PluginData.saveData();
         }
   
-    private void sendPlayerNotFoundMessage(CommandSender cs) {
-        MessageUtil.sendErrorMessage(cs, "Player not found.");
-    }
-
     private void sendAlreadyMemberMessage(CommandSender cs, String name) {
         MessageUtil.sendErrorMessage(cs, name + " is already owner of an other plot in this plotbuild.");
     }
@@ -67,5 +72,10 @@ public class PlotAssign extends InsidePlotCommand {
     private void sendAssignedMessage(CommandSender cs, String name) {
         MessageUtil.sendInfoMessage(cs, "You assigned "+ name+" to this plot.");
     }
+    
+    private void sendPlayerBannedMessage(CommandSender cs, String name) {
+        MessageUtil.sendErrorMessage(cs, name +" is banned from this plotbuild.");
+    }
+
 
 }
