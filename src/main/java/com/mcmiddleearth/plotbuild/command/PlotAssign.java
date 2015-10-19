@@ -58,6 +58,7 @@ public class PlotAssign extends InsidePlotCommand {
             plot.invite(assignedPlayer);
         }
         sendAssignedMessage(cs, assignedPlayer.getName());
+        plot.getPlotbuild().log(((Player) cs).getName()+" asigned "+assignedPlayer.getName()+" to plot "+plot.getID()+".");
         PluginData.saveData();
         }
   

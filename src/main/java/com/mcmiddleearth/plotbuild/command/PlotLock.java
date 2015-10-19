@@ -26,6 +26,7 @@ public class PlotLock extends PlotBuildCommand {
         if(args.length==0) {
             for(PlotBuild plotbuild : PluginData.getPlotbuildsList()) {
                 plotbuild.setLocked(true);
+                plotbuild.log(((Player) cs).getName()+" locked the plotbuild.");
             }
             sendLockedAllMessage(cs);
         }
@@ -37,6 +38,7 @@ public class PlotLock extends PlotBuildCommand {
             }
             plotbuild.setLocked(true);
             sendLockedPlotbuild(cs,plotbuild.getName());
+            plotbuild.log(((Player) cs).getName()+" locked the plotbuild.");
         }
         PluginData.saveData();
     }

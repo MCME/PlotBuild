@@ -55,6 +55,7 @@ public class PlotBan extends PlotBuildCommand {
         }
         plotbuild.getBannedPlayers().add(banned);
         sendBannedMessage(cs,banned.getName(), plotbuild.getName());
+        plotbuild.log(((Player) cs).getName()+" banned "+banned.getName()+".");
         PluginData.saveData();
     }
 

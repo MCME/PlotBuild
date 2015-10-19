@@ -9,6 +9,7 @@ import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.plotbuild.PlotBuild;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 /**
  *
@@ -25,6 +26,7 @@ public class PlotUnlock extends PlotBuildCommand {
         if(args.length==0) {
             for(PlotBuild plotbuild : PluginData.getPlotbuildsList()) {
                 plotbuild.setLocked(false);
+                plotbuild.log(((Player) cs).getName()+" unlocked the plotbuild.");
             }
             sendLockedAllMessage(cs);
         }
@@ -35,6 +37,7 @@ public class PlotUnlock extends PlotBuildCommand {
                 return;
             }
             plotbuild.setLocked(false);
+            plotbuild.log(((Player) cs).getName()+" unlocked the plotbuild.");
             sendLockedPlotbuild(cs,plotbuild.getName());
         }
         PluginData.saveData();
