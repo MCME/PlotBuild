@@ -24,8 +24,6 @@ public class PlotBuild {
     @Getter
     private final String name;
     
-    int maxUsedID=0;
-    
     @Getter
     @Setter
     private String info;
