@@ -19,6 +19,7 @@ public class PlotRefuse extends InsidePlotCommand {
     
     public PlotRefuse(String... permissionNodes) {
         super(0, true, permissionNodes);
+        setAdditionalPermissionsEnabled(true);
     }
     
     @Override
@@ -27,8 +28,12 @@ public class PlotRefuse extends InsidePlotCommand {
         if(plot==null) {
             return;
         }
+        if(!hasPermissionsForPlotBuild((Player) cs, plot.getPlotbuild())) {
+            return;
+        }
         plot.refuse();
         sendRefuseMessgage(cs);
+        plot.getPlotbuild().log(((Player) cs).getName()+" refused plot "+plot.getID()+".");
         PluginData.saveData();
     }
 

@@ -34,6 +34,7 @@ public class PlotFinish extends InsidePlotCommand {
         }
         plot.finish();
         sendFinishedMessage(cs);
+        plot.getPlotbuild().log(((Player) cs).getName()+" finished plot "+plot.getID()+".");
         PluginData.saveData();
     }
 

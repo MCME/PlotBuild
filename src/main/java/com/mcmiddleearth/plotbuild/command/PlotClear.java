@@ -22,12 +22,16 @@ public class PlotClear extends InsidePlotCommand {
     
     public PlotClear(String... permissionNodes) {
         super(0, true, permissionNodes);
+        setAdditionalPermissionsEnabled(true);
     }
     
     @Override
     protected void execute(CommandSender cs, String... args) {
         Plot plot = checkInPlot((Player) cs);
         if(plot==null) {
+            return;
+        }
+        if(!hasPermissionsForPlotBuild((Player) cs, plot.getPlotbuild())) {
             return;
         }
         boolean unclaim=false;
@@ -44,6 +48,11 @@ public class PlotClear extends InsidePlotCommand {
             Logger.getLogger(PlotClear.class.getName()).log(Level.SEVERE, null, ex);
             sendRestoreErrorMessage(cs);
         }
+        String logMessage = " cleared plot ";
+        if(unclaim) {
+            logMessage = " cleared and unclaimed plot ";
+        }
+        plot.getPlotbuild().log(((Player) cs).getName()+logMessage+plot.getID()+".");
         PluginData.saveData();
     }
 

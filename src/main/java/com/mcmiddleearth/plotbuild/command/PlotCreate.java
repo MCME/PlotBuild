@@ -65,6 +65,7 @@ public class PlotCreate extends AbstractCommand {
             PluginData.setCurrentPlotbuild((Player) cs, newPlotbuild);
             newPlotbuild.getStaffList().add((Player) cs);
             sendPlotbuildCreatedMessage(cs);
+            newPlotbuild.log(((Player) cs).getName()+" created plotbuild "+newPlotbuild.getName()+".");
             PluginData.saveData();
         }
         else {
@@ -73,7 +74,7 @@ public class PlotCreate extends AbstractCommand {
     }
     
     protected void sendNameExistsErrorMessage(CommandSender cs){
-        MessageUtil.sendErrorMessage(cs, "A Plotbuild with the given name already exists.");
+        MessageUtil.sendErrorMessage(cs, "A Plotbuild with that name already exists.");
     }
 
     protected void sendPlotbuildCreateErrorMessage(CommandSender cs){

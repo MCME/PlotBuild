@@ -15,10 +15,11 @@ import org.bukkit.entity.Player;
  *
  * @author Ivan1pl
  */
-public class PlotCurrent extends AbstractCommand {
+public class PlotCurrent extends PlotBuildCommand {
     
     public PlotCurrent(String... permissionNodes) {
         super(1, true, permissionNodes);
+        setAdditionalPermissionsEnabled(true);
     }
     
     @Override
@@ -26,15 +27,14 @@ public class PlotCurrent extends AbstractCommand {
         PlotBuild plotbuild = PluginData.getPlotBuild(args[0]);
         if(plotbuild == null) {
             sendNoPlotbuildFoundMessage(cs);
-        } else {
-            sendCurrentPlotbuildSetMessage(cs);
-            PluginData.setCurrentPlotbuild((Player) cs, plotbuild);
-            PluginData.saveData();
+            return;
+        } 
+        if(!hasPermissionsForPlotBuild((Player) cs, plotbuild)) {
+            return;
         }
-    }
-    
-    private void sendNoPlotbuildFoundMessage(CommandSender cs) {
-        MessageUtil.sendErrorMessage(cs, "No plotbuild with this name.");
+        sendCurrentPlotbuildSetMessage(cs);
+        PluginData.setCurrentPlotbuild((Player) cs, plotbuild);
+        PluginData.saveData();
     }
     
     private void sendCurrentPlotbuildSetMessage(CommandSender cs) {

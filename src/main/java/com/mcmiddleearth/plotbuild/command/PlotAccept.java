@@ -10,6 +10,8 @@ import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.exceptions.InvalidRestoreDataException;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.command.CommandSender;
@@ -23,12 +25,16 @@ public class PlotAccept extends InsidePlotCommand {
     
     public PlotAccept(String... permissionNodes) {
         super(0, true, permissionNodes);
+        setAdditionalPermissionsEnabled(true);
     }
     
     @Override
     protected void execute(CommandSender cs, String... args) {
         Plot plot = checkInPlot((Player) cs);
         if(plot==null) {
+            return;
+        }
+        if(!hasPermissionsForPlotBuild((Player) cs, plot.getPlotbuild())) {
             return;
         }
         if(plot.getState()!=PlotState.FINISHED) {
@@ -41,6 +47,7 @@ public class PlotAccept extends InsidePlotCommand {
             Logger.getLogger(PlotAccept.class.getName()).log(Level.SEVERE, null, ex);
         }
         sendAcceptMessage(cs);
+        plot.getPlotbuild().log(((Player) cs).getName()+" accepted plot "+plot.getID()+".");
         PluginData.saveData();
     }
 

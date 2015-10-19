@@ -38,6 +38,7 @@ public class PlotUnclaim extends InsidePlotCommand {
         }
         plot.unclaim();
         sendPlotUnclaimedMessage(cs);
+        plot.getPlotbuild().log(((Player) cs).getName()+" unclaimed plot "+plot.getID()+".");
         PluginData.saveData();
     }
 

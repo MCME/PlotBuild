@@ -32,6 +32,9 @@ import org.bukkit.inventory.ItemStack;
 public class Plot {
     
     @Getter
+    private int ID;
+    
+    @Getter
     private Location corner1;
     
     @Getter
@@ -77,6 +80,8 @@ public class Plot {
                                                         Math.max(corner1.getBlockZ(), corner2.getBlockZ()));
         this.state = PlotState.UNCLAIMED;
         placeBorder();
+        plotbuild.maxUsedID++;
+        ID = plotbuild.maxUsedID;
     }
     
     public Plot(Location corner1, Location corner2, List <OfflinePlayer> owners, PlotState state, List <Location> border) {
@@ -121,19 +126,19 @@ public class Plot {
         return true;
     }
     
-    public void claim(Player player){
+    public void claim(OfflinePlayer player){
         owners.add(player);
         state = PlotState.CLAIMED;
         coloriseBorder();
     }
     
-    public void invite(Player player){
+    public void invite(OfflinePlayer player){
         if(!owners.contains(player)) {
             owners.add(player);
         }
     }
     
-    public void remove(Player player){
+    public void remove(OfflinePlayer player){
         if(owners.size()>1) {
             owners.remove(player);
         }
@@ -145,7 +150,7 @@ public class Plot {
         coloriseBorder();
     }
     
-    public void leave(Player player) {
+    public void leave(OfflinePlayer player) {
         owners.remove(player);
     }
     

@@ -22,28 +22,38 @@ public class PlotDelete extends InsidePlotCommand {
     
     public PlotDelete(String... permissionNodes) {
         super(0, true, permissionNodes);
+        setAdditionalPermissionsEnabled(true);
     }
     
     @Override
     protected void execute(CommandSender cs, String... args) {
+        String logMessage1 = " deleted ", logMessage2 = "";
         Plot plot = checkInPlot((Player) cs);
         if(plot==null) {
+            return;
+        }
+        if(!hasPermissionsForPlotBuild((Player) cs, plot.getPlotbuild())) {
             return;
         }
         boolean keep=false;
         if(args.length > 0 && args[0].equalsIgnoreCase("-k")) {
             keep = true;
             sendDeleteAndKeepMessage(cs);
+        plot.getPlotbuild().log(((Player) cs).getName()+" claimed plot "+plot.getID()+".");
         }
         else {
             sendDeleteMessage(cs);
+            logMessage1 =  " deleted and cleared ";
         }
         try {
             plot.delete(keep);
         } catch (InvalidRestoreDataException ex) {
             Logger.getLogger(PlotDelete.class.getName()).log(Level.SEVERE, null, ex);
             sendRestoreErrorMessage(cs);
+            logMessage1 = " deleted ";
+            logMessage2 = " There was an error during clearing of the plot.";
         }
+        plot.getPlotbuild().log(((Player) cs).getName()+logMessage1+"plot "+plot.getID()+"."+logMessage2);
         PluginData.saveData();
     }
 
