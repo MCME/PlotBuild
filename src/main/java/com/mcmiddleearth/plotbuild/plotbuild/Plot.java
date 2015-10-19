@@ -32,9 +32,6 @@ import org.bukkit.inventory.ItemStack;
 public class Plot {
     
     @Getter
-    private int ID;
-    
-    @Getter
     private Location corner1;
     
     @Getter
@@ -80,8 +77,6 @@ public class Plot {
                                                         Math.max(corner1.getBlockZ(), corner2.getBlockZ()));
         this.state = PlotState.UNCLAIMED;
         placeBorder();
-        plotbuild.maxUsedID++;
-        ID = plotbuild.maxUsedID;
     }
     
     public Plot(Location corner1, Location corner2, List <OfflinePlayer> owners, PlotState state, List <Location> border) {
@@ -260,4 +255,7 @@ public class Plot {
         }
     }
     
+    public int getID() {
+        return plotbuild.getPlots().indexOf(this);
+    }
 }
