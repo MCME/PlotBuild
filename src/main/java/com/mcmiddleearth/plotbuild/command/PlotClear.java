@@ -48,6 +48,11 @@ public class PlotClear extends InsidePlotCommand {
             Logger.getLogger(PlotClear.class.getName()).log(Level.SEVERE, null, ex);
             sendRestoreErrorMessage(cs);
         }
+        String logMessage = " cleared plot ";
+        if(unclaim) {
+            logMessage = " cleared and unclaimed plot ";
+        }
+        plot.getPlotbuild().log(((Player) cs).getName()+logMessage+plot.getID()+".");
         PluginData.saveData();
     }
 

@@ -57,6 +57,7 @@ public class PlotInvite extends InsidePlotCommand {
         }
         plot.invite(invitedPlayer);
         sendInvitedMessage(cs, invitedPlayer.getName());
+        plot.getPlotbuild().log(((Player) cs).getName()+" invited "+invitedPlayer.getName()+" to plot "+plot.getID()+".");
         PluginData.saveData();
     }
 
