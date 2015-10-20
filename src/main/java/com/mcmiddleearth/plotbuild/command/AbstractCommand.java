@@ -27,7 +27,7 @@ public abstract class AbstractCommand {
     
     @Getter
     @Setter
-    private String usageDescription;
+    private String usageDescription, shortDescription;
     
     @Setter
     private boolean additionalPermissionsEnabled = false;
@@ -77,9 +77,13 @@ public abstract class AbstractCommand {
     }
     
     protected void sendPlayerNotFoundMessage(CommandSender cs) {
-        MessageUtil.sendErrorMessage(cs, "Player not found. Try again when the Player is online.");
+        MessageUtil.sendErrorMessage(cs, "Player not found. You need to type in the full name.");
     }
     
+    protected void sendRestoreErrorMessage(CommandSender cs) {
+        MessageUtil.sendErrorMessage(cs, "Plot reset data doesn't fit plot size, not restoring.");
+    }
+
     protected boolean hasPermissionsForPlotBuild(Player p, PlotBuild plotbuild) {
         if(permissionNodes != null && !plotbuild.getStaffList().contains(p)) {
             for(String permission : permissionNodes) {

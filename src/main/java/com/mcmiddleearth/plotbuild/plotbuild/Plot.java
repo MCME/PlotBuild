@@ -139,9 +139,10 @@ public class Plot {
         }
     }
     
-    public void unclaim(){
+    public void unclaim() throws InvalidRestoreDataException{
         owners.removeAll(owners);
         state = PlotState.UNCLAIMED;
+        reset();
         coloriseBorder();
     }
     

@@ -20,6 +20,8 @@ public class PlotClaim extends InsidePlotCommand {
     
     public PlotClaim(String... permissionNodes) {
         super(0, true, permissionNodes);
+        setShortDescription(": Gives build perms for an unclaimed plot.");
+        setUsageDescription(": When standing inside an unclaimed plot, claims the plot. Ensures build permissions inside the plot. Border color is set to Purple. A player may only claim a plot when he does not have a claimed or refused plot.");
     }
     
     @Override
@@ -44,7 +46,7 @@ public class PlotClaim extends InsidePlotCommand {
             sendPlotAlreadyClaimedMessage(cs);
             return;
         }
-        if(plot.getPlotbuild().isMember((Player) cs)) {
+        if(plot.getPlotbuild().hasUnfinishedPlot((Player) cs)) {
             sendAlreadyMemberMessage(cs);
             return;
         }

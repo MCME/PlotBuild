@@ -20,6 +20,8 @@ public class PlotCurrent extends PlotBuildCommand {
     public PlotCurrent(String... permissionNodes) {
         super(1, true, permissionNodes);
         setAdditionalPermissionsEnabled(true);
+        setShortDescription(": Sets the current plotbuild.");
+        setUsageDescription(" <name>: Sets the plotbuild <name> as current plotbuild. That way it is not necessary to put the name of the plotbuild to work on in every command. The command /plot create sets the current plotbuild too.");
     }
     
     @Override

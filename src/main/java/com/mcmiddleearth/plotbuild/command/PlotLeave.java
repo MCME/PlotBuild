@@ -20,6 +20,8 @@ public class PlotLeave extends InsidePlotCommand {
     
     public PlotLeave(String... permissionNodes) {
         super(0, true, permissionNodes);
+        setShortDescription(": player leaves the building team.");
+        setUsageDescription(": When standing inside a plot and plot is owned by multiple players, leaves the building team.");
     }
     
     @Override

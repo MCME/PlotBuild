@@ -22,6 +22,8 @@ public class PlotUnban extends PlotBuildCommand {
     public PlotUnban(String... permissionNodes) {
         super(1, true, permissionNodes);
         setAdditionalPermissionsEnabled(true);
+        setShortDescription(": Unbans a player from a plotbuild.");
+        setUsageDescription(" <player> [name]: Unbans player from current plotbuild respectively from plotbuild [name].");
     }
     
     @Override

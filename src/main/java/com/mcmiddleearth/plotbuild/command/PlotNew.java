@@ -26,6 +26,8 @@ public class PlotNew extends PlotBuildCommand {
     public PlotNew(String... permissionNodes) {
         super(0, true, permissionNodes);
         setAdditionalPermissionsEnabled(true);
+        setShortDescription(": Creates a new plot.");
+        setUsageDescription(" [name]: Creates a new plot to the current plotbuild, respectively to plotbuild [name] if specified. To select the area of the plot right/left click opposite corner. The y-values of the corners are only used for cuboid plot in plotbuilds with -3D flag.");
     }
     
     @Override

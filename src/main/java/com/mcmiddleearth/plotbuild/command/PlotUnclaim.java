@@ -7,8 +7,11 @@ package com.mcmiddleearth.plotbuild.command;
 
 import com.mcmiddleearth.plotbuild.constants.PlotState;
 import com.mcmiddleearth.plotbuild.data.PluginData;
+import com.mcmiddleearth.plotbuild.exceptions.InvalidRestoreDataException;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -20,10 +23,13 @@ public class PlotUnclaim extends InsidePlotCommand {
     
     public PlotUnclaim(String... permissionNodes) {
         super(0, true, permissionNodes);
+        setShortDescription(": Unclaims a plot.");
+        setUsageDescription(": When inside a plot and user is builder of plot, unclaims and resets plot. Turns border color to white. Can not be used when multiple players own the plot. /plot leave shall be used until only one builder remains.");
     }
     
     @Override
     protected void execute(CommandSender cs, String... args) {
+        String logMessage = "";
         Plot plot = checkInOwnedPlot((Player) cs);
         if(plot==null) {
             return;
@@ -36,9 +42,15 @@ public class PlotUnclaim extends InsidePlotCommand {
             sendNotClaimedMessage(cs);
             return;
         }
-        plot.unclaim();
+        try {
+            plot.unclaim();
+        } catch (InvalidRestoreDataException ex) {
+            Logger.getLogger(PlotDelete.class.getName()).log(Level.SEVERE, null, ex);
+            sendRestoreErrorMessage(cs);
+            logMessage = " There was an error during clearing of the plot.";
+        }
         sendPlotUnclaimedMessage(cs);
-        plot.getPlotbuild().log(((Player) cs).getName()+" unclaimed plot "+plot.getID()+".");
+        plot.getPlotbuild().log(((Player) cs).getName()+" unclaimed plot "+plot.getID()+"."+logMessage);
         PluginData.saveData();
     }
 

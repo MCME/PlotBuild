@@ -26,6 +26,8 @@ public class PlotAccept extends InsidePlotCommand {
     public PlotAccept(String... permissionNodes) {
         super(0, true, permissionNodes);
         setAdditionalPermissionsEnabled(true);
+        setShortDescription(": Accepts a finished plot.");
+        setUsageDescription(": When inside a finished plot, accepts the build inside the plot, removes the build perms for builders and the borders and messages the builders.");
     }
     
     @Override

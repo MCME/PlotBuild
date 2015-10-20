@@ -23,6 +23,8 @@ public class PlotAssign extends InsidePlotCommand {
     public PlotAssign(String... permissionNodes) {
         super(1, true, permissionNodes);
         setAdditionalPermissionsEnabled(true);
+        setShortDescription(": Adds a player to the builders of a plot.");
+        setUsageDescription(" <player>: Assigns a player to the plot the person issuing the command stands in, multiple players can be assigned to one plot. ");
     }
     
     @Override
@@ -34,8 +36,8 @@ public class PlotAssign extends InsidePlotCommand {
         if(!hasPermissionsForPlotBuild((Player) cs, plot.getPlotbuild())) {
             return;
         }
-        OfflinePlayer assignedPlayer = Bukkit.getPlayer(args[0]);
-        if(assignedPlayer==null) {
+        OfflinePlayer assignedPlayer = Bukkit.getOfflinePlayer(args[0]);
+        if(assignedPlayer.getLastPlayed()==0) {
             sendPlayerNotFoundMessage(cs);
             return;
         }
@@ -43,13 +45,12 @@ public class PlotAssign extends InsidePlotCommand {
             sendAlreadyOwnerMessage(cs, assignedPlayer.getName());
             return;
         }
-        if(plot.getPlotbuild().isMember(assignedPlayer)) {
-            sendAlreadyMemberMessage(cs, assignedPlayer.getName());
-            return;
-        }
         if(plot.getPlotbuild().getBannedPlayers().contains(assignedPlayer)) {
             sendPlayerBannedMessage(cs, assignedPlayer.getName());
             return;
+        }
+        if(plot.getOwners().size()>=8) {
+            sendMaxTeamSize(cs);
         }
         if(plot.getState()==PlotState.UNCLAIMED) {
             plot.claim(assignedPlayer);
@@ -76,6 +77,10 @@ public class PlotAssign extends InsidePlotCommand {
     
     private void sendPlayerBannedMessage(CommandSender cs, String name) {
         MessageUtil.sendErrorMessage(cs, name +" is banned from this plotbuild.");
+    }
+
+    private void sendMaxTeamSize(CommandSender cs) {
+        MessageUtil.sendErrorMessage(cs, "There can't be more builder in this plot.");
     }
 
 
