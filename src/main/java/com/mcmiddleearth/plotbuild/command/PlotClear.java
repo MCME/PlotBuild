@@ -23,6 +23,8 @@ public class PlotClear extends InsidePlotCommand {
     public PlotClear(String... permissionNodes) {
         super(0, true, permissionNodes);
         setAdditionalPermissionsEnabled(true);
+        setShortDescription(": Resets a plot to its original state.");
+        setUsageDescription(" [-u]: When inside a plot resets the plot to the initial state. -u is an optional flag, if used it does also unclaim the plot, default just clears the plot but does not unclaim it.");
     }
     
     @Override

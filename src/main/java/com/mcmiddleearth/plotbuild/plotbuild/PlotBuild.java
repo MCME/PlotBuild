@@ -78,9 +78,9 @@ public class PlotBuild {
         return result;
     }
     
-    public boolean isMember(OfflinePlayer player) {
+    public boolean hasUnfinishedPlot(OfflinePlayer player) {
         for(Plot plot : plots) {
-            if(plot.getOwners().contains(player)) {
+            if((plot.getState()==PlotState.CLAIMED || plot.getState()==PlotState.REFUSED) && plot.getOwners().contains(player)) {
                 return true;
             }
         }

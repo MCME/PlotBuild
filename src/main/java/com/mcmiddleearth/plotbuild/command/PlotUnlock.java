@@ -19,6 +19,8 @@ public class PlotUnlock extends PlotBuildCommand {
     
     public PlotUnlock(String... permissionNodes) {
         super(0, true, permissionNodes);
+        setShortDescription(": Unlocks plotbuilds.");
+        setUsageDescription(" [name]: Unlocks the plotbuild [name]. If [name] is not specified all plotbuilds are unlocked.");
     }
     
     @Override

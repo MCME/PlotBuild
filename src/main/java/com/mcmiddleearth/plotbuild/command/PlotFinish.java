@@ -20,6 +20,8 @@ public class PlotFinish extends InsidePlotCommand {
     
     public PlotFinish(String... permissionNodes) {
         super(0, true, permissionNodes);
+        setShortDescription(": markes a plot as finished for check.");
+        setUsageDescription(": Can be used by builders when inside a plot to mark a plot as being finished and ready for check. Turns plot borders to blue wool.");
     }
     
     @Override

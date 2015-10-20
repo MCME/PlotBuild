@@ -20,6 +20,8 @@ public class PlotHistory extends PlotBuildCommand {
     public PlotHistory(String... permissionNodes) {
         super(0, true, permissionNodes);
         setAdditionalPermissionsEnabled(true);
+        setShortDescription(": action logs for a plotbuild");
+        setUsageDescription(" [name] [#]: Displays all actions that happened in current plotbuild / plotbuild [name]. [#] is the page of the history list to be shown.");
     }
     
     @Override

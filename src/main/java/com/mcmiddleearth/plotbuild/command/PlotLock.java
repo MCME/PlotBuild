@@ -19,6 +19,8 @@ public class PlotLock extends PlotBuildCommand {
     
     public PlotLock(String... permissionNodes) {
         super(0, true, permissionNodes);
+        setShortDescription(": Locks plotbuilds.");
+        setUsageDescription(" [name]: Locks the plotbuild [name]. If [name] is not specified all plotbuilds are locked. This prevents non-staff to build on plots, claim new plots and invite players to plots. This can be used during jobs to get the people working on the plotbuilds to help on the job.");
     }
     
     @Override

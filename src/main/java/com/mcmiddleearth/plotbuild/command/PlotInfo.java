@@ -5,56 +5,42 @@
  */
 package com.mcmiddleearth.plotbuild.command;
 
-import com.mcmiddleearth.plotbuild.data.PluginData;
-import com.mcmiddleearth.plotbuild.plotbuild.PlotBuild;
+import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
-import java.net.MalformedURLException;
-import java.net.URL;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 /**
  *
- * @author Ivan1pl
+ * @author Lars
  */
-public class PlotInfo extends PlotBuildCommand {
+public class PlotInfo extends InsidePlotCommand{
     
     public PlotInfo(String... permissionNodes) {
-        super(1, true, permissionNodes);
-        setAdditionalPermissionsEnabled(true);
+        super(0, true, permissionNodes);
+        setShortDescription(": shows building guide link for a plot");
+        setUsageDescription(": When inside a plot shows the link to the related building guide.");
     }
     
     @Override
     protected void execute(CommandSender cs, String... args) {
-        PlotBuild plotbuild = checkPlotBuild((Player) cs, 1, args);
-        if(plotbuild == null) {
+        Plot plot = checkInPlot((Player) cs);
+        if(plot==null) {
             return;
         }
-        if(!hasPermissionsForPlotBuild((Player) cs, plotbuild)) {
-            return;
+        if(plot.getPlotbuild().getInfo()==null) {
+            sendNoInfoMessage(cs);
         }
-        String url = args[0];
-        if(!url.startsWith("http")) {
-            url = "http://"+url;
+        else {
+            sendInfoMessage(cs, plot.getPlotbuild().getInfo());
         }
-        try {
-            new URL(url);
-        } catch (MalformedURLException ex) {
-            sendNoValidURL(cs);
-            return;
-        }
-        plotbuild.setInfo(url);
-        PluginData.saveData();
-        sendPlotbuildInfoMessage(cs,plotbuild.getName());
     }
 
-    private void sendPlotbuildInfoMessage(CommandSender cs,String name) {
-        MessageUtil.sendInfoMessage(cs, "You added an info URL to plotbuild "+name
-                                       +". Please verify that it is correct by using /plot help within a plot.");
+    private void sendNoInfoMessage(CommandSender cs) {
+        MessageUtil.sendInfoMessage(cs, "Sorry there is no bulding guide for this plot. Please ask staff for instructions.");
     }
 
-    private void sendNoValidURL(CommandSender cs) {
-        MessageUtil.sendErrorMessage(cs, "URL syntax incorrect.");
+    private void sendInfoMessage(CommandSender cs, String info) {
+        MessageUtil.sendInfoMessage(cs, "There is a building guide for this plot at "+info+".");
     }
-    
 }

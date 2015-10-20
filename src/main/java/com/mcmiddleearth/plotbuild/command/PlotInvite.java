@@ -22,6 +22,8 @@ public class PlotInvite extends InsidePlotCommand {
     
     public PlotInvite(String... permissionNodes) {
         super(1, true, permissionNodes);
+        setShortDescription(": invites a player to join a plot team.");
+        setUsageDescription(" <player>: When inside a plot a builder of the plot, adds <player> to the plot. Both players then can build inside that plot.");
     }
     
     @Override
@@ -38,8 +40,8 @@ public class PlotInvite extends InsidePlotCommand {
             sendPlotbuildLockedMessage(cs);
             return;
         }
-        OfflinePlayer invitedPlayer = Bukkit.getPlayer(args[0]);
-        if(invitedPlayer==null) {
+        OfflinePlayer invitedPlayer = Bukkit.getOfflinePlayer(args[0]);
+        if(invitedPlayer.getLastPlayed()==0) {
             sendPlayerNotFoundMessage(cs);
             return;
         }
@@ -47,7 +49,11 @@ public class PlotInvite extends InsidePlotCommand {
             sendAlreadyOwnerMessage(cs, invitedPlayer.getName());
             return;
         }
-        if(plot.getPlotbuild().isMember(invitedPlayer)) {
+        if(plot.getOwners().size()>=8) {
+            sendMaxTeamSize(cs);
+        }
+        
+        if(plot.getPlotbuild().hasUnfinishedPlot(invitedPlayer)) {
             sendAlreadyMemberMessage(cs, invitedPlayer.getName());
             return;
         }
@@ -78,6 +84,10 @@ public class PlotInvite extends InsidePlotCommand {
     
     private void sendPlayerBannedMessage(CommandSender cs, String name) {
         MessageUtil.sendErrorMessage(cs, name +" is banned from this plotbuild.");
+    }
+
+    private void sendMaxTeamSize(CommandSender cs) {
+        MessageUtil.sendErrorMessage(cs, "There can't be more builder in this plot.");
     }
 
 }
