@@ -10,6 +10,7 @@ import com.mcmiddleearth.plotbuild.constants.BorderType;
 import com.mcmiddleearth.plotbuild.constants.PlotState;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.plotbuild.PlotBuild;
+import com.mcmiddleearth.plotbuild.utils.FileUtil;
 import com.mcmiddleearth.plotbuild.utils.ListUtil;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -165,6 +166,19 @@ public class PluginData {
             Logger.getLogger(PluginData.class.getName()).log(Level.SEVERE, null, ex);
         }
         return ret;
+    }
+    
+    public static boolean deletePlotBuild(PlotBuild plotbuild) {
+        File plotBuildFile = new File(plotBuildDir, plotbuild.getName()+".pb");
+        File plotDir = new File(plotBuildDir, plotbuild.getName());
+        plotbuildsList.remove(plotbuild);
+        currentPlotbuild.values().removeAll(Collections.singleton(plotbuild));
+        try {
+            return plotBuildFile.delete() && FileUtil.deleteRecursive(plotDir);
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(PluginData.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
     }
     
     private static void savePlotBuild(PlotBuild plotbuild) throws IOException {
