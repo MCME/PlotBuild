@@ -182,8 +182,8 @@ public class Plot {
             reset();
         }
         state = PlotState.REMOVED;
-        removeBorder();
         removeSigns();
+        removeBorder();
     }
     
     public void placeSigns(){

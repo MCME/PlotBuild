@@ -128,7 +128,15 @@ public class PluginData {
     }
     
     public static List<String> getOfflineMessagesFor(Player player) {
-        return offlineMessages.get(player);
+        for(OfflinePlayer offline: offlineMessages.keySet()) {
+            if(offline!=null){
+                Player search = offline.getPlayer();
+                if(search==player) {
+                    return offlineMessages.get(offline);
+                }
+            }
+        }
+        return null;
     }
     
     public static void deleteOfflineMessagesFor(Player player) {
