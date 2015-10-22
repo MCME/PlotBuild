@@ -50,6 +50,8 @@ public class PluginData {
     
     private static final Map <Player, Selection> selections = new LinkedHashMap <>();
     
+    private static final Map <OfflinePlayer, List<String>> offlineMessages = new LinkedHashMap<>();
+    
     @Getter
     private static final Set <String> missingWorlds = new HashSet<>();
     
@@ -111,6 +113,34 @@ public class PluginData {
             }
         }
         return null;
+    }
+    
+    public static void addOfflineMessage(OfflinePlayer player, String message) {
+        if(offlineMessages.containsKey(player)) {
+            List<String> messages = offlineMessages.get(player);
+            messages.add(message);
+        }
+        else {
+            List<String> messages = new ArrayList<>();
+            messages.add(message);
+            offlineMessages.put(player, messages);
+        }
+    }
+    
+    public static List<String> getOfflineMessagesFor(Player player) {
+        for(OfflinePlayer offline: offlineMessages.keySet()) {
+            if(offline!=null){
+                Player search = offline.getPlayer();
+                if(search==player) {
+                    return offlineMessages.get(offline);
+                }
+            }
+        }
+        return null;
+    }
+    
+    public static void deleteOfflineMessagesFor(Player player) {
+        offlineMessages.remove(player);
     }
     
     public static void saveData() {

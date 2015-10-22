@@ -51,6 +51,7 @@ public class PlotInvite extends InsidePlotCommand {
         }
         if(plot.getOwners().size()>=8) {
             sendMaxTeamSize(cs);
+            return;
         }
         
         if(plot.getPlotbuild().hasUnfinishedPlot(invitedPlayer)) {

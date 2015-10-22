@@ -36,15 +36,13 @@ public class PlotEnd extends PlotBuildCommand {
             sendNoPlotbuildFoundMessage(cs);
             return;
         }
-        if(!keep) {
-            for(Plot p : plotbuild.getPlots()) {
-                if(p.getState() != PlotState.REMOVED) {
-                    try {
-                        p.delete(false);
-                    } catch (InvalidRestoreDataException ex) {
-                        Logger.getLogger(PlotEnd.class.getName()).log(Level.SEVERE, null, ex);
-                        sendRestoreErrorMessage(cs);
-                    }
+        for(Plot p : plotbuild.getPlots()) {
+            if(p.getState() != PlotState.REMOVED) {
+                try {
+                    p.delete(keep);
+                } catch (InvalidRestoreDataException ex) {
+                    Logger.getLogger(PlotEnd.class.getName()).log(Level.SEVERE, null, ex);
+                    sendRestoreErrorMessage(cs);
                 }
             }
         }

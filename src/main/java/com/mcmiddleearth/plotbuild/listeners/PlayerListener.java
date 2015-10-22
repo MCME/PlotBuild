@@ -8,18 +8,32 @@ package com.mcmiddleearth.plotbuild.listeners;
 import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.data.Selection;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
+import java.util.List;
+import java.util.logging.Logger;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 
 /**
  *
  * @author Eriol_Eandur
  */
 public class PlayerListener implements Listener{
+    
+    @EventHandler
+    public void playerJoins(PlayerJoinEvent event) {
+        List<String> messages = PluginData.getOfflineMessagesFor(event.getPlayer());
+        if(messages!=null) {
+            for(String message: messages) {
+                MessageUtil.sendInfoMessage(event.getPlayer(), message);
+            }
+            PluginData.deleteOfflineMessagesFor(event.getPlayer());
+        }
+    }
     
     @EventHandler
     public void playerInteract(PlayerInteractEvent event) {

@@ -51,6 +51,7 @@ public class PlotAssign extends InsidePlotCommand {
         }
         if(plot.getOwners().size()>=8) {
             sendMaxTeamSize(cs);
+            return;
         }
         if(plot.getState()==PlotState.UNCLAIMED) {
             plot.claim(assignedPlayer);
@@ -59,7 +60,8 @@ public class PlotAssign extends InsidePlotCommand {
             plot.invite(assignedPlayer);
         }
         sendAssignedMessage(cs, assignedPlayer.getName());
-        plot.getPlotbuild().log(((Player) cs).getName()+" asigned "+assignedPlayer.getName()+" to plot "+plot.getID()+".");
+        sendAssignedPlayerMessage(cs, assignedPlayer, plot.getPlotbuild().getName(), plot.getID());
+        plot.getPlotbuild().log(((Player) cs).getName()+" asigned "+assignedPlayer.getName()+" to plot #"+plot.getID()+".");
         PluginData.saveData();
         }
   
@@ -81,6 +83,12 @@ public class PlotAssign extends InsidePlotCommand {
 
     private void sendMaxTeamSize(CommandSender cs) {
         MessageUtil.sendErrorMessage(cs, "There can't be more builder in this plot.");
+    }
+
+    private void sendAssignedPlayerMessage(CommandSender cs, OfflinePlayer assignedPlayer, String plotbuild, int ID) {
+        MessageUtil.sendOfflineMessage(assignedPlayer, "You were assigned to plot #" + ID
+                                                     + " of plotbuild " + plotbuild 
+                                                     + " by "+ cs.getName()+".");
     }
 
 

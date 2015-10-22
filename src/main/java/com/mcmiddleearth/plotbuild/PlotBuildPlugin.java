@@ -9,7 +9,6 @@ import com.mcmiddleearth.plotbuild.command.PlotCommandExecutor;
 import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.listeners.PlayerListener;
 import lombok.Getter;
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
