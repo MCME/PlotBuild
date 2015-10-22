@@ -47,6 +47,7 @@ public class PlotCommandExecutor implements CommandExecutor {
         addCommandHandler("history", new PlotHistory("plotbuild.staff"));
         addCommandHandler("lock", new PlotLock("plotbuild.staff"));
         addCommandHandler("unlock", new PlotUnlock("plotbuild.staff"));
+        addCommandHandler("end", new PlotEnd("plotbuild.staff"));
     }
     
     @Override
