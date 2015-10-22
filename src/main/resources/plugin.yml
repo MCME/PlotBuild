@@ -7,9 +7,24 @@ commands:
         description: manage PlotBuild plugin
         usage: TBA
 permissions:
+    plotbuild.*:
+        description: Gives access to all plotbuild commands
+        default: op
+        children:
+            plotbuild.staff: true
+            plotbuild.trusted: true
+            plotbuild.user: true
     plotbuild.staff:
+        description: Gives staff access to plotbuilds (create, end, add plots etc)
+        default: op
+        children:
+            plotbuild.trusted: true
+            plotbuild.user: true
+    plotbuild.trusted:
+        description: Allows to build outside of plots when world is protected
         default: op
         children:
             plotbuild.user: true
     plotbuild.user:
+        description: Allows to claim plots in plotbuild
         default: true
