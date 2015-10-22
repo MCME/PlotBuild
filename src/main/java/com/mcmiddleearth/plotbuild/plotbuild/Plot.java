@@ -5,8 +5,8 @@
  */
 package com.mcmiddleearth.plotbuild.plotbuild;
 
-import com.mcmiddleearth.plotbuild.PlotBuildPlugin;
 import com.mcmiddleearth.plotbuild.command.PlotNew;
+import com.mcmiddleearth.plotbuild.constants.BorderType;
 import com.mcmiddleearth.plotbuild.constants.PlotState;
 import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.data.Selection;
@@ -22,7 +22,7 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
-import org.bukkit.entity.Player;
+import org.bukkit.block.Sign;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -76,7 +76,9 @@ public class Plot {
                                                         Math.max(corner1.getBlockY(), corner2.getBlockY()), 
                                                         Math.max(corner1.getBlockZ(), corner2.getBlockZ()));
         this.state = PlotState.UNCLAIMED;
+        plotbuild.getPlots().add(this);
         placeBorder();
+        placeSigns();
     }
     
     public Plot(Location corner1, Location corner2, List <OfflinePlayer> owners, PlotState state, List <Location> border) {
@@ -113,7 +115,6 @@ public class Plot {
         if(plotbuild.isCuboid() && cuboid) {
             int selMinY = Math.min(selection.getFirstPoint().getBlockY(),selection.getSecondPoint().getBlockY());
             int selMaxY = Math.max(selection.getFirstPoint().getBlockY(),selection.getSecondPoint().getBlockY());
-            Logger.getLogger(PlotNew.class.getName()).info(selMinY+" "+selMaxY+" "+corner1.getBlockY()+" "+corner2.getBlockY());
             if(selMinY > corner2.getBlockY() || selMaxY < corner1.getBlockY()) {
                 return false;
             }
@@ -124,18 +125,21 @@ public class Plot {
     public void claim(OfflinePlayer player){
         owners.add(player);
         state = PlotState.CLAIMED;
-        coloriseBorder();
+        refreshBorder();
+        placeSigns();
     }
     
     public void invite(OfflinePlayer player){
         if(!owners.contains(player)) {
             owners.add(player);
+            placeSigns();
         }
     }
     
     public void remove(OfflinePlayer player){
         if(owners.size()>1) {
             owners.remove(player);
+            placeSigns();
         }
     }
     
@@ -143,21 +147,23 @@ public class Plot {
         owners.removeAll(owners);
         state = PlotState.UNCLAIMED;
         reset();
-        coloriseBorder();
+        refreshBorder();
+        placeSigns();
     }
     
     public void leave(OfflinePlayer player) {
         owners.remove(player);
+        placeSigns();
     }
     
     public void finish(){
         state = PlotState.FINISHED;
-        coloriseBorder();
+        refreshBorder();
     }
     
     public void refuse(){
         state = PlotState.REFUSED;
-        coloriseBorder();
+        refreshBorder();
     }
     
     public void accept() throws InvalidRestoreDataException{
@@ -177,32 +183,85 @@ public class Plot {
         }
         state = PlotState.REMOVED;
         removeBorder();
+        removeSigns();
     }
     
-    private void placeBorder(){
-        for(int i = corner1.getBlockX()-1; i<=corner2.getBlockX()+1;i++){
-            this.placeWoolBlock(i, plotbuild.getBorderHeight(), corner1.getBlockZ()-1);
-            this.placeWoolBlock(i, plotbuild.getBorderHeight(), corner2.getBlockZ()+1);
+    public void placeSigns(){
+        refreshBorder();
+        Block signBlock = border.get(0).getBlock().getRelative(0, 3, -1);
+        signBlock.setType(Material.WALL_SIGN);
+        Sign sign = (Sign) signBlock.getState();
+        sign.setLine(0,plotbuild.getName()); 
+        sign.setLine(1,"#"+getID());
+        sign.setLine(3,"Builder:");
+        sign.update();
+        signBlock = signBlock.getRelative(0,-1,0);
+        if(owners.size()>0) {
+            signBlock.setType(Material.WALL_SIGN);
+            sign = (Sign) signBlock.getState();
+            for(int i = 0; i<4 && i<owners.size();i++) {
+                sign.setLine(i, owners.get(i).getName());
+            }
+            sign.update();
         }
-        for(int i = corner1.getBlockZ(); i<=corner2.getBlockZ();i++){
-            this.placeWoolBlock(corner1.getBlockX()-1, plotbuild.getBorderHeight(), i);
-            this.placeWoolBlock(corner2.getBlockX()+1, plotbuild.getBorderHeight(), i);
-        }  
+        else {
+            signBlock.setType(Material.AIR);
+        }
+        signBlock = signBlock.getRelative(0,-1,0);
+        if(owners.size()>4) {
+            signBlock.setType(Material.WALL_SIGN);
+            sign = (Sign) signBlock.getState();
+            for(int i = 4; i<8 && i<owners.size();i++) {
+                sign.setLine(i-4, owners.get(i).getName());
+            }
+            sign.update();
+        }
+        else {
+            signBlock.setType(Material.AIR);
+        }
+    }
+    
+    private void removeSigns(){
+        Block signBlock = border.get(0).getBlock().getRelative(0, 1, 3);
+        signBlock.setType(Material.AIR);
+        signBlock = signBlock.getRelative(0,0,-1);
+        signBlock.setType(Material.AIR);
+        signBlock = signBlock.getRelative(0,0,-1);
+        signBlock.setType(Material.AIR);
+        }
+    
+    private void placeBorder(){
+        if(plotbuild.getBorderType()!=BorderType.NONE) {
+            for(int i = corner1.getBlockX()-1; i<=corner2.getBlockX()+1;i++){
+                this.placeWoolBlock(i, plotbuild.getBorderHeight(), corner1.getBlockZ()-1);
+                this.placeWoolBlock(i, plotbuild.getBorderHeight(), corner2.getBlockZ()+1);
+            }
+            for(int i = corner1.getBlockZ(); i<=corner2.getBlockZ();i++){
+                this.placeWoolBlock(corner1.getBlockX()-1, plotbuild.getBorderHeight(), i);
+                this.placeWoolBlock(corner2.getBlockX()+1, plotbuild.getBorderHeight(), i);
+            }  
+        }
+        if(border.isEmpty()){
+            this.placeWoolBlock(corner1.getBlockX()-1, plotbuild.getBorderHeight(), corner1.getBlockZ()-1);
+        }
+        Location first = border.get(0);
+        placeWoolBlock(first.getBlockX(),first.getBlockY()+1,first.getBlockZ());
+        placeWoolBlock(first.getBlockX(),first.getBlockY()+2,first.getBlockZ());
+        placeWoolBlock(first.getBlockX(),first.getBlockY()+3,first.getBlockZ());
     }
  
     @SuppressWarnings("deprecation")
     private void placeWoolBlock(int x, int y, int z){
     	Block currentBlock;
-    	switch(plotbuild.getBorderType()){
-            case GROUND:
-	   	do {
-		    currentBlock = corner1.getWorld().getBlockAt(x,y,z);
-		    y--;
-		} while(currentBlock.isEmpty());
-		currentBlock = corner1.getWorld().getBlockAt(x,y+2,z); break;
-            case FLOAT:
-    		currentBlock = corner1.getWorld().getBlockAt(x,y,z); break;
-            default: return;
+    	if(plotbuild.getBorderType()==BorderType.GROUND){
+            do {
+                currentBlock = corner1.getWorld().getBlockAt(x,y,z);
+                y--;
+            } while(currentBlock.isEmpty());
+            currentBlock = corner1.getWorld().getBlockAt(x,y+2,z); 
+        }
+        else {
+            currentBlock = corner1.getWorld().getBlockAt(x,y,z); 
     	}
     	if(currentBlock.isEmpty()) {
             currentBlock.setType(Material.WOOL);
@@ -211,9 +270,10 @@ public class Plot {
         }
     }
 
-    private void coloriseBorder(){
+    private void refreshBorder(){
         for(Location loc : border) {
             Block block = corner1.getWorld().getBlockAt(loc);
+            block.setType(Material.WOOL);
             block.setData((byte) state.getState());
         }
     }
@@ -257,6 +317,6 @@ public class Plot {
     }
     
     public int getID() {
-        return plotbuild.getPlots().indexOf(this);
+        return plotbuild.getPlots().indexOf(this)+1;
     }
 }

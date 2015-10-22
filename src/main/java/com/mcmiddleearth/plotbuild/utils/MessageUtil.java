@@ -5,7 +5,9 @@
  */
 package com.mcmiddleearth.plotbuild.utils;
 
+import com.mcmiddleearth.plotbuild.data.PluginData;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -42,4 +44,13 @@ public class MessageUtil {
         }
     }
     
+    public static void sendOfflineInfoMessage(OfflinePlayer offlinePlayer, String message) {
+        Player player = offlinePlayer.getPlayer();
+        if(player != null) {
+            sendInfoMessage(player, message);
+        }
+        else {
+            PluginData.addOfflineMessage(player, message);
+        }
+    }
 }
