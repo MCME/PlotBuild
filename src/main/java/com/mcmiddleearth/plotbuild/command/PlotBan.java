@@ -6,9 +6,12 @@
 package com.mcmiddleearth.plotbuild.command;
 
 import com.mcmiddleearth.plotbuild.data.PluginData;
+import com.mcmiddleearth.plotbuild.exceptions.InvalidRestoreDataException;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.plotbuild.PlotBuild;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -23,10 +26,13 @@ public class PlotBan extends PlotBuildCommand {
     public PlotBan(String... permissionNodes) {
         super(1, true, permissionNodes);
         setAdditionalPermissionsEnabled(true);
+        setShortDescription(": Bans a player from a plotbuild.");
+        setUsageDescription(" <player> [name]: Restricts player from claiming any further plots in the plotbuild [name]. If [name] is not specified, current plotbuild is used. Removes the player from all plots. Does not clear plots.");
     }
     
     @Override
     protected void execute(CommandSender cs, String... args) {
+        String logMessage = "";
         PlotBuild plotbuild = checkPlotBuild((Player) cs, 1, args);
         if(plotbuild == null) {
             return;
@@ -36,7 +42,7 @@ public class PlotBan extends PlotBuildCommand {
         }
         OfflinePlayer banned = Bukkit.getOfflinePlayer(args[0]);
         if(banned.getLastPlayed()==0) {
-            sendOfflinePlayerNotFoundMessage(cs);
+            sendPlayerNotFoundMessage(cs);
             return;
         }
         if(plotbuild.getBannedPlayers().contains(banned)) {
@@ -46,7 +52,13 @@ public class PlotBan extends PlotBuildCommand {
         for(Plot plot : plotbuild.getPlots()) {
             if(plot.getOwners().contains(banned)) {
                 if(plot.getOwners().size()==1) {
-                    plot.unclaim();
+                    try {
+                        plot.unclaim();
+                    } catch (InvalidRestoreDataException ex) {
+                        Logger.getLogger(PlotDelete.class.getName()).log(Level.SEVERE, null, ex);
+                        sendRestoreErrorMessage(cs);
+                        logMessage = " There was an error during clearing of a plot.";
+                    }
                 }
                 else {
                     plot.leave(banned);
@@ -55,7 +67,7 @@ public class PlotBan extends PlotBuildCommand {
         }
         plotbuild.getBannedPlayers().add(banned);
         sendBannedMessage(cs,banned.getName(), plotbuild.getName());
-        plotbuild.log(((Player) cs).getName()+" banned "+banned.getName()+".");
+        plotbuild.log(((Player) cs).getName()+" banned "+banned.getName()+"."+logMessage);
         PluginData.saveData();
     }
 
@@ -67,8 +79,4 @@ public class PlotBan extends PlotBuildCommand {
         MessageUtil.sendInfoMessage(cs, name+" is already banned from plotbuild "+plotbuild + ".");
     }
 
-    private void sendOfflinePlayerNotFoundMessage(CommandSender cs) {
-        MessageUtil.sendErrorMessage(cs, "Player not found. You must specify the full name.");
-    }
-    
 }

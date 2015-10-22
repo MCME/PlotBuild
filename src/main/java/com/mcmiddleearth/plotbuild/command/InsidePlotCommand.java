@@ -49,10 +49,6 @@ public abstract class InsidePlotCommand extends AbstractCommand {
         MessageUtil.sendErrorMessage(player, "You are not in a plot.");
     }
     
-    protected void sendRestoreErrorMessage(CommandSender cs) {
-        MessageUtil.sendErrorMessage(cs, "Plot reset data doesn't fit plot size, not restoring.");
-    }
-
     private void sendNotOwnerMessage(CommandSender cs) {
         MessageUtil.sendErrorMessage(cs, "You are not owner of this plot.");
     }

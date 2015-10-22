@@ -22,6 +22,8 @@ public class PlotAddstaff extends PlotBuildCommand {
     
     public PlotAddstaff(String... permissionNodes) {
         super(1, true, permissionNodes);
+        setShortDescription(": Adds a player to staff of a plotbuild.");
+        setUsageDescription(" [name]: For public projects that want to feature a plotbuild. This command can be used to give the (non-staff) project leader access to the staff commands for the current plotbuild or the plotbuild called [name].");
     }
     
     @Override
@@ -31,7 +33,7 @@ public class PlotAddstaff extends PlotBuildCommand {
             return;
         }
         OfflinePlayer newStaff = Bukkit.getOfflinePlayer(args[0]);
-        if(newStaff==null) {
+        if(newStaff.getLastPlayed()==0) {
             sendPlayerNotFoundMessage(cs);
             return;
         }

@@ -9,6 +9,7 @@ import com.mcmiddleearth.plotbuild.utils.MessageUtil;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import lombok.Getter;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -19,11 +20,13 @@ import org.bukkit.command.CommandSender;
  */
 public class PlotCommandExecutor implements CommandExecutor {
 
+    @Getter
     private final Map <String, AbstractCommand> commands = new LinkedHashMap <>();
     
     public PlotCommandExecutor() {
         addCommandHandler("create", new PlotCreate("plotbuild.staff"));
-        addCommandHandler("info", new PlotInfo("plotbuild.staff"));
+        addCommandHandler("setinfo", new PlotSetInfo("plotbuild.staff"));
+        addCommandHandler("info", new PlotInfo("plotbuild.user"));
         addCommandHandler("help", new PlotHelp("plotbuild.user"));
         addCommandHandler("current", new PlotCurrent("plotbuild.staff"));
         addCommandHandler("addstaff", new PlotAddstaff("plotbuild.staff"));

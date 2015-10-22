@@ -18,6 +18,8 @@ public class PlotList extends AbstractCommand {
     
     public PlotList(String... permissionNodes) {
         super(0, false, permissionNodes);
+        setShortDescription(": Lists all plotbuilds.");
+        setUsageDescription(": Lists all running Plotbuilds along with number of unclaimed plots.");
     }
     
     @Override
