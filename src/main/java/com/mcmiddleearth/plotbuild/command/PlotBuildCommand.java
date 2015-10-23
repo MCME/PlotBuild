@@ -13,7 +13,7 @@ import org.bukkit.entity.Player;
 
 /**
  *
- * @author Lars
+ * @author Eriol_Eandur
  */
 public abstract class PlotBuildCommand extends AbstractCommand{
 
