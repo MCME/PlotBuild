@@ -5,7 +5,6 @@
  */
 package com.mcmiddleearth.plotbuild.plotbuild;
 
-import com.mcmiddleearth.plotbuild.command.PlotNew;
 import com.mcmiddleearth.plotbuild.constants.BorderType;
 import com.mcmiddleearth.plotbuild.constants.PlotState;
 import com.mcmiddleearth.plotbuild.data.PluginData;
@@ -14,7 +13,6 @@ import com.mcmiddleearth.plotbuild.exceptions.InvalidPlotLocationException;
 import com.mcmiddleearth.plotbuild.exceptions.InvalidRestoreDataException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Location;
@@ -187,37 +185,49 @@ public class Plot {
     }
     
     public void placeSigns(){
-        refreshBorder();
-        Block signBlock = border.get(0).getBlock().getRelative(0, 3, -1);
-        signBlock.setType(Material.WALL_SIGN);
-        Sign sign = (Sign) signBlock.getState();
-        sign.setLine(0,plotbuild.getName()); 
-        sign.setLine(1,"#"+getID());
-        sign.setLine(3,"Builder:");
-        sign.update();
-        signBlock = signBlock.getRelative(0,-1,0);
-        if(owners.size()>0) {
+        if(state!=PlotState.REMOVED) {
+            refreshBorder();
+            Block signBlock = border.get(0).getBlock().getRelative(0, 3, -1);
             signBlock.setType(Material.WALL_SIGN);
-            sign = (Sign) signBlock.getState();
-            for(int i = 0; i<4 && i<owners.size();i++) {
-                sign.setLine(i, owners.get(i).getName());
-            }
+            Sign sign = (Sign) signBlock.getState();
+            sign.setLine(0,plotbuild.getName()); 
+            sign.setLine(1,"#"+getID());
+            sign.setLine(3,"Builder:");
             sign.update();
-        }
-        else {
-            signBlock.setType(Material.AIR);
-        }
-        signBlock = signBlock.getRelative(0,-1,0);
-        if(owners.size()>4) {
-            signBlock.setType(Material.WALL_SIGN);
-            sign = (Sign) signBlock.getState();
-            for(int i = 4; i<8 && i<owners.size();i++) {
-                sign.setLine(i-4, owners.get(i).getName());
+            signBlock = signBlock.getRelative(0,-1,0);
+            if(owners.size()>0) {
+                signBlock.setType(Material.WALL_SIGN);
+                sign = (Sign) signBlock.getState();
+                for(int i = 0; i<4; i++) {
+                    if(i < owners.size()) {
+                        sign.setLine(i, owners.get(i).getName());
+                    }
+                    else {
+                        sign.setLine(i, "");
+                    }
+                }
+                sign.update();
             }
-            sign.update();
-        }
-        else {
-            signBlock.setType(Material.AIR);
+            else {
+                signBlock.setType(Material.AIR);
+            }
+            signBlock = signBlock.getRelative(0,-1,0);
+            if(owners.size()>4) {
+                signBlock.setType(Material.WALL_SIGN);
+                sign = (Sign) signBlock.getState();
+                for(int i = 4; i<8; i++) {
+                    if(i < owners.size()) {
+                        sign.setLine(i-4, owners.get(i).getName());
+                    }
+                    else {
+                        sign.setLine(i-4, "");
+                    }
+                }
+                sign.update();
+            }
+            else {
+                signBlock.setType(Material.AIR);
+            }
         }
     }
     

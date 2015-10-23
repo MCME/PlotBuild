@@ -5,6 +5,7 @@
  */
 package com.mcmiddleearth.plotbuild.command;
 
+import com.mcmiddleearth.plotbuild.constants.PlotState;
 import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.exceptions.InvalidRestoreDataException;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
@@ -50,7 +51,7 @@ public class PlotBan extends PlotBuildCommand {
             return;
         }
         for(Plot plot : plotbuild.getPlots()) {
-            if(plot.getOwners().contains(banned)) {
+            if(plot.getState()!=PlotState.REMOVED && plot.getOwners().contains(banned)) {
                 if(plot.getOwners().size()==1) {
                     try {
                         plot.unclaim();
@@ -62,11 +63,25 @@ public class PlotBan extends PlotBuildCommand {
                 }
                 else {
                     plot.leave(banned);
+                    for(OfflinePlayer builder: plot.getOwners()) {
+                        if(builder.getPlayer()!=cs) {
+                            sendOtherBuilderMessage(cs, builder, banned, plot.getPlotbuild().getName(), plot.getID());
+                }
+            }
                 }
             }
         }
         plotbuild.getBannedPlayers().add(banned);
+        if(plotbuild.getStaffList().contains(banned)) {
+            plotbuild.getStaffList().remove(banned);
+            for(OfflinePlayer staff: plotbuild.getStaffList()) {
+                if(staff.getPlayer()!=(Player) cs) {
+                    sendOtherStaffMessage(cs, staff, banned, plotbuild.getName());
+                }
+            }
+        }
         sendBannedMessage(cs,banned.getName(), plotbuild.getName());
+        sendBannedPlayerMessage(cs, banned, plotbuild.getName());
         plotbuild.log(((Player) cs).getName()+" banned "+banned.getName()+"."+logMessage);
         PluginData.saveData();
     }
@@ -77,6 +92,23 @@ public class PlotBan extends PlotBuildCommand {
     
     private void sendPlayerAlreadyBannedMessage(CommandSender cs, String name, String plotbuild) {
         MessageUtil.sendInfoMessage(cs, name+" is already banned from plotbuild "+plotbuild + ".");
+    }
+
+    private void sendBannedPlayerMessage(CommandSender cs, OfflinePlayer banned, String name) {
+        MessageUtil.sendOfflineMessage(banned, "You were banned"
+                                                     + " from plotbuild " + name 
+                                                     + " by "+ cs.getName()+".");
+    }
+
+    private void sendOtherBuilderMessage(CommandSender cs, OfflinePlayer builder, OfflinePlayer banned, String name, int id) {
+        MessageUtil.sendOfflineMessage(builder, banned.getName()+" was removed from the build team of plot #"+id
+                                                     + " of plotbuild " + name 
+                                                     + " as he was banned by "+ cs.getName()+".");
+    }
+
+    private void sendOtherStaffMessage(CommandSender cs, OfflinePlayer staff, OfflinePlayer banned, String name) {
+        MessageUtil.sendOfflineMessage(staff, cs.getName()+" removed " + banned.getName()+ " from staff"
+                                                     + " of plotbuild " + name +" and banned him.");
     }
 
 }

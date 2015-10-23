@@ -64,6 +64,12 @@ public class PlotInvite extends InsidePlotCommand {
         }
         plot.invite(invitedPlayer);
         sendInvitedMessage(cs, invitedPlayer.getName());
+        sendInvitedPlayerMessage(cs, invitedPlayer, plot.getPlotbuild().getName(), plot.getID());
+        for(OfflinePlayer builder: plot.getOwners()) {
+            if(builder.getPlayer()!=cs && builder!=invitedPlayer) {
+                sendOtherBuilderMessage(cs, builder, invitedPlayer, plot.getPlotbuild().getName(), plot.getID());
+            }
+        }
         plot.getPlotbuild().log(((Player) cs).getName()+" invited "+invitedPlayer.getName()+" to plot "+plot.getID()+".");
         PluginData.saveData();
     }
@@ -91,4 +97,14 @@ public class PlotInvite extends InsidePlotCommand {
         MessageUtil.sendErrorMessage(cs, "There can't be more builder in this plot.");
     }
 
+    private void sendInvitedPlayerMessage(CommandSender cs, OfflinePlayer invited, String name, int id) {
+        MessageUtil.sendOfflineMessage(invited, "You were invited to plot #"+id
+                                                     + " of plotbuild " + name 
+                                                     + " by "+ cs.getName()+".");
+    }
+    private void sendOtherBuilderMessage(CommandSender cs, OfflinePlayer builder, OfflinePlayer invited, String name, int id) {
+        MessageUtil.sendOfflineMessage(builder, cs.getName() + " invited " + invited.getName() 
+                                                     + " to plot #"+id
+                                                     + " of plotbuild " + name+".");
+    }
 }

@@ -84,6 +84,10 @@ public abstract class AbstractCommand {
         MessageUtil.sendErrorMessage(cs, "Plot reset data doesn't fit plot size, not restoring.");
     }
 
+    protected void sendNoPlotbuildFoundMessage(CommandSender cs){
+        MessageUtil.sendErrorMessage(cs, "No plotbuild with this name.");
+    }   
+
     protected boolean hasPermissionsForPlotBuild(Player p, PlotBuild plotbuild) {
         if(permissionNodes != null && !plotbuild.getStaffList().contains(p)) {
             for(String permission : permissionNodes) {

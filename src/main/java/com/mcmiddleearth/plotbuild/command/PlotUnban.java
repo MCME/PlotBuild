@@ -48,6 +48,7 @@ public class PlotUnban extends PlotBuildCommand {
         }
         plotbuild.getBannedPlayers().remove(banned);
         sendUnbannedMessage(cs,banned.getName(),plotbuild.getName());
+        sendUnbannedPlayerMessage(cs, banned, plotbuild.getName());
         plotbuild.log(((Player) cs).getName()+" unbanned "+banned.getName()+".");
         PluginData.saveData();
     }
@@ -60,4 +61,9 @@ public class PlotUnban extends PlotBuildCommand {
         MessageUtil.sendErrorMessage(cs, name+" is not banned from plotbuild "+plotbuild + ".");
     }
     
+    private void sendUnbannedPlayerMessage(CommandSender cs, OfflinePlayer banned, String name) {
+        MessageUtil.sendOfflineMessage(banned, "Your ban"
+                                                     + " from plotbuild " + name 
+                                                     + " has been revoked by "+ cs.getName()+".");
+    }
 }

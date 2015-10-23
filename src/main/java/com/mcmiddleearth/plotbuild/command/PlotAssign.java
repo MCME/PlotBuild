@@ -60,7 +60,14 @@ public class PlotAssign extends InsidePlotCommand {
             plot.invite(assignedPlayer);
         }
         sendAssignedMessage(cs, assignedPlayer.getName());
-        sendAssignedPlayerMessage(cs, assignedPlayer, plot.getPlotbuild().getName(), plot.getID());
+        if(cs!=assignedPlayer.getPlayer()) {
+            sendAssignedPlayerMessage(cs, assignedPlayer, plot.getPlotbuild().getName(), plot.getID());
+        }
+        for(OfflinePlayer builder: plot.getOwners()) {
+            if(builder.getPlayer()!=cs && builder!=assignedPlayer) {
+                sendOtherBuilderMessage(cs, builder, assignedPlayer, plot.getPlotbuild().getName(), plot.getID());
+            }
+        }
         plot.getPlotbuild().log(((Player) cs).getName()+" asigned "+assignedPlayer.getName()+" to plot #"+plot.getID()+".");
         PluginData.saveData();
         }
@@ -91,5 +98,10 @@ public class PlotAssign extends InsidePlotCommand {
                                                      + " by "+ cs.getName()+".");
     }
 
+    private void sendOtherBuilderMessage(CommandSender cs, OfflinePlayer builder, OfflinePlayer assigned, String name, int id) {
+        MessageUtil.sendOfflineMessage(builder, cs.getName() + " assigned " + assigned.getName() 
+                                                     + " to plot #"+id
+                                                     + " of plotbuild " + name+".");
+    }
 
 }

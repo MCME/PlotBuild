@@ -13,6 +13,7 @@ import com.mcmiddleearth.plotbuild.plotbuild.PlotBuild;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 
 /**
@@ -39,6 +40,11 @@ public class PlotEnd extends PlotBuildCommand {
         for(Plot p : plotbuild.getPlots()) {
             if(p.getState() != PlotState.REMOVED) {
                 try {
+                    for(OfflinePlayer builder: p.getOwners()) {
+                        if(builder.getPlayer()!=cs) {
+                            sendBuilderDeletedMessage(cs, builder, p.getPlotbuild().getName(), p.getID());
+                        }
+                    }
                     p.delete(keep);
                 } catch (InvalidRestoreDataException ex) {
                     Logger.getLogger(PlotEnd.class.getName()).log(Level.SEVERE, null, ex);
@@ -60,5 +66,11 @@ public class PlotEnd extends PlotBuildCommand {
     private void sendPlotbuildDeleteFailedMessage(CommandSender cs) {
         MessageUtil.sendErrorMessage(cs, "Failed to delete plotbuild files.");
     }
-    
+
+    private void sendBuilderDeletedMessage(CommandSender cs, OfflinePlayer builder, String name, int id) {
+        MessageUtil.sendOfflineMessage(builder, "Your plot #" + id
+                                                     + " of plotbuild " + name 
+                                                     + " was removed by "+ cs.getName()+" as the plotbuild ended.");
+    }
+
 }
