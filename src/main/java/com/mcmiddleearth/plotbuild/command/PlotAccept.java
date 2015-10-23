@@ -10,10 +10,9 @@ import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.exceptions.InvalidRestoreDataException;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -49,6 +48,11 @@ public class PlotAccept extends InsidePlotCommand {
             Logger.getLogger(PlotAccept.class.getName()).log(Level.SEVERE, null, ex);
         }
         sendAcceptMessage(cs);
+        for(OfflinePlayer builder: plot.getOwners()) {
+            if(builder.getPlayer()!=cs) {
+                sendBuilderMessage(cs, builder, plot.getPlotbuild().getName(), plot.getID());
+            }
+        }
         plot.getPlotbuild().log(((Player) cs).getName()+" accepted plot "+plot.getID()+".");
         PluginData.saveData();
     }
@@ -59,6 +63,12 @@ public class PlotAccept extends InsidePlotCommand {
 
     private void sendNotFinishedMessage(CommandSender cs) {
         MessageUtil.sendErrorMessage(cs, "This plot was not marked as finished. You can remove it with /plot delete -k.");
+    }
+
+    private void sendBuilderMessage(CommandSender cs, OfflinePlayer builder, String name, int id) {
+        MessageUtil.sendOfflineMessage(builder, "Your plot #" + id
+                                                     + " of plotbuild " + name 
+                                                     + " was accepted by "+ cs.getName()+".");
     }
     
 }

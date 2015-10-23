@@ -5,10 +5,10 @@
  */
 package com.mcmiddleearth.plotbuild.command;
 
-import com.mcmiddleearth.plotbuild.constants.PlotState;
 import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -36,6 +36,9 @@ public class PlotLeave extends InsidePlotCommand {
         }
         plot.leave((Player)cs);
         sendPlotLeaveMessage(cs);
+        for(OfflinePlayer builder: plot.getOwners()) {
+            sendOtherBuilderMessage(cs, builder, plot.getPlotbuild().getName(), plot.getID());
+        }
         plot.getPlotbuild().log(((Player) cs).getName()+" left plot "+plot.getID()+".");
         PluginData.saveData();
     }
@@ -48,5 +51,10 @@ public class PlotLeave extends InsidePlotCommand {
         MessageUtil.sendInfoMessage(cs, "You left this plot.");
     }
 
+    private void sendOtherBuilderMessage(CommandSender cs, OfflinePlayer builder, String name, int id) {
+        MessageUtil.sendOfflineMessage(builder, cs.getName() + " left the build team" 
+                                                     + " of plot #"+id
+                                                     + " of plotbuild " + name+".");
+    }
   
 }

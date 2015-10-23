@@ -9,6 +9,7 @@ import com.mcmiddleearth.plotbuild.constants.PlotState;
 import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -36,6 +37,16 @@ public class PlotFinish extends InsidePlotCommand {
         }
         plot.finish();
         sendFinishedMessage(cs);
+        for(OfflinePlayer builder: plot.getOwners()) {
+            if(builder.getPlayer()!=(Player) cs) {
+                sendBuilderMessage(cs, builder, plot.getPlotbuild().getName(), plot.getID());
+            }
+        }
+        for(OfflinePlayer staff: plot.getPlotbuild().getStaffList()) {
+            if(staff.getPlayer()!=(Player) cs) {
+                sendStaffMessage(cs, staff, plot.getPlotbuild().getName(), plot.getID());
+            }
+        }
         plot.getPlotbuild().log(((Player) cs).getName()+" finished plot "+plot.getID()+".");
         PluginData.saveData();
     }
@@ -48,4 +59,15 @@ public class PlotFinish extends InsidePlotCommand {
         MessageUtil.sendErrorMessage(cs, "This plot is already marked as finished.");
     }
     
+    private void sendBuilderMessage(CommandSender cs, OfflinePlayer builder, String name, int id) {
+        MessageUtil.sendOfflineMessage(builder, "Your plot #" + id
+                                                     + " of plotbuild " + name 
+                                                     + " was marked as finished by "+ cs.getName()+".");
+    }
+
+    private void sendStaffMessage(CommandSender cs, OfflinePlayer staff, String name, int id) {
+        MessageUtil.sendOfflineMessage(staff, "Plot #" + id
+                                                     + " of plotbuild " + name 
+                                                     + " was marked as finished by "+ cs.getName()+".");
+    }
 }

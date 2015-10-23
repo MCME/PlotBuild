@@ -8,6 +8,7 @@ package com.mcmiddleearth.plotbuild.command;
 import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -34,6 +35,11 @@ public class PlotRefuse extends InsidePlotCommand {
             return;
         }
         plot.refuse();
+        for(OfflinePlayer builder: plot.getOwners()) {
+            if(builder.getPlayer()!=cs) {
+                sendBuilderMessage(cs, builder, plot.getPlotbuild().getName(), plot.getID());
+            }
+        }
         sendRefuseMessgage(cs);
         plot.getPlotbuild().log(((Player) cs).getName()+" refused plot "+plot.getID()+".");
         PluginData.saveData();
@@ -42,5 +48,11 @@ public class PlotRefuse extends InsidePlotCommand {
     private void sendRefuseMessgage(CommandSender cs) {
         MessageUtil.sendInfoMessage(cs, "You refused this plot.");
     }
-    
+ 
+    private void sendBuilderMessage(CommandSender cs, OfflinePlayer builder, String name, int id) {
+        MessageUtil.sendOfflineMessage(builder, "Your plot #" + id
+                                                     + " of plotbuild " + name 
+                                                     + " need some improvements. Please ask "+ cs.getName()+" for instructions.");
+    }
+
 }

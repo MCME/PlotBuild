@@ -6,8 +6,10 @@
 package com.mcmiddleearth.plotbuild.command;
 
 import com.mcmiddleearth.plotbuild.data.PluginData;
+import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.plotbuild.PlotBuild;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -28,6 +30,7 @@ public class PlotUnlock extends PlotBuildCommand {
         if(args.length==0) {
             for(PlotBuild plotbuild : PluginData.getPlotbuildsList()) {
                 plotbuild.setLocked(false);
+                sendBuilderMessages(cs, plotbuild);
                 plotbuild.log(((Player) cs).getName()+" unlocked the plotbuild.");
             }
             sendLockedAllMessage(cs);
@@ -39,10 +42,22 @@ public class PlotUnlock extends PlotBuildCommand {
                 return;
             }
             plotbuild.setLocked(false);
+            sendBuilderMessages(cs, plotbuild);
             plotbuild.log(((Player) cs).getName()+" unlocked the plotbuild.");
             sendLockedPlotbuild(cs,plotbuild.getName());
         }
         PluginData.saveData();
+    }
+    
+    private void sendBuilderMessages(CommandSender cs, PlotBuild plotbuild) {
+                for(Plot plot: plotbuild.getPlots()) {
+                    for(OfflinePlayer offlineBuilder : plot.getOwners()) {
+                        Player builder = offlineBuilder.getPlayer();
+                        if(builder!=null && builder!=cs) {
+                            sendBuilderMessage(cs, builder, plotbuild.getName());
+                        }
+                    }
+                }
     }
     
     private void sendLockedAllMessage(CommandSender cs) {
@@ -52,4 +67,9 @@ public class PlotUnlock extends PlotBuildCommand {
     private void sendLockedPlotbuild(CommandSender cs, String name) {
         MessageUtil.sendInfoMessage(cs, "You unlocked the plotbuild "+name+".");
     }
+    
+    private void sendBuilderMessage(CommandSender cs, Player builder, String name) {
+        MessageUtil.sendInfoMessage(builder, cs.getName()+" unlocked the plotbuild "+name+".");
+    }
+
 }

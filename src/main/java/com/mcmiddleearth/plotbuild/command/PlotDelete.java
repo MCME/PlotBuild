@@ -11,12 +11,13 @@ import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 /**
  *
- * @author Ivan1pl
+ * @author Ivan1pl, Eriol_Eandur
  */
 public class PlotDelete extends InsidePlotCommand {
     
@@ -41,10 +42,20 @@ public class PlotDelete extends InsidePlotCommand {
         if(args.length > 0 && args[0].equalsIgnoreCase("-k")) {
             keep = true;
             sendDeleteAndKeepMessage(cs);
-        plot.getPlotbuild().log(((Player) cs).getName()+" claimed plot "+plot.getID()+".");
+            for(OfflinePlayer builder: plot.getOwners()) {
+                if(builder.getPlayer()!=cs) {
+                    sendBuilderDeletedMessage(cs, builder, plot.getPlotbuild().getName(), plot.getID());
+                }
+            }
+            plot.getPlotbuild().log(((Player) cs).getName()+" claimed plot "+plot.getID()+".");
         }
         else {
             sendDeleteMessage(cs);
+            for(OfflinePlayer builder: plot.getOwners()) {
+                if(builder.getPlayer()!=cs) {
+                    sendBuilderDeletedAndClearedMessage(cs, builder, plot.getPlotbuild().getName(), plot.getID());
+                }
+            }
             logMessage1 =  " deleted and cleared ";
         }
         try {
@@ -65,6 +76,18 @@ public class PlotDelete extends InsidePlotCommand {
 
     private void sendDeleteAndKeepMessage(CommandSender cs) {
         MessageUtil.sendInfoMessage(cs, "You deleted this plot and kept the changes within.");
+    }
+
+    private void sendBuilderDeletedAndClearedMessage(CommandSender cs, OfflinePlayer builder, String name, int id) {
+        MessageUtil.sendOfflineMessage(builder, "Your plot #" + id
+                                                     + " of plotbuild " + name 
+                                                     + " was removed by "+ cs.getName()+".");
+    }
+  
+    private void sendBuilderDeletedMessage(CommandSender cs, OfflinePlayer builder, String name, int id) {
+        MessageUtil.sendOfflineMessage(builder, "Your plot #" + id
+                                                     + " of plotbuild " + name 
+                                                     + " was resetted to initial state and removed by "+ cs.getName()+".");
     }
     
 }
