@@ -100,7 +100,7 @@ public class PlotInvite extends InsidePlotCommand {
     private void sendInvitedPlayerMessage(CommandSender cs, OfflinePlayer invited, String name, int id) {
         MessageUtil.sendOfflineMessage(invited, "You were invited to plot #"+id
                                                      + " of plotbuild " + name 
-                                                     + " by "+ cs.getName()+".");
+                                                     + " by "+ cs.getName()+". For build instructions type: /plot info");
     }
     private void sendOtherBuilderMessage(CommandSender cs, OfflinePlayer builder, OfflinePlayer invited, String name, int id) {
         MessageUtil.sendOfflineMessage(builder, cs.getName() + " invited " + invited.getName() 

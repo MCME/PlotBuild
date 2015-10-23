@@ -61,7 +61,7 @@ public class PlotClaim extends InsidePlotCommand {
     }
 
     private void sendPlotClaimedMessage(CommandSender cs) {
-        MessageUtil.sendInfoMessage(cs, "You claimed this plot.");
+        MessageUtil.sendInfoMessage(cs, "You claimed this plot. For build instructions type: /plot info");
     }
 
     private void sendPlotAlreadyClaimedMessage(CommandSender cs) {

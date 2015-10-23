@@ -32,6 +32,7 @@ public class PlotCommandExecutor implements CommandExecutor {
         addCommandHandler("help", new PlotHelp("plotbuild.user"));
         addCommandHandler("current", new PlotCurrent("plotbuild.staff"));
         addCommandHandler("addstaff", new PlotAddstaff("plotbuild.staff"));
+        addCommandHandler("removestaff", new PlotRemoveStaff("plotbuild.staff"));
         addCommandHandler("new", new PlotNew("plotbuild.staff"));
         addCommandHandler("list", new PlotList("plotbuild.user"));
         addCommandHandler("claim", new PlotClaim("plotbuild.user"));

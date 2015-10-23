@@ -23,7 +23,7 @@ public class PlotSetInfo extends PlotBuildCommand {
         super(1, true, permissionNodes);
         setAdditionalPermissionsEnabled(true);
         setShortDescription(": Defines the URL to the building guide.");
-        setUsageDescription(" <URL>: Adds the URL of the forum post with build instructions to the plotbuild (optional to set).");
+        setUsageDescription(" <URL> [name]: Adds the URL of the forum post with build instructions to the plotbuild (optional to set).");
     }
     
     @Override

@@ -95,7 +95,7 @@ public class PlotAssign extends InsidePlotCommand {
     private void sendAssignedPlayerMessage(CommandSender cs, OfflinePlayer assignedPlayer, String plotbuild, int ID) {
         MessageUtil.sendOfflineMessage(assignedPlayer, "You were assigned to plot #" + ID
                                                      + " of plotbuild " + plotbuild 
-                                                     + " by "+ cs.getName()+".");
+                                                     + " by "+ cs.getName()+". For build instructions type: /plot info");
     }
 
     private void sendOtherBuilderMessage(CommandSender cs, OfflinePlayer builder, OfflinePlayer assigned, String name, int id) {

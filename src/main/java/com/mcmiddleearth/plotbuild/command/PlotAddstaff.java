@@ -23,7 +23,7 @@ public class PlotAddstaff extends PlotBuildCommand {
         super(1, true, permissionNodes);
         setAdditionalPermissionsEnabled(true);
         setShortDescription(": Adds a player to staff of a plotbuild.");
-        setUsageDescription(" [name]: For public projects that want to feature a plotbuild. This command can be used to give the (non-staff) project leader access to the staff commands for the current plotbuild or the plotbuild called [name].");
+        setUsageDescription(" <player> [name]: For public projects that want to feature a plotbuild. This command can be used to give the (non-staff) project leader <player> access to the staff commands for the current plotbuild or the plotbuild called [name].");
     }
     
     @Override
