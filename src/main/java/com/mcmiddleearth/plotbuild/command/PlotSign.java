@@ -20,7 +20,7 @@ public class PlotSign extends InsidePlotCommand{
         super(0, true, permissionNodes);
         setAdditionalPermissionsEnabled(true);
         setShortDescription(": renews the plot signs.");
-        setUsageDescription(": When inside a plot a builder of the plot, the wool blocks of the border and the plot signs are placed again.");
+        setUsageDescription(": Use when inside a plot, the wool blocks of the border and the plot signs are placed again.");
     }
     
     @Override
