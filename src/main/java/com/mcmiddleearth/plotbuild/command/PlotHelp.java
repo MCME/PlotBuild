@@ -20,7 +20,7 @@ public class PlotHelp extends AbstractCommand{
     public PlotHelp(String... permissionNodes) {
         super(0, true, permissionNodes);
         setShortDescription(": displays help about plotbuild commands.");
-        setUsageDescription(" [command]: Shows a description for [command]. If [command] is not specified a list of short descriptions for all plotbuild commands is shown.");
+        setUsageDescription(" [command]: Shows a description for [command]. If [command] is not specified a list of short descriptions for all plotbuild commands are shown.");
     }
     
     @Override

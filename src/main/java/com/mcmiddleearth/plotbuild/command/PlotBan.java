@@ -95,9 +95,9 @@ public class PlotBan extends PlotBuildCommand {
     }
 
     private void sendBannedPlayerMessage(CommandSender cs, OfflinePlayer banned, String name) {
-        MessageUtil.sendOfflineMessage(banned, "You were banned"
+        MessageUtil.sendOfflineMessage(banned, "You have been excluded"
                                                      + " from plotbuild " + name 
-                                                     + " by "+ cs.getName()+".");
+                                                     + " by "+ cs.getName()+". Please ask staff for more info.");
     }
 
     private void sendOtherBuilderMessage(CommandSender cs, OfflinePlayer builder, OfflinePlayer banned, String name, int id) {
