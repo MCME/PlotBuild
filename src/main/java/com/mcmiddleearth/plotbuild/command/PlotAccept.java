@@ -9,6 +9,7 @@ import com.mcmiddleearth.plotbuild.constants.PlotState;
 import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.exceptions.InvalidRestoreDataException;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
+import com.mcmiddleearth.plotbuild.plotbuild.PlotBuild;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -53,8 +54,12 @@ public class PlotAccept extends InsidePlotCommand {
                 sendBuilderMessage(cs, builder, plot.getPlotbuild().getName(), plot.getID());
             }
         }
-        plot.getPlotbuild().log(((Player) cs).getName()+" accepted plot "+plot.getID()+".");
+        PlotBuild plotbuild = plot.getPlotbuild();
+        plotbuild.log(((Player) cs).getName()+" accepted plot "+plot.getID()+".");
         PluginData.saveData();
+        if(plotbuild.countUnfinishedPlots()==0) {
+            PluginData.getConfFactory().startQuery((Player)cs, getLastPlotAcceptedQuery(plotbuild), plotbuild, true);
+        }
     }
 
     private void sendAcceptMessage(CommandSender cs) {
@@ -69,6 +74,10 @@ public class PlotAccept extends InsidePlotCommand {
         MessageUtil.sendOfflineMessage(builder, "Your plot #" + id
                                                      + " of plotbuild " + name 
                                                      + " was accepted by "+ cs.getName()+".");
+    }
+
+    private String getLastPlotAcceptedQuery(PlotBuild plotbuild) {
+        return "You accepted the last plot of the plotbuild "+plotbuild.getName()+". Do you want to end this plotbuild now?";
     }
     
 }

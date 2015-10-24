@@ -80,7 +80,7 @@ public abstract class AbstractCommand {
         MessageUtil.sendErrorMessage(cs, "Player not found. You need to type in the full name.");
     }
     
-    protected void sendRestoreErrorMessage(CommandSender cs) {
+    protected static void sendRestoreErrorMessage(CommandSender cs) {
         MessageUtil.sendErrorMessage(cs, "Plot reset data doesn't fit plot size, not restoring.");
     }
 

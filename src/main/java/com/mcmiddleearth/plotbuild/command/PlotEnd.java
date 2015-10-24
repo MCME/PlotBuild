@@ -15,13 +15,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 /**
  *
  * @author Ivan1pl
  */
 public class PlotEnd extends PlotBuildCommand {
-    
+
     public PlotEnd(String... permissionNodes) {
         super(1, true, permissionNodes);
         setAdditionalPermissionsEnabled(true);
@@ -37,6 +38,10 @@ public class PlotEnd extends PlotBuildCommand {
             sendNoPlotbuildFoundMessage(cs);
             return;
         }
+        PluginData.getConfFactory().startQuery((Player)cs,getSecurityQuery(plotbuild,keep), plotbuild, keep);
+    }
+    
+    public static void endPlotBuild(Player cs, PlotBuild plotbuild, boolean keep) {
         for(Plot p : plotbuild.getPlots()) {
             if(p.getState() != PlotState.REMOVED) {
                 try {
@@ -59,18 +64,40 @@ public class PlotEnd extends PlotBuildCommand {
         }
     }
     
-    private void sendPlotbuildDeletedMessage(CommandSender cs) {
+    private static void sendPlotbuildDeletedMessage(CommandSender cs) {
         MessageUtil.sendInfoMessage(cs, "Plotbuild successfully deleted.");
     }
     
-    private void sendPlotbuildDeleteFailedMessage(CommandSender cs) {
+    private static void sendPlotbuildDeleteFailedMessage(CommandSender cs) {
         MessageUtil.sendErrorMessage(cs, "Failed to delete plotbuild files.");
     }
 
-    private void sendBuilderDeletedMessage(CommandSender cs, OfflinePlayer builder, String name, int id) {
+    private static void sendBuilderDeletedMessage(CommandSender cs, OfflinePlayer builder, String name, int id) {
         MessageUtil.sendOfflineMessage(builder, "Your plot #" + id
                                                      + " of plotbuild " + name 
                                                      + " was removed by "+ cs.getName()+" as the plotbuild ended.");
+    }
+    
+    public static void sendAbordMessage(Player player) {
+        MessageUtil.sendErrorMessage(player, "You cancelled the removal of the plotbuild.");
+    }
+    
+    private String getSecurityQuery(PlotBuild plotbuild, boolean keep) {
+        String query = "In plotbuild "+plotbuild.getName();
+        int unfinished = plotbuild.countUnfinishedPlots();
+        if(unfinished==0) {
+            query = query + " are no open plots.";
+        }
+        else {
+            query = query + " are "+unfinished+" plots which were not accepted yet.";
+            if(keep) {
+                query = query + "They will be kept as they are now.";
+            }
+            else {
+                query = query + "They will be restored to initial state.";
+            }
+        }
+        return query + "Are you sure to end this plotbuild?";
     }
 
 }

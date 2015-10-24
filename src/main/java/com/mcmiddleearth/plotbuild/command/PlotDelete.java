@@ -8,6 +8,7 @@ package com.mcmiddleearth.plotbuild.command;
 import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.exceptions.InvalidRestoreDataException;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
+import com.mcmiddleearth.plotbuild.plotbuild.PlotBuild;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -66,8 +67,12 @@ public class PlotDelete extends InsidePlotCommand {
             logMessage1 = " deleted ";
             logMessage2 = " There was an error during clearing of the plot.";
         }
-        plot.getPlotbuild().log(((Player) cs).getName()+logMessage1+"plot "+plot.getID()+"."+logMessage2);
+        PlotBuild plotbuild = plot.getPlotbuild();
+        plotbuild.log(((Player) cs).getName()+logMessage1+"plot "+plot.getID()+"."+logMessage2);
         PluginData.saveData();
+        if(plotbuild.countUnfinishedPlots()==0) {
+            PluginData.getConfFactory().startQuery((Player)cs, getLastPlotDeletedQuery(plotbuild), plotbuild, true);
+        }
     }
 
     private void sendDeleteMessage(CommandSender cs) {
@@ -88,6 +93,10 @@ public class PlotDelete extends InsidePlotCommand {
         MessageUtil.sendOfflineMessage(builder, "Your plot #" + id
                                                      + " of plotbuild " + name 
                                                      + " was resetted to initial state and removed by "+ cs.getName()+".");
+    }
+    
+    private String getLastPlotDeletedQuery(PlotBuild plotbuild) {
+        return "You deleted the last open plot of the plotbuild "+plotbuild.getName()+". Do you want to end this plotbuild now?";
     }
     
 }
