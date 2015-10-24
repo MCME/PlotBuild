@@ -8,6 +8,7 @@ package com.mcmiddleearth.plotbuild.data;
 import com.mcmiddleearth.plotbuild.PlotBuildPlugin;
 import com.mcmiddleearth.plotbuild.constants.BorderType;
 import com.mcmiddleearth.plotbuild.constants.PlotState;
+import com.mcmiddleearth.plotbuild.conversations.PlotBuildConversationFactory;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.plotbuild.PlotBuild;
 import com.mcmiddleearth.plotbuild.utils.FileUtil;
@@ -29,6 +30,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -42,6 +44,10 @@ import org.bukkit.inventory.ItemStack;
  * @author Ivan1pl, Eriol_Eandur
  */
 public class PluginData {
+    
+    @Setter
+    @Getter
+    private static PlotBuildConversationFactory confFactory;
     
     @Getter
     private static final List <PlotBuild> plotbuildsList = new ArrayList <>();

@@ -54,4 +54,8 @@ public class MessageUtil {
             PluginData.addOfflineMessage(offlinePlayer, message);
         }
     }
+    
+    public static String getQueryPrefix() {
+        return ChatColor.GOLD + PREFIX;
+    }
 }

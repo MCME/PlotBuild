@@ -78,6 +78,16 @@ public class PlotBuild {
         return result;
     }
     
+    public int countUnfinishedPlots() {
+        int result = 0;
+        for(Plot p : plots) {
+            if(p.getState() != PlotState.REMOVED) {
+                result++;
+            }
+        }
+        return result;
+    }
+    
     public boolean hasUnfinishedPlot(OfflinePlayer player) {
         for(Plot plot : plots) {
             if((plot.getState()==PlotState.CLAIMED || plot.getState()==PlotState.REFUSED) && plot.getOwners().contains(player)) {
