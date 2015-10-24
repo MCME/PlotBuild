@@ -232,11 +232,11 @@ public class Plot {
     }
     
     private void removeSigns(){
-        Block signBlock = border.get(0).getBlock().getRelative(0, 1, 3);
+        Block signBlock = border.get(0).getBlock().getRelative(0, 3, -1);
         signBlock.setType(Material.AIR);
-        signBlock = signBlock.getRelative(0,0,-1);
+        signBlock = signBlock.getRelative(0,-1,0);
         signBlock.setType(Material.AIR);
-        signBlock = signBlock.getRelative(0,0,-1);
+        signBlock = signBlock.getRelative(0,-1,0);
         signBlock.setType(Material.AIR);
         }
     

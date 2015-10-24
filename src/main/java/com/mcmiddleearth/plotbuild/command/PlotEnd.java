@@ -86,15 +86,19 @@ public class PlotEnd extends PlotBuildCommand {
         String query = "In plotbuild "+plotbuild.getName();
         int unfinished = plotbuild.countUnfinishedPlots();
         if(unfinished==0) {
-            query = query + " are no open plots.";
+            query = query + " are no open plots. ";
         }
         else {
-            query = query + " are "+unfinished+" plots which were not accepted yet.";
+            String spl1=" are ", spl2=" plots", spl3="They", spl4 = "were";
+            if(unfinished == 1) {
+                spl1 = " is "; spl2 = " plot"; spl3 = "It"; spl4 = "was";
+            }
+            query = query + spl1 + unfinished + spl2 + " which "+spl4+" not accepted yet. ";
             if(keep) {
-                query = query + "They will be kept as they are now.";
+                query = query + spl3 + " will be kept as they are now.";
             }
             else {
-                query = query + "They will be restored to initial state.";
+                query = query + spl3 + " will be restored to initial state.";
             }
         }
         return query + "Are you sure to end this plotbuild?";
