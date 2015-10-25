@@ -38,6 +38,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.MaterialData;
 
 /**
  *
@@ -185,18 +186,19 @@ public class PluginData {
         }
     }
     
-    public static List <ItemStack> getRestoreData(PlotBuild plotbuild, Plot plot) {
+    public static List <MaterialData> getRestoreData(PlotBuild plotbuild, Plot plot) {
         File plotDir = new File(plotBuildDir, plotbuild.getName());
         File plotRestoreData = new File(plotDir, Integer.toString(plotbuild.getPlots().indexOf(plot)) + ".r");
-        ArrayList <ItemStack> ret = new ArrayList<>();
+        ArrayList <MaterialData> ret = new ArrayList<>();
         try {
-            Scanner scanner = new Scanner(plotRestoreData);
-            scanner.nextLine();
-            while(scanner.hasNext()) {
-                Material material = Material.valueOf(scanner.nextLine());
-                short data = scanner.nextShort();
+            try (Scanner scanner = new Scanner(plotRestoreData)) {
                 scanner.nextLine();
-                ret.add(new ItemStack(material, data));
+                while(scanner.hasNext()) {
+                    Material material = Material.valueOf(scanner.nextLine());
+                    byte data = scanner.nextByte();
+                    scanner.nextLine();
+                    ret.add(new MaterialData(material, data));
+                }
             }
         } catch (FileNotFoundException ex) {
             Logger.getLogger(PluginData.class.getName()).log(Level.SEVERE, null, ex);
@@ -210,7 +212,11 @@ public class PluginData {
         plotbuildsList.remove(plotbuild);
         currentPlotbuild.values().removeAll(Collections.singleton(plotbuild));
         try {
-            return plotBuildFile.delete() && FileUtil.deleteRecursive(plotDir);
+            boolean pbf = plotBuildFile.delete();
+Logger.getGlobal().info("PlotbuildFile: "+pbf);
+            boolean dr = FileUtil.deleteRecursive(plotDir);
+Logger.getGlobal().info("PlotbuildFile: "+dr);
+            return pbf && dr;
         } catch (FileNotFoundException ex) {
             Logger.getLogger(PluginData.class.getName()).log(Level.SEVERE, null, ex);
             return false;
@@ -293,7 +299,7 @@ public class PluginData {
             for(int y = miny; y <= maxy; ++y) {
                 for(int z = plot.getCorner1().getBlockZ(); z <= plot.getCorner2().getBlockZ(); ++z) {
                     writer.println(world.getBlockAt(x, y, z).getType());
-                    writer.println(world.getBlockAt(x, y, z).getState().getData().toItemStack().getDurability());
+                    writer.println(world.getBlockAt(x, y, z).getData());//getState().getData().toItemStack().getDurability());
                 }
             }
         }

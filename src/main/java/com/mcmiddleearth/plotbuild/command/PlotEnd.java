@@ -39,6 +39,7 @@ public class PlotEnd extends PlotBuildCommand {
             return;
         }
         PluginData.getConfFactory().startQuery((Player)cs,getSecurityQuery(plotbuild,keep), plotbuild, keep);
+        //this query calls endPlotBuild
     }
     
     public static void endPlotBuild(Player cs, PlotBuild plotbuild, boolean keep) {

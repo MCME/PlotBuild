@@ -13,6 +13,7 @@ import com.mcmiddleearth.plotbuild.exceptions.InvalidPlotLocationException;
 import com.mcmiddleearth.plotbuild.exceptions.InvalidRestoreDataException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Location;
@@ -21,7 +22,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.MaterialData;
 
 /**
  *
@@ -298,7 +299,7 @@ public class Plot {
     }
     
     private void reset() throws InvalidRestoreDataException {
-        List <ItemStack> restoreData = PluginData.getRestoreData(plotbuild, this);
+        List <MaterialData> restoreData = PluginData.getRestoreData(plotbuild, this);
         int miny = 0;
         int maxy = getCorner1().getWorld().getMaxHeight()-1;
         if(getPlotbuild().isCuboid()) {
@@ -316,10 +317,12 @@ public class Plot {
             for(int y = miny; y <= maxy; ++y) {
                 for(int z = getCorner1().getBlockZ(); z <= getCorner2().getBlockZ(); ++z) {
                     Location loc = new Location(getCorner1().getWorld(), x, y, z);
-                    loc.getBlock().setType(restoreData.get(listindex).getType(), false);
-                    BlockState bstate = loc.getBlock().getState();
-                    bstate.setData(restoreData.get(listindex).getData());
-                    bstate.update(true);
+                    loc.getBlock().setType(restoreData.get(listindex).getItemType(), false);
+                    loc.getBlock().setData(restoreData.get(listindex).getData(), false);
+                    /*BlockState bstate = loc.getBlock().getState();
+                    bstate.setType(restoreData.get(listindex).getItemType());
+                    bstate.setRawData(restoreData.get(listindex).getData());
+                    bstate.update(false);*/
                     listindex++;
                 }
             }
