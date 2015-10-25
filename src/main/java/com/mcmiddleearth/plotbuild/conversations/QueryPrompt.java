@@ -20,14 +20,7 @@ public class QueryPrompt extends BooleanPrompt{
 
     @Override
     protected Prompt acceptValidatedInput(ConversationContext cc, boolean answer) {
-        if(answer) {
-            PlotEnd.endPlotBuild((Player) cc.getSessionData("player"), 
-                                   (PlotBuild) cc.getSessionData("plotbuild"),
-                                   (Boolean) cc.getSessionData("keep"));
-        }
-        else {
-            PlotEnd.sendAbordMessage((Player) cc.getSessionData("player"));
-        }
+        cc.setSessionData("answer", answer);
         return Prompt.END_OF_CONVERSATION;
     }
 
