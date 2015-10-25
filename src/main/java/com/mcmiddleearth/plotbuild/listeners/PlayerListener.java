@@ -5,11 +5,14 @@
  */
 package com.mcmiddleearth.plotbuild.listeners;
 
+import com.mcmiddleearth.plotbuild.constants.PlotState;
 import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.data.Selection;
+import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
 import java.util.List;
-import java.util.logging.Logger;
+import java.util.Map;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -17,6 +20,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 
 /**
  *
@@ -49,6 +53,29 @@ public class PlayerListener implements Listener{
         	sendSecondPointSetMessage(player, selection);
             }
             event.setCancelled(true);
+        }
+    }
+    
+    @EventHandler
+    public void playerMove(PlayerMoveEvent event) {
+        if(event.getFrom().getBlock()!=event.getTo().getBlock()) {
+            Player player = event.getPlayer();
+            Plot plot = PluginData.getPlotAt(event.getTo());
+            List playersInOwnPlot = PluginData.getPlayersInOwnPlot();
+            if(plot != null && plot.getState()!=PlotState.REMOVED && plot.isOwner(player)) {
+                if(player.getGameMode()==GameMode.SURVIVAL) {
+                    if(!playersInOwnPlot.contains(player)) {
+                        playersInOwnPlot.add(player);
+                    }
+                    player.setGameMode(GameMode.CREATIVE);
+                }
+            }
+            else {
+                if(playersInOwnPlot.contains(player)) {
+                    player.setGameMode(GameMode.SURVIVAL);
+                    playersInOwnPlot.remove(player);
+                }
+            }
         }
     }
     

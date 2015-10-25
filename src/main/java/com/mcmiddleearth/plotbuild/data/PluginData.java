@@ -32,12 +32,12 @@ import java.util.logging.Logger;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 
 /**
@@ -49,6 +49,9 @@ public class PluginData {
     @Setter
     @Getter
     private static PlotBuildConversationFactory confFactory;
+    
+    @Getter
+    private static final List <Player> playersInOwnPlot = new ArrayList<>(); 
     
     @Getter
     private static final List <PlotBuild> plotbuildsList = new ArrayList <>();
@@ -299,7 +302,7 @@ Logger.getGlobal().info("PlotbuildFile: "+dr);
             for(int y = miny; y <= maxy; ++y) {
                 for(int z = plot.getCorner1().getBlockZ(); z <= plot.getCorner2().getBlockZ(); ++z) {
                     writer.println(world.getBlockAt(x, y, z).getType());
-                    writer.println(world.getBlockAt(x, y, z).getData());//getState().getData().toItemStack().getDurability());
+                    writer.println(world.getBlockAt(x, y, z).getData());
                 }
             }
         }
