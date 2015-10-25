@@ -13,15 +13,14 @@ import com.mcmiddleearth.plotbuild.exceptions.InvalidPlotLocationException;
 import com.mcmiddleearth.plotbuild.exceptions.InvalidRestoreDataException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
+import org.bukkit.entity.Player;
 import org.bukkit.material.MaterialData;
 
 /**
@@ -89,12 +88,12 @@ public class Plot {
     }
     
     public boolean isInside(Location location) {
-        if(    location.getBlockX() <= corner1.getBlockX() || location.getBlockX() >= corner2.getBlockX()
-           ||  location.getBlockZ() <= corner1.getBlockZ() || location.getBlockZ() >= corner2.getBlockZ()){
+        if(    location.getBlockX() < corner1.getBlockX() || location.getBlockX() > corner2.getBlockX()
+           ||  location.getBlockZ() < corner1.getBlockZ() || location.getBlockZ() > corner2.getBlockZ()){
             return false;
         }
         if( plotbuild.isCuboid()
-            && (location.getBlockY() <= corner1.getBlockY() || location.getBlockY() >= corner2.getBlockY())) {
+            && (location.getBlockY() < corner1.getBlockY() || location.getBlockY() > corner2.getBlockY())) {
             return false;
         }
         return true;
@@ -119,6 +118,16 @@ public class Plot {
             }
         }
         return true;
+    }
+    
+    public boolean isOwner(Player player) {
+        for(OfflinePlayer offPlayer : owners) {
+            Player search = offPlayer.getPlayer();
+            if(search!=null && search==player) {
+                return true;
+            }
+        }
+        return false;
     }
     
     public void claim(OfflinePlayer player){

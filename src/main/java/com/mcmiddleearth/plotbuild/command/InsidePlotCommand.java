@@ -35,7 +35,7 @@ public abstract class InsidePlotCommand extends AbstractCommand {
     protected Plot checkInOwnedPlot(Player player) {
         Plot plot = checkInPlot(player);
         if(plot!=null) {
-            if(plot.getOwners().contains(player)) {
+            if(plot.isOwner(player)) {
                 return plot;
             }
             else {
