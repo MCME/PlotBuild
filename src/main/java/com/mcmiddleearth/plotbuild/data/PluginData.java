@@ -1,7 +1,20 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/* 
+ *  Copyright (C) 2015 Minecraft Middle Earth
+ * 
+ *  This file is part of PlotBuild.
+ * 
+ *  PlotBuild is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  PlotBuild is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with PlotBuild.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.mcmiddleearth.plotbuild.data;
 
@@ -67,6 +80,9 @@ public class PluginData {
     
     @Getter
     private static boolean loaded = false;
+    
+    @Getter
+    private static List <String> protectedWorlds = new ArrayList<>();
     
     private static final File plotBuildDir = new File(PlotBuildPlugin.getPluginInstance().getDataFolder()
                                                     + File.separator + "plotbuilds");
@@ -164,6 +180,8 @@ public class PluginData {
     }
     
     public static void loadData() {
+        PlotBuildPlugin.getPluginInstance().getLogger().info("Loading plotbuilds...");
+        protectedWorlds = PlotBuildPlugin.getPluginInstance().getConfig().getStringList("protectedWorlds");
         FilenameFilter pbFilter = new FilenameFilter() {
 
             @Override
@@ -181,11 +199,13 @@ public class PluginData {
         }
         if(!missingWorlds.isEmpty()) {
             plotbuildsList.clear();
+            PlotBuildPlugin.getPluginInstance().getLogger().info("Waiting for worlds to load:");
             for(String world : missingWorlds) {
                 PlotBuildPlugin.getPluginInstance().getLogger().info(world);
             }
         } else {
             loaded = true;
+            PlotBuildPlugin.getPluginInstance().getLogger().info("All plotbuilds loaded.");
         }
     }
     
@@ -216,14 +236,27 @@ public class PluginData {
         currentPlotbuild.values().removeAll(Collections.singleton(plotbuild));
         try {
             boolean pbf = plotBuildFile.delete();
-Logger.getGlobal().info("PlotbuildFile: "+pbf);
             boolean dr = FileUtil.deleteRecursive(plotDir);
-Logger.getGlobal().info("PlotbuildFile: "+dr);
             return pbf && dr;
         } catch (FileNotFoundException ex) {
             Logger.getLogger(PluginData.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         }
+    }
+    
+    public static boolean hasPermissionsToBuild(Player player, Location location) {
+        Plot plot = getPlotAt(location);
+        return (plot != null && (plot.isOwner(player) || plot.getPlotbuild().getStaffList().contains(player)));
+    }
+    
+    public static boolean hasNoPermissionsToBuild(Player player, Location location) {
+        Plot plot = getPlotAt(location);
+        return (!player.hasPermission("plotbuild.staff") && plot != null && !plot.isOwner(player) && !plot.getPlotbuild().getStaffList().contains(player));
+    }
+    
+    public static boolean canSelectArea(Player player) {
+        PlotBuild pb = getCurrentPlotbuild(player);
+        return player.hasPermission("plotbuild.staff") || (pb == null ? false : pb.getStaffList().contains(player));
     }
     
     private static void savePlotBuild(PlotBuild plotbuild) throws IOException {
