@@ -167,6 +167,7 @@ public class PluginData {
     }
     
     public static void loadData() {
+        PlotBuildPlugin.getPluginInstance().getLogger().info("Loading plotbuilds...");
         protectedWorlds = PlotBuildPlugin.getPluginInstance().getConfig().getStringList("protectedWorlds");
         FilenameFilter pbFilter = new FilenameFilter() {
 
@@ -185,11 +186,13 @@ public class PluginData {
         }
         if(!missingWorlds.isEmpty()) {
             plotbuildsList.clear();
+            PlotBuildPlugin.getPluginInstance().getLogger().info("Waiting for worlds to load:");
             for(String world : missingWorlds) {
                 PlotBuildPlugin.getPluginInstance().getLogger().info(world);
             }
         } else {
             loaded = true;
+            PlotBuildPlugin.getPluginInstance().getLogger().info("All plotbuilds loaded.");
         }
     }
     

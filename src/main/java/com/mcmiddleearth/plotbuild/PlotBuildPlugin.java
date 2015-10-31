@@ -9,6 +9,7 @@ import com.mcmiddleearth.plotbuild.command.PlotCommandExecutor;
 import com.mcmiddleearth.plotbuild.conversations.PlotBuildConversationFactory;
 import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.listeners.PlayerListener;
+import com.mcmiddleearth.plotbuild.listeners.WorldListener;
 import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -28,6 +29,7 @@ public class PlotBuildPlugin extends JavaPlugin {
         pluginInstance = this;
         this.saveDefaultConfig();
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
+        getServer().getPluginManager().registerEvents(new WorldListener(), this);
         getCommand("plot").setExecutor(new PlotCommandExecutor());
         PluginData.loadData();
         PluginData.setConfFactory(new PlotBuildConversationFactory(this));
