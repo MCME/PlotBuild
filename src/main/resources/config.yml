@@ -1,0 +1,13 @@
+# ---------------------------------------------------------------------------- #
+#                         PLOTBUILD CONFIGURATION FILE                         #
+# ---------------------------------------------------------------------------- #
+#                                                                              #
+# Only one setting here - uncomment the line below and add your list of worlds #
+#   if you want to turn on full protection. To allow players to build in       #
+#   protected worlds, give them plotbuild.trusted permission. Otherwise they   #
+#   will be able to build only inside their plots.                             #
+# ---------------------------------------------------------------------------- #
+
+# protectedWorlds:
+#   - world1
+#   - world2
