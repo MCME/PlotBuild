@@ -10,6 +10,8 @@ import com.mcmiddleearth.plotbuild.conversations.PlotBuildConversationFactory;
 import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.listeners.PlayerListener;
 import lombok.Getter;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -30,6 +32,14 @@ public class PlotBuildPlugin extends JavaPlugin {
         PluginData.loadData();
         PluginData.setConfFactory(new PlotBuildConversationFactory(this));
         getLogger().info("Enabled!");
+    }
+    
+    public static boolean allowBuild(Player player, Location location) {
+        return PluginData.hasPermissionsToBuild(player, location);
+    }
+    
+    public static boolean denyBuild(Player player, Location location) {
+        return PluginData.hasNoPermissionsToBuild(player, location);
     }
      
 }

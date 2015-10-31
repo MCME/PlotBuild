@@ -68,6 +68,9 @@ public class PluginData {
     @Getter
     private static boolean loaded = false;
     
+    @Getter
+    private static List <String> protectedWorlds = new ArrayList<>();
+    
     private static final File plotBuildDir = new File(PlotBuildPlugin.getPluginInstance().getDataFolder()
                                                     + File.separator + "plotbuilds");
     
@@ -164,6 +167,7 @@ public class PluginData {
     }
     
     public static void loadData() {
+        protectedWorlds = PlotBuildPlugin.getPluginInstance().getConfig().getStringList("protectedWorlds");
         FilenameFilter pbFilter = new FilenameFilter() {
 
             @Override
@@ -216,14 +220,27 @@ public class PluginData {
         currentPlotbuild.values().removeAll(Collections.singleton(plotbuild));
         try {
             boolean pbf = plotBuildFile.delete();
-Logger.getGlobal().info("PlotbuildFile: "+pbf);
             boolean dr = FileUtil.deleteRecursive(plotDir);
-Logger.getGlobal().info("PlotbuildFile: "+dr);
             return pbf && dr;
         } catch (FileNotFoundException ex) {
             Logger.getLogger(PluginData.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         }
+    }
+    
+    public static boolean hasPermissionsToBuild(Player player, Location location) {
+        Plot plot = getPlotAt(location);
+        return (plot != null && (plot.isOwner(player) || plot.getPlotbuild().getStaffList().contains(player)));
+    }
+    
+    public static boolean hasNoPermissionsToBuild(Player player, Location location) {
+        Plot plot = getPlotAt(location);
+        return (!player.hasPermission("plotbuild.staff") && plot != null && !plot.isOwner(player) && !plot.getPlotbuild().getStaffList().contains(player));
+    }
+    
+    public static boolean canSelectArea(Player player) {
+        PlotBuild pb = getCurrentPlotbuild(player);
+        return player.hasPermission("plotbuild.staff") || (pb == null ? false : pb.getStaffList().contains(player));
     }
     
     private static void savePlotBuild(PlotBuild plotbuild) throws IOException {
