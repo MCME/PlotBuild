@@ -11,6 +11,7 @@ import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -40,9 +41,17 @@ public class PlotClear extends InsidePlotCommand {
         if(args.length > 0 && args[0].equalsIgnoreCase("-u")) {
             unclaim = true;
             sendClearAndUnclaimMessgage(cs);
+            for(OfflinePlayer builder: plot.getOwners()) {
+                if(builder.getPlayer()!=cs) {
+                    sendBuilderClearedAndUnclaimedMessage(cs, builder, plot.getPlotbuild().getName(), plot.getID());
+                }
+            }
         }
         else {
             sendClearMessage(cs);
+            for(OfflinePlayer builder: plot.getOwners()) {
+                sendBuilderClearedMessage(cs, builder, plot.getPlotbuild().getName(), plot.getID());
+            }
         }
         try {
             plot.clear(unclaim);
@@ -64,6 +73,18 @@ public class PlotClear extends InsidePlotCommand {
 
     private void sendClearMessage(CommandSender cs) {
         MessageUtil.sendInfoMessage(cs, "You cleared this plot.");
+    }
+
+    private void sendBuilderClearedAndUnclaimedMessage(CommandSender cs, OfflinePlayer builder, String name, int id) {
+        MessageUtil.sendOfflineMessage(builder, "Your plot #" + id
+                                                     + " of plotbuild " + name 
+                                                     + " was resetted to initial state and unclaimed by "+ cs.getName()+".");
+    }
+  
+    private void sendBuilderClearedMessage(CommandSender cs, OfflinePlayer builder, String name, int id) {
+        MessageUtil.sendOfflineMessage(builder, "Your plot #" + id
+                                                     + " of plotbuild " + name 
+                                                     + " was resetted to initial state by "+ cs.getName()+".");
     }
     
 }

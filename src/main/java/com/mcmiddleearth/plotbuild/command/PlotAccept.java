@@ -9,11 +9,11 @@ import com.mcmiddleearth.plotbuild.constants.PlotState;
 import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.exceptions.InvalidRestoreDataException;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
+import com.mcmiddleearth.plotbuild.plotbuild.PlotBuild;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -49,8 +49,17 @@ public class PlotAccept extends InsidePlotCommand {
             Logger.getLogger(PlotAccept.class.getName()).log(Level.SEVERE, null, ex);
         }
         sendAcceptMessage(cs);
-        plot.getPlotbuild().log(((Player) cs).getName()+" accepted plot "+plot.getID()+".");
+        for(OfflinePlayer builder: plot.getOwners()) {
+            if(builder.getPlayer()!=cs) {
+                sendBuilderMessage(cs, builder, plot.getPlotbuild().getName(), plot.getID());
+            }
+        }
+        PlotBuild plotbuild = plot.getPlotbuild();
+        plotbuild.log(((Player) cs).getName()+" accepted plot "+plot.getID()+".");
         PluginData.saveData();
+        if(plotbuild.countUnfinishedPlots()==0) {
+            PluginData.getConfFactory().startQuery((Player)cs, getLastPlotAcceptedQuery(plotbuild), plotbuild, true);
+        }
     }
 
     private void sendAcceptMessage(CommandSender cs) {
@@ -59,6 +68,16 @@ public class PlotAccept extends InsidePlotCommand {
 
     private void sendNotFinishedMessage(CommandSender cs) {
         MessageUtil.sendErrorMessage(cs, "This plot was not marked as finished. You can remove it with /plot delete -k.");
+    }
+
+    private void sendBuilderMessage(CommandSender cs, OfflinePlayer builder, String name, int id) {
+        MessageUtil.sendOfflineMessage(builder, "Your plot #" + id
+                                                     + " of plotbuild " + name 
+                                                     + " was accepted by "+ cs.getName()+".");
+    }
+
+    private String getLastPlotAcceptedQuery(PlotBuild plotbuild) {
+        return "You accepted the last plot of the plotbuild "+plotbuild.getName()+". Do you want to end this plotbuild now?";
     }
     
 }

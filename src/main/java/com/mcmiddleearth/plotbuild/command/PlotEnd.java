@@ -13,14 +13,16 @@ import com.mcmiddleearth.plotbuild.plotbuild.PlotBuild;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 /**
  *
  * @author Ivan1pl
  */
 public class PlotEnd extends PlotBuildCommand {
-    
+
     public PlotEnd(String... permissionNodes) {
         super(1, true, permissionNodes);
         setAdditionalPermissionsEnabled(true);
@@ -36,15 +38,23 @@ public class PlotEnd extends PlotBuildCommand {
             sendNoPlotbuildFoundMessage(cs);
             return;
         }
-        if(!keep) {
-            for(Plot p : plotbuild.getPlots()) {
-                if(p.getState() != PlotState.REMOVED) {
-                    try {
-                        p.delete(false);
-                    } catch (InvalidRestoreDataException ex) {
-                        Logger.getLogger(PlotEnd.class.getName()).log(Level.SEVERE, null, ex);
-                        sendRestoreErrorMessage(cs);
+        PluginData.getConfFactory().startQuery((Player)cs,getSecurityQuery(plotbuild,keep), plotbuild, keep);
+        //this query calls endPlotBuild
+    }
+    
+    public static void endPlotBuild(Player cs, PlotBuild plotbuild, boolean keep) {
+        for(Plot p : plotbuild.getPlots()) {
+            if(p.getState() != PlotState.REMOVED) {
+                try {
+                    for(OfflinePlayer builder: p.getOwners()) {
+                        if(builder.getPlayer()!=cs) {
+                            sendBuilderDeletedMessage(cs, builder, p.getPlotbuild().getName(), p.getID());
+                        }
                     }
+                    p.delete(keep);
+                } catch (InvalidRestoreDataException ex) {
+                    Logger.getLogger(PlotEnd.class.getName()).log(Level.SEVERE, null, ex);
+                    sendRestoreErrorMessage(cs);
                 }
             }
         }
@@ -55,12 +65,44 @@ public class PlotEnd extends PlotBuildCommand {
         }
     }
     
-    private void sendPlotbuildDeletedMessage(CommandSender cs) {
+    private static void sendPlotbuildDeletedMessage(CommandSender cs) {
         MessageUtil.sendInfoMessage(cs, "Plotbuild successfully deleted.");
     }
     
-    private void sendPlotbuildDeleteFailedMessage(CommandSender cs) {
+    private static void sendPlotbuildDeleteFailedMessage(CommandSender cs) {
         MessageUtil.sendErrorMessage(cs, "Failed to delete plotbuild files.");
     }
+
+    private static void sendBuilderDeletedMessage(CommandSender cs, OfflinePlayer builder, String name, int id) {
+        MessageUtil.sendOfflineMessage(builder, "Your plot #" + id
+                                                     + " of plotbuild " + name 
+                                                     + " was removed by "+ cs.getName()+" as the plotbuild ended.");
+    }
     
+    public static void sendAbordMessage(Player player) {
+        MessageUtil.sendErrorMessage(player, "You cancelled the removal of the plotbuild.");
+    }
+    
+    private String getSecurityQuery(PlotBuild plotbuild, boolean keep) {
+        String query = "In plotbuild "+plotbuild.getName();
+        int unfinished = plotbuild.countUnfinishedPlots();
+        if(unfinished==0) {
+            query = query + " are no open plots. ";
+        }
+        else {
+            String spl1=" are ", spl2=" plots", spl3="They", spl4 = "were";
+            if(unfinished == 1) {
+                spl1 = " is "; spl2 = " plot"; spl3 = "It"; spl4 = "was";
+            }
+            query = query + spl1 + unfinished + spl2 + " which "+spl4+" not accepted yet. ";
+            if(keep) {
+                query = query + spl3 + " will be kept as they are now.";
+            }
+            else {
+                query = query + spl3 + " will be restored to initial state.";
+            }
+        }
+        return query + "Are you sure to end this plotbuild?";
+    }
+
 }

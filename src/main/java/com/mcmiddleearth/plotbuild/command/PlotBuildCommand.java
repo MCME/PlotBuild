@@ -13,7 +13,7 @@ import org.bukkit.entity.Player;
 
 /**
  *
- * @author Lars
+ * @author Eriol_Eandur
  */
 public abstract class PlotBuildCommand extends AbstractCommand{
 
@@ -41,10 +41,6 @@ public abstract class PlotBuildCommand extends AbstractCommand{
         return plotbuild;
     }
  
-    protected void sendNoPlotbuildFoundMessage(CommandSender cs){
-        MessageUtil.sendErrorMessage(cs, "No plotbuild with this name.");
-    }   
-
     protected void sendNoCurrentPlotbuildMessage(CommandSender cs){
         MessageUtil.sendErrorMessage(cs, "No current plotbuild.");
     }   

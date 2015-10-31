@@ -8,6 +8,7 @@ package com.mcmiddleearth.plotbuild.data;
 import com.mcmiddleearth.plotbuild.PlotBuildPlugin;
 import com.mcmiddleearth.plotbuild.constants.BorderType;
 import com.mcmiddleearth.plotbuild.constants.PlotState;
+import com.mcmiddleearth.plotbuild.conversations.PlotBuildConversationFactory;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.plotbuild.PlotBuild;
 import com.mcmiddleearth.plotbuild.utils.FileUtil;
@@ -29,13 +30,15 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.MaterialData;
 
 /**
  *
@@ -43,12 +46,21 @@ import org.bukkit.inventory.ItemStack;
  */
 public class PluginData {
     
+    @Setter
+    @Getter
+    private static PlotBuildConversationFactory confFactory;
+    
+    @Getter
+    private static final List <Player> playersInOwnPlot = new ArrayList<>(); 
+    
     @Getter
     private static final List <PlotBuild> plotbuildsList = new ArrayList <>();
     
     private static final Map <Player, PlotBuild> currentPlotbuild = new LinkedHashMap <>();
     
     private static final Map <Player, Selection> selections = new LinkedHashMap <>();
+    
+    private static final Map <OfflinePlayer, List<String>> offlineMessages = new LinkedHashMap<>();
     
     @Getter
     private static final Set <String> missingWorlds = new HashSet<>();
@@ -113,6 +125,34 @@ public class PluginData {
         return null;
     }
     
+    public static void addOfflineMessage(OfflinePlayer player, String message) {
+        if(offlineMessages.containsKey(player)) {
+            List<String> messages = offlineMessages.get(player);
+            messages.add(message);
+        }
+        else {
+            List<String> messages = new ArrayList<>();
+            messages.add(message);
+            offlineMessages.put(player, messages);
+        }
+    }
+    
+    public static List<String> getOfflineMessagesFor(Player player) {
+        for(OfflinePlayer offline: offlineMessages.keySet()) {
+            if(offline!=null){
+                Player search = offline.getPlayer();
+                if(search==player) {
+                    return offlineMessages.get(offline);
+                }
+            }
+        }
+        return null;
+    }
+    
+    public static void deleteOfflineMessagesFor(Player player) {
+        offlineMessages.remove(player);
+    }
+    
     public static void saveData() {
         for(PlotBuild plotbuild : plotbuildsList) {
             try {
@@ -149,18 +189,19 @@ public class PluginData {
         }
     }
     
-    public static List <ItemStack> getRestoreData(PlotBuild plotbuild, Plot plot) {
+    public static List <MaterialData> getRestoreData(PlotBuild plotbuild, Plot plot) {
         File plotDir = new File(plotBuildDir, plotbuild.getName());
         File plotRestoreData = new File(plotDir, Integer.toString(plotbuild.getPlots().indexOf(plot)) + ".r");
-        ArrayList <ItemStack> ret = new ArrayList<>();
+        ArrayList <MaterialData> ret = new ArrayList<>();
         try {
-            Scanner scanner = new Scanner(plotRestoreData);
-            scanner.nextLine();
-            while(scanner.hasNext()) {
-                Material material = Material.valueOf(scanner.nextLine());
-                short data = scanner.nextShort();
+            try (Scanner scanner = new Scanner(plotRestoreData)) {
                 scanner.nextLine();
-                ret.add(new ItemStack(material, data));
+                while(scanner.hasNext()) {
+                    Material material = Material.valueOf(scanner.nextLine());
+                    byte data = scanner.nextByte();
+                    scanner.nextLine();
+                    ret.add(new MaterialData(material, data));
+                }
             }
         } catch (FileNotFoundException ex) {
             Logger.getLogger(PluginData.class.getName()).log(Level.SEVERE, null, ex);
@@ -174,7 +215,11 @@ public class PluginData {
         plotbuildsList.remove(plotbuild);
         currentPlotbuild.values().removeAll(Collections.singleton(plotbuild));
         try {
-            return plotBuildFile.delete() && FileUtil.deleteRecursive(plotDir);
+            boolean pbf = plotBuildFile.delete();
+Logger.getGlobal().info("PlotbuildFile: "+pbf);
+            boolean dr = FileUtil.deleteRecursive(plotDir);
+Logger.getGlobal().info("PlotbuildFile: "+dr);
+            return pbf && dr;
         } catch (FileNotFoundException ex) {
             Logger.getLogger(PluginData.class.getName()).log(Level.SEVERE, null, ex);
             return false;
@@ -257,7 +302,7 @@ public class PluginData {
             for(int y = miny; y <= maxy; ++y) {
                 for(int z = plot.getCorner1().getBlockZ(); z <= plot.getCorner2().getBlockZ(); ++z) {
                     writer.println(world.getBlockAt(x, y, z).getType());
-                    writer.println(world.getBlockAt(x, y, z).getState().getData().toItemStack().getDurability());
+                    writer.println(world.getBlockAt(x, y, z).getData());
                 }
             }
         }

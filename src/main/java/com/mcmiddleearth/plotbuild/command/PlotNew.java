@@ -54,16 +54,9 @@ public class PlotNew extends PlotBuildCommand {
             } catch (InvalidPlotLocationException ex) {
                 Logger.getLogger(PlotNew.class.getName()).log(Level.SEVERE, null, ex);
             }
-            boolean success = plotbuild.getPlots().add(newPlot);
-            if(success) {
-                sendPlotCreatedMessage(cs);
-                newPlot.getPlotbuild().log(((Player) cs).getName()+" added plot "+newPlot.getID()+".");
-                PluginData.saveData();
-            }
-            else {
-                sentPlotErrorMessage(cs);
-            }
-
+            sendPlotCreatedMessage(cs);
+            newPlot.getPlotbuild().log(((Player) cs).getName()+" added plot "+newPlot.getID()+".");
+            PluginData.saveData();
         }
         else {
             sendInvalidSelectionMessage(cs);
@@ -71,14 +64,6 @@ public class PlotNew extends PlotBuildCommand {
                    
     }
         
-    protected void sendNoPlotbuildFoundMessage(CommandSender cs){
-        MessageUtil.sendErrorMessage(cs, "No plotbuild with this name.");
-    }   
-
-    protected void sendNoCurrentPlotbuildMessage(CommandSender cs){
-        MessageUtil.sendErrorMessage(cs, "No current plotbuild.");
-    }   
-
     protected void sendInvalidSelectionMessage(CommandSender cs){
         MessageUtil.sendErrorMessage(cs, "Invalid selection for a plot. Choose two corners with feather.");
     }   
@@ -87,10 +72,6 @@ public class PlotNew extends PlotBuildCommand {
         MessageUtil.sendInfoMessage(cs, "Plot created.");
     }   
     
-    protected void sentPlotErrorMessage(CommandSender cs){
-        MessageUtil.sendErrorMessage(cs, "There was an error. No plot created.");
-    }   
-
     private void sendPlotIntersectingMessage(CommandSender cs, String name) {
         MessageUtil.sendErrorMessage(cs, "Your selection intersects with a plot from plotbuild "+name+". No plot created.");
     }
