@@ -35,8 +35,8 @@ public class PlotRemoveStaff extends PlotBuildCommand{
     public PlotRemoveStaff(String... permissionNodes) {
         super(1, true, permissionNodes);
         setAdditionalPermissionsEnabled(true);
-        setShortDescription(": Adds a player to staff of a plotbuild.");
-        setUsageDescription(" <player> [name]: For public projects that want to feature a plotbuild. This command can be used to give the (non-staff) project leader access to the staff commands for the current plotbuild or the plotbuild called [name].");
+        setShortDescription(": Removes a player from staff of a plotbuild.");
+        setUsageDescription(" <player> [name]: This command can be used to remove a (non-staff) project leader from the staff of current plotbuild or the plotbuild called [name].");
     }
     
     @Override
@@ -53,16 +53,16 @@ public class PlotRemoveStaff extends PlotBuildCommand{
             sendPlayerNotFoundMessage(cs);
             return;
         }
-        if(!plotbuild.getStaffList().contains(removedStaff)) {
+        if(!plotbuild.isStaff(removedStaff)) {
             sendNotStaffMessage(cs, removedStaff, plotbuild.getName());
             return;
         }
-        plotbuild.getStaffList().remove(removedStaff);
+        plotbuild.removeStaff(removedStaff);
         sendRemoveStaffMessage(cs, removedStaff.getName(), plotbuild.getName());
         if(removedStaff.getPlayer()!=cs) {
             sendRemovedStaffPlayerMessage(cs, removedStaff, plotbuild.getName());
         }
-        for(OfflinePlayer staff: plotbuild.getStaffList()) {
+        for(OfflinePlayer staff: plotbuild.getOfflineStaffList()) {
             if(staff.getPlayer()!=(Player) cs && staff!=removedStaff) {
                 sendOtherStaffMessage(cs, staff, removedStaff, plotbuild.getName());
             }

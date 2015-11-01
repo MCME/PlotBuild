@@ -51,7 +51,7 @@ public class PlotClaim extends InsidePlotCommand {
             sendPlotbuildLockedMessage(cs);
             return;
         }
-        if(plot.getOwners().contains((Player)cs)) {
+        if(plot.isOwner((Player)cs)) {
             sendAlreadyOwnerMessage(cs);
             return;
         }
@@ -63,7 +63,7 @@ public class PlotClaim extends InsidePlotCommand {
             sendAlreadyMemberMessage(cs);
             return;
         }
-        if(plot.getPlotbuild().getBannedPlayers().contains((Player) cs)) {
+        if(plot.getPlotbuild().isBanned((Player) cs)) {
             sendPlayerBannedMessage(cs);
             return;
         }

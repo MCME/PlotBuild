@@ -49,7 +49,7 @@ public class PlotUnban extends PlotBuildCommand {
             return;
         }
         OfflinePlayer banned = null;
-        for(OfflinePlayer search : plotbuild.getBannedPlayers()) {
+        for(OfflinePlayer search : plotbuild.getOfflineBannedPlayers()) {
             if(search.getName().equals(args[0])) {
                 banned = search;
                 break;
@@ -59,7 +59,7 @@ public class PlotUnban extends PlotBuildCommand {
             sendNotBannedMessage(cs, args[0], plotbuild.getName());
             return;
         }
-        plotbuild.getBannedPlayers().remove(banned);
+        plotbuild.removeBan(banned);
         sendUnbannedMessage(cs,banned.getName(),plotbuild.getName());
         sendUnbannedPlayerMessage(cs, banned, plotbuild.getName());
         plotbuild.log(((Player) cs).getName()+" unbanned "+banned.getName()+".");

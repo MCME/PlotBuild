@@ -48,7 +48,7 @@ public class PlotRefuse extends InsidePlotCommand {
             return;
         }
         plot.refuse();
-        for(OfflinePlayer builder: plot.getOwners()) {
+        for(OfflinePlayer builder: plot.getOfflineOwners()) {
             if(builder.getPlayer()!=cs) {
                 sendBuilderMessage(cs, builder, plot.getPlotbuild().getName(), plot.getID());
             }

@@ -64,7 +64,7 @@ public class PlotLock extends PlotBuildCommand {
 
     private void sendBuilderMessages(CommandSender cs, PlotBuild plotbuild) {
                 for(Plot plot: plotbuild.getPlots()) {
-                    for(OfflinePlayer offlineBuilder : plot.getOwners()) {
+                    for(OfflinePlayer offlineBuilder : plot.getOfflineOwners()) {
                         Player builder = offlineBuilder.getPlayer();
                         if(builder!=null && builder!=cs) {
                             sendBuilderMessage(cs, builder, plotbuild.getName());

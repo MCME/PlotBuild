@@ -80,7 +80,7 @@ public class PlayerListener implements Listener{
             if(PluginData.hasPermissionsToBuild(event.getPlayer(), event.getClickedBlock().getLocation())) {
                 Plot plot = PluginData.getPlotAt(event.getClickedBlock().getLocation());
                 if(plot != null && plot.isOwner(event.getPlayer()) && plot.getPlotbuild().isLocked() &&
-                        !plot.getPlotbuild().getStaffList().contains(event.getPlayer()) && !event.getPlayer().hasPermission("plotbuild.staff")) {
+                        !plot.getPlotbuild().isStaff(event.getPlayer()) && !event.getPlayer().hasPermission("plotbuild.staff")) {
                     sendPlotbuildLockedMessage(event.getPlayer());
                     event.setUseItemInHand(Event.Result.DENY);
                     event.setCancelled(true);
@@ -125,7 +125,7 @@ public class PlayerListener implements Listener{
         if(PluginData.hasPermissionsToBuild(event.getPlayer(), event.getBlock().getLocation())) {
             Plot plot = PluginData.getPlotAt(event.getBlock().getLocation());
             if(plot != null && plot.isOwner(event.getPlayer()) && plot.getPlotbuild().isLocked() &&
-                    !plot.getPlotbuild().getStaffList().contains(event.getPlayer()) && !event.getPlayer().hasPermission("plotbuild.staff")) {
+                    !plot.getPlotbuild().isStaff(event.getPlayer()) && !event.getPlayer().hasPermission("plotbuild.staff")) {
                 sendPlotbuildLockedMessage(event.getPlayer());
                 event.setCancelled(true);
                 return;
@@ -147,7 +147,7 @@ public class PlayerListener implements Listener{
         if(PluginData.hasPermissionsToBuild(event.getPlayer(), event.getBlock().getLocation())) {
             Plot plot = PluginData.getPlotAt(event.getBlock().getLocation());
             if(plot != null && plot.isOwner(event.getPlayer()) && plot.getPlotbuild().isLocked() &&
-                    !plot.getPlotbuild().getStaffList().contains(event.getPlayer()) && !event.getPlayer().hasPermission("plotbuild.staff")) {
+                    !plot.getPlotbuild().isStaff(event.getPlayer()) && !event.getPlayer().hasPermission("plotbuild.staff")) {
                 sendPlotbuildLockedMessage(event.getPlayer());
                 event.setCancelled(true);
                 return;
@@ -169,7 +169,7 @@ public class PlayerListener implements Listener{
         if(PluginData.hasPermissionsToBuild(event.getPlayer(), event.getEntity().getLocation())) {
             Plot plot = PluginData.getPlotAt(event.getEntity().getLocation());
             if(plot != null && plot.isOwner(event.getPlayer()) && plot.getPlotbuild().isLocked() &&
-                    !plot.getPlotbuild().getStaffList().contains(event.getPlayer()) && !event.getPlayer().hasPermission("plotbuild.staff")) {
+                    !plot.getPlotbuild().isStaff(event.getPlayer()) && !event.getPlayer().hasPermission("plotbuild.staff")) {
                 sendPlotbuildLockedMessage(event.getPlayer());
                 event.setCancelled(true);
                 return;
@@ -192,7 +192,7 @@ public class PlayerListener implements Listener{
         if(PluginData.hasPermissionsToBuild(player, event.getEntity().getLocation())) {
             Plot plot = PluginData.getPlotAt(event.getEntity().getLocation());
             if(plot != null && plot.isOwner(player) && plot.getPlotbuild().isLocked() &&
-                    !plot.getPlotbuild().getStaffList().contains(player) && !player.hasPermission("plotbuild.staff")) {
+                    !plot.getPlotbuild().isStaff(player) && !player.hasPermission("plotbuild.staff")) {
                 sendPlotbuildLockedMessage(player);
                 event.setCancelled(true);
                 return;

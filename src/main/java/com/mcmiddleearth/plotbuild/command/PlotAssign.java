@@ -54,15 +54,15 @@ public class PlotAssign extends InsidePlotCommand {
             sendPlayerNotFoundMessage(cs);
             return;
         }
-        if(plot.getOwners().contains(assignedPlayer)) {
+        if(plot.isOwner(assignedPlayer)) {
             sendAlreadyOwnerMessage(cs, assignedPlayer.getName());
             return;
         }
-        if(plot.getPlotbuild().getBannedPlayers().contains(assignedPlayer)) {
+        if(plot.getPlotbuild().isBanned(assignedPlayer)) {
             sendPlayerBannedMessage(cs, assignedPlayer.getName());
             return;
         }
-        if(plot.getOwners().size()>=8) {
+        if(plot.countOwners()>=8) {
             sendMaxTeamSize(cs);
             return;
         }
@@ -76,7 +76,7 @@ public class PlotAssign extends InsidePlotCommand {
         if(cs!=assignedPlayer.getPlayer()) {
             sendAssignedPlayerMessage(cs, assignedPlayer, plot.getPlotbuild().getName(), plot.getID());
         }
-        for(OfflinePlayer builder: plot.getOwners()) {
+        for(OfflinePlayer builder: plot.getOfflineOwners()) {
             if(builder.getPlayer()!=cs && builder!=assignedPlayer) {
                 sendOtherBuilderMessage(cs, builder, assignedPlayer, plot.getPlotbuild().getName(), plot.getID());
             }

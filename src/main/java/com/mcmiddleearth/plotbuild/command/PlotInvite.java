@@ -58,11 +58,11 @@ public class PlotInvite extends InsidePlotCommand {
             sendPlayerNotFoundMessage(cs);
             return;
         }
-        if(plot.getOwners().contains(invitedPlayer)) {
+        if(plot.isOwner(invitedPlayer)) {
             sendAlreadyOwnerMessage(cs, invitedPlayer.getName());
             return;
         }
-        if(plot.getOwners().size()>=8) {
+        if(plot.countOwners()>=8) {
             sendMaxTeamSize(cs);
             return;
         }
@@ -71,14 +71,14 @@ public class PlotInvite extends InsidePlotCommand {
             sendAlreadyMemberMessage(cs, invitedPlayer.getName());
             return;
         }
-        if(plot.getPlotbuild().getBannedPlayers().contains(invitedPlayer)) {
+        if(plot.getPlotbuild().isBanned(invitedPlayer)) {
             sendPlayerBannedMessage(cs, invitedPlayer.getName());
             return;
         }
         plot.invite(invitedPlayer);
         sendInvitedMessage(cs, invitedPlayer.getName());
         sendInvitedPlayerMessage(cs, invitedPlayer, plot.getPlotbuild().getName(), plot.getID());
-        for(OfflinePlayer builder: plot.getOwners()) {
+        for(OfflinePlayer builder: plot.getOfflineOwners()) {
             if(builder.getPlayer()!=cs && builder!=invitedPlayer) {
                 sendOtherBuilderMessage(cs, builder, invitedPlayer, plot.getPlotbuild().getName(), plot.getID());
             }
