@@ -27,6 +27,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 
 /**
  *
@@ -45,11 +46,9 @@ public class PlotBuild {
     @Setter
     private List <Plot> plots = new ArrayList <>();
     
-    @Getter
     @Setter
     private List <OfflinePlayer> staffList = new ArrayList <>();
     
-    @Getter
     @Setter
     private List <OfflinePlayer> bannedPlayers = new ArrayList <>();
     
@@ -103,13 +102,64 @@ public class PlotBuild {
     
     public boolean hasUnfinishedPlot(OfflinePlayer player) {
         for(Plot plot : plots) {
-            if((plot.getState()==PlotState.CLAIMED || plot.getState()==PlotState.REFUSED) && plot.getOwners().contains(player)) {
+            if((plot.getState()==PlotState.CLAIMED || plot.getState()==PlotState.REFUSED) && plot.isOwner(player)) {
                 return true;
             }
         }
         return false;
     }
      
+    public boolean isBanned(OfflinePlayer player) {
+        for(OfflinePlayer offPlayer : bannedPlayers) {
+            //Player search = offPlayer.getPlayer();
+            if(player!=null && offPlayer.getUniqueId().equals((player.getUniqueId()))) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    /*public boolean isOfflineBanned(OfflinePlayer player) {
+        return bannedPlayers.contains(player);
+    }*/
+    
+    public List<OfflinePlayer> getOfflineBannedPlayers() {
+        return bannedPlayers;
+    }
+    
+    public void removeBan(OfflinePlayer player) {
+        bannedPlayers.remove(player);
+    }
+    
+    public boolean isStaff(OfflinePlayer player) {
+        for(OfflinePlayer offPlayer : staffList) {
+            //Player search = offPlayer.getPlayer();
+            if(offPlayer!=null && offPlayer.getUniqueId().equals(player.getUniqueId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    /*public boolean isOfflineStaff(OfflinePlayer player) {
+        return staffList.contains(player);
+    }*/
+    
+    public void addStaff(OfflinePlayer player) {
+        staffList.add(player);
+    }
+    
+    public void removeStaff(OfflinePlayer player) {
+        staffList.remove(player);
+    }
+    
+    public List<OfflinePlayer> getOfflineStaffList() {
+        return staffList;
+    }
+    public void addBanned(OfflinePlayer player) {
+        bannedPlayers.add(player);
+    }
+    
     private final static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yy'-'MM'-'dd' | 'HH':'mm ");
 
     public void log(String entry) {

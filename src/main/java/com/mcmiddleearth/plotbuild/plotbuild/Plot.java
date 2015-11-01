@@ -48,22 +48,7 @@ public class Plot {
     @Getter
     private Location corner2;
     
-    @Getter
     private List <OfflinePlayer> owners = new ArrayList <>();
-    
-    /*
-    @Getter
-    @Setter
-    private boolean finished = false;
-    
-    @Getter
-    @Setter
-    private boolean accepted = false;
-    
-    @Getter
-    @Setter
-    private boolean refused = false;
-    */
     
     @Getter
     private PlotState state;
@@ -133,14 +118,26 @@ public class Plot {
         return true;
     }
     
-    public boolean isOwner(Player player) {
+    public boolean isOwner(OfflinePlayer player) {
         for(OfflinePlayer offPlayer : owners) {
-            Player search = offPlayer.getPlayer();
-            if(search!=null && search==player) {
+            //Player search = offPlayer.getPlayer();
+            if(player!=null && offPlayer.getUniqueId().equals(player.getUniqueId())) {
                 return true;
             }
         }
         return false;
+    }
+    
+    public int countOwners() {
+        return owners.size();
+    }
+    
+    /*public boolean isOfflineOwner(OfflinePlayer player) {
+        return owners.contains(player);
+    }*/
+    
+    public List<OfflinePlayer> getOfflineOwners() {
+        return owners;
     }
     
     public void claim(OfflinePlayer player){

@@ -20,6 +20,7 @@ package com.mcmiddleearth.plotbuild.command;
 
 import com.mcmiddleearth.plotbuild.plotbuild.PlotBuild;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
+import java.util.logging.Logger;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.command.CommandSender;
@@ -102,7 +103,7 @@ public abstract class AbstractCommand {
     }   
 
     protected boolean hasPermissionsForPlotBuild(Player p, PlotBuild plotbuild) {
-        if(permissionNodes != null && !plotbuild.getStaffList().contains(p)) {
+        if(permissionNodes != null && !plotbuild.isStaff(p)) {
             for(String permission : permissionNodes) {
                 if (!p.hasPermission(permission)) {
                     sendNoPermsErrorMessage(p);

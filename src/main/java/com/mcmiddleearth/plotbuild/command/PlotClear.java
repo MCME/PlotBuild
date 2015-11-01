@@ -54,7 +54,7 @@ public class PlotClear extends InsidePlotCommand {
         if(args.length > 0 && args[0].equalsIgnoreCase("-u")) {
             unclaim = true;
             sendClearAndUnclaimMessgage(cs);
-            for(OfflinePlayer builder: plot.getOwners()) {
+            for(OfflinePlayer builder: plot.getOfflineOwners()) {
                 if(builder.getPlayer()!=cs) {
                     sendBuilderClearedAndUnclaimedMessage(cs, builder, plot.getPlotbuild().getName(), plot.getID());
                 }
@@ -62,7 +62,7 @@ public class PlotClear extends InsidePlotCommand {
         }
         else {
             sendClearMessage(cs);
-            for(OfflinePlayer builder: plot.getOwners()) {
+            for(OfflinePlayer builder: plot.getOfflineOwners()) {
                 sendBuilderClearedMessage(cs, builder, plot.getPlotbuild().getName(), plot.getID());
             }
         }

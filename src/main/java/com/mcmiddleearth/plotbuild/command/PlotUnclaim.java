@@ -47,7 +47,7 @@ public class PlotUnclaim extends InsidePlotCommand {
         if(plot==null) {
             return;
         }
-        if(plot.getOwners().size()>1) {
+        if(plot.countOwners()>1) {
             sendMoreOwnersMessage(cs);
             return;
         }

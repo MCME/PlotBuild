@@ -50,12 +50,12 @@ public class PlotFinish extends InsidePlotCommand {
         }
         plot.finish();
         sendFinishedMessage(cs);
-        for(OfflinePlayer builder: plot.getOwners()) {
+        for(OfflinePlayer builder: plot.getOfflineOwners()) {
             if(builder.getPlayer()!=(Player) cs) {
                 sendBuilderMessage(cs, builder, plot.getPlotbuild().getName(), plot.getID());
             }
         }
-        for(OfflinePlayer staff: plot.getPlotbuild().getStaffList()) {
+        for(OfflinePlayer staff: plot.getPlotbuild().getOfflineStaffList()) {
             if(staff.getPlayer()!=(Player) cs) {
                 sendStaffMessage(cs, staff, plot.getPlotbuild().getName(), plot.getID());
             }

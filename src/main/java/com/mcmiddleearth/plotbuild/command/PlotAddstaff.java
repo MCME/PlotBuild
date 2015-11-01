@@ -53,18 +53,18 @@ public class PlotAddstaff extends PlotBuildCommand {
             sendPlayerNotFoundMessage(cs);
             return;
         }
-        if(plotbuild.getStaffList().contains(newStaff)) {
+        if(plotbuild.isStaff(newStaff)) {
             sendAlreadyStaffMessage(cs, newStaff, plotbuild.getName());
             return;
         }
-        if(plotbuild.getBannedPlayers().contains(newStaff)) {
+        if(plotbuild.isBanned(newStaff)) {
             sendBannedMessage(cs, newStaff, plotbuild.getName());
             return;
         }
-        plotbuild.getStaffList().add(newStaff);
+        plotbuild.addStaff(newStaff);
         sendAddStaffMessgage(cs, newStaff.getName(), plotbuild.getName());
         sendNewStaffPlayerMessage(cs, newStaff, plotbuild.getName());
-        for(OfflinePlayer staff: plotbuild.getStaffList()) {
+        for(OfflinePlayer staff: plotbuild.getOfflineStaffList()) {
             if(staff.getPlayer()!=(Player) cs && staff!=newStaff) {
                 sendOtherStaffMessage(cs, staff, newStaff, plotbuild.getName());
             }

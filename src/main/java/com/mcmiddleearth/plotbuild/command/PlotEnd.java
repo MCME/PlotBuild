@@ -59,7 +59,7 @@ public class PlotEnd extends PlotBuildCommand {
         for(Plot p : plotbuild.getPlots()) {
             if(p.getState() != PlotState.REMOVED) {
                 try {
-                    for(OfflinePlayer builder: p.getOwners()) {
+                    for(OfflinePlayer builder: p.getOfflineOwners()) {
                         if(builder.getPlayer()!=cs) {
                             sendBuilderDeletedMessage(cs, builder, p.getPlotbuild().getName(), p.getID());
                         }
@@ -88,7 +88,7 @@ public class PlotEnd extends PlotBuildCommand {
 
     private static void sendBuilderDeletedMessage(CommandSender cs, OfflinePlayer builder, String name, int id) {
         MessageUtil.sendOfflineMessage(builder, "Your plot #" + id
-                                                     + " of plotbuild " + name 
+                                                     + " of plotbuild  " + name 
                                                      + " was removed by "+ cs.getName()+" as the plotbuild ended.");
     }
     
@@ -109,10 +109,10 @@ public class PlotEnd extends PlotBuildCommand {
             }
             query = query + spl1 + unfinished + spl2 + " which "+spl4+" not accepted yet. ";
             if(keep) {
-                query = query + spl3 + " will be kept as they are now.";
+                query = query + spl3 + " will be kept as they are now. ";
             }
             else {
-                query = query + spl3 + " will be restored to initial state.";
+                query = query + spl3 + " will be restored to initial state. ";
             }
         }
         return query + "Are you sure to end this plotbuild?";
