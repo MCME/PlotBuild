@@ -24,7 +24,6 @@ import com.mcmiddleearth.plotbuild.exceptions.InvalidPlotLocationException;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.plotbuild.PlotBuild;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.command.CommandSender;

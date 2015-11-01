@@ -26,7 +26,7 @@ import org.bukkit.command.CommandSender;
 
 /**
  *
- * @author Lars
+ * @author Eriol_Eandur
  */
 public class PlotHelp extends AbstractCommand{
     

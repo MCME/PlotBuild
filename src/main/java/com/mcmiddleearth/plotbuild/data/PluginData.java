@@ -45,7 +45,6 @@ import java.util.logging.Logger;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -236,7 +235,6 @@ public class PluginData {
         currentPlotbuild.values().removeAll(Collections.singleton(plotbuild));
         try {
             boolean pbf = plotBuildFile.delete();
-            Logger.getGlobal().info("Deleting "+plotbuild.getName());
             boolean dr = FileUtil.deleteRecursive(plotDir);
             return pbf && dr;
         } catch (FileNotFoundException ex) {

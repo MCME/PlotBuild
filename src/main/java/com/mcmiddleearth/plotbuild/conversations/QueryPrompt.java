@@ -18,12 +18,9 @@
  */
 package com.mcmiddleearth.plotbuild.conversations;
 
-import com.mcmiddleearth.plotbuild.command.PlotEnd;
-import com.mcmiddleearth.plotbuild.plotbuild.PlotBuild;
 import org.bukkit.conversations.BooleanPrompt;
 import org.bukkit.conversations.ConversationContext;
 import org.bukkit.conversations.Prompt;
-import org.bukkit.entity.Player;
 
 /**
  *

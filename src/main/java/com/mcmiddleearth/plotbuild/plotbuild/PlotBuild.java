@@ -27,7 +27,6 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 
 /**
  *
