@@ -204,61 +204,69 @@ public class Plot {
         removeBorder();
     }
     
-    public void placeSigns(){
-        if(state!=PlotState.REMOVED) {
+    public final void placeSigns(){
+        if(border.size()>0 && state!=PlotState.REMOVED) {
             refreshBorder();
             Block signBlock = border.get(0).getBlock().getRelative(0, 3, -1);
-            signBlock.setType(Material.WALL_SIGN);
-            Sign sign = (Sign) signBlock.getState();
-            sign.setLine(0,plotbuild.getName()); 
-            sign.setLine(1,"#"+getID());
-            sign.setLine(3,"Builder:");
-            sign.update();
-            signBlock = signBlock.getRelative(0,-1,0);
-            if(owners.size()>0) {
+            if(signBlock.isEmpty() || signBlock.getType()==Material.WALL_SIGN) {
                 signBlock.setType(Material.WALL_SIGN);
-                sign = (Sign) signBlock.getState();
-                for(int i = 0; i<4; i++) {
-                    if(i < owners.size()) {
-                        sign.setLine(i, owners.get(i).getName());
-                    }
-                    else {
-                        sign.setLine(i, "");
-                    }
-                }
+                Sign sign = (Sign) signBlock.getState();
+                sign.setLine(0,plotbuild.getName()); 
+                sign.setLine(1,"#"+getID());
+                sign.setLine(3,"Builder:");
                 sign.update();
             }
-            else {
-                signBlock.setType(Material.AIR);
+            signBlock = signBlock.getRelative(0,-1,0);
+            if(signBlock.isEmpty() || signBlock.getType()==Material.WALL_SIGN) {
+                if(owners.size()>0) {
+                    signBlock.setType(Material.WALL_SIGN);
+                    Sign sign = (Sign) signBlock.getState();
+                    for(int i = 0; i<4; i++) {
+                        if(i < owners.size()) {
+                            sign.setLine(i, owners.get(i).getName());
+                        }
+                        else {
+                            sign.setLine(i, "");
+                        }
+                    }
+                    sign.update();
+                }
+                else {
+                    signBlock.setType(Material.AIR);
+                }
             }
             signBlock = signBlock.getRelative(0,-1,0);
-            if(owners.size()>4) {
-                signBlock.setType(Material.WALL_SIGN);
-                sign = (Sign) signBlock.getState();
-                for(int i = 4; i<8; i++) {
-                    if(i < owners.size()) {
-                        sign.setLine(i-4, owners.get(i).getName());
+            if(signBlock.isEmpty() || signBlock.getType()==Material.WALL_SIGN) {
+                if(owners.size()>4) {
+                    signBlock.setType(Material.WALL_SIGN);
+                    Sign sign = (Sign) signBlock.getState();
+                    for(int i = 4; i<8; i++) {
+                        if(i < owners.size()) {
+                            sign.setLine(i-4, owners.get(i).getName());
+                        }
+                        else {
+                            sign.setLine(i-4, "");
+                        }
                     }
-                    else {
-                        sign.setLine(i-4, "");
-                    }
+                    sign.update();
                 }
-                sign.update();
-            }
-            else {
-                signBlock.setType(Material.AIR);
+                else {
+                    signBlock.setType(Material.AIR);
+                }
             }
         }
     }
     
     private void removeSigns(){
-        Block signBlock = border.get(0).getBlock().getRelative(0, 3, -1);
-        signBlock.setType(Material.AIR);
-        signBlock = signBlock.getRelative(0,-1,0);
-        signBlock.setType(Material.AIR);
-        signBlock = signBlock.getRelative(0,-1,0);
-        signBlock.setType(Material.AIR);
+        if(border.size()>0) {
+            Block signBlock = border.get(0).getBlock().getRelative(0, 3, -1);
+            signBlock.setType(Material.AIR);
+            signBlock = signBlock.getRelative(0,-1,0);
+            signBlock.setType(Material.AIR);
+            signBlock = signBlock.getRelative(0,-1,0);
+            signBlock.setType(Material.AIR);
         }
+    }
     
     private void placeBorder(){
         if(plotbuild.getBorderType()!=BorderType.NONE) {
@@ -271,28 +279,38 @@ public class Plot {
                 this.placeWoolBlock(corner2.getBlockX()+1, plotbuild.getBorderHeight(), i);
             }  
         }
-        if(border.isEmpty()){
+        else {
             this.placeWoolBlock(corner1.getBlockX()-1, plotbuild.getBorderHeight(), corner1.getBlockZ()-1);
         }
-        Location first = border.get(0);
-        placeWoolBlock(first.getBlockX(),first.getBlockY()+1,first.getBlockZ());
-        placeWoolBlock(first.getBlockX(),first.getBlockY()+2,first.getBlockZ());
-        placeWoolBlock(first.getBlockX(),first.getBlockY()+3,first.getBlockZ());
+        if(!border.isEmpty()){
+            Location first = border.get(0);
+            placeWoolBlock(first.getBlockX(),first.getBlockY()+1,first.getBlockZ());
+            placeWoolBlock(first.getBlockX(),first.getBlockY()+2,first.getBlockZ());
+            placeWoolBlock(first.getBlockX(),first.getBlockY()+3,first.getBlockZ());
+        }
     }
  
     @SuppressWarnings("deprecation")
     private void placeWoolBlock(int x, int y, int z){
-    	Block currentBlock;
+    	Block currentBlock=corner1.getWorld().getBlockAt(x,y,z);
     	if(plotbuild.getBorderType()==BorderType.GROUND){
-            do {
-                currentBlock = corner1.getWorld().getBlockAt(x,y,z);
-                y--;
-            } while(currentBlock.isEmpty());
-            currentBlock = corner1.getWorld().getBlockAt(x,y+2,z); 
+            if(currentBlock.isEmpty()) {
+                do {
+                    currentBlock = corner1.getWorld().getBlockAt(x,y,z);
+                    y--;
+                } while(currentBlock.isEmpty() 
+                            && !(plotbuild.isCuboid() && (y+1<corner1.getBlockY() || y+1>corner2.getBlockY())));
+                currentBlock = corner1.getWorld().getBlockAt(x,y+2,z); 
+            }
+            else {
+                do {
+                    currentBlock = corner1.getWorld().getBlockAt(x,y,z);
+                    y++;
+                } while(!currentBlock.isEmpty()
+                            && !(plotbuild.isCuboid() && (y-1<corner1.getBlockY() || y-1>corner2.getBlockY())));
+                currentBlock = corner1.getWorld().getBlockAt(x,y-1,z); 
+           }
         }
-        else {
-            currentBlock = corner1.getWorld().getBlockAt(x,y,z); 
-    	}
     	if(currentBlock.isEmpty()) {
             currentBlock.setType(Material.WOOL);
             currentBlock.setData((byte) state.getState());            

@@ -236,6 +236,7 @@ public class PluginData {
         currentPlotbuild.values().removeAll(Collections.singleton(plotbuild));
         try {
             boolean pbf = plotBuildFile.delete();
+            Logger.getGlobal().info("Deleting "+plotbuild.getName());
             boolean dr = FileUtil.deleteRecursive(plotDir);
             return pbf && dr;
         } catch (FileNotFoundException ex) {
@@ -426,6 +427,7 @@ public class PluginData {
             Location location = new Location(world, coords.get(0), coords.get(1), coords.get(2));
             border.add(location);
         }
+        scanner.close();
         return new Plot(corner1, corner2, ownersList, state, border);
     }
 }

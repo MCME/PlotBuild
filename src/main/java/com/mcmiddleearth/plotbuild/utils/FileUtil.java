@@ -40,7 +40,12 @@ public class FileUtil {
                 ret = ret && FileUtil.deleteRecursive(f);
             }
         }
-        boolean deleted = path.delete();
+        boolean deleted;
+        try {
+            deleted = Files.deleteIfExists(path.toPath());
+        } catch (IOException ex) {
+            deleted = false;
+        }
         return ret && deleted;
     }
     
