@@ -43,13 +43,13 @@ public class PlotLeave extends InsidePlotCommand {
         if(plot==null) {
             return;
         }
-        if(plot.getOwners().size()<2) {
+        if(plot.countOwners()<2) {
             sendNoMoreOwnersMessage(cs);
             return;
         }
         plot.leave((Player)cs);
         sendPlotLeaveMessage(cs);
-        for(OfflinePlayer builder: plot.getOwners()) {
+        for(OfflinePlayer builder: plot.getOfflineOwners()) {
             sendOtherBuilderMessage(cs, builder, plot.getPlotbuild().getName(), plot.getID());
         }
         plot.getPlotbuild().log(((Player) cs).getName()+" left plot "+plot.getID()+".");

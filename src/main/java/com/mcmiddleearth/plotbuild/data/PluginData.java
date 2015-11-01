@@ -246,17 +246,17 @@ public class PluginData {
     
     public static boolean hasPermissionsToBuild(Player player, Location location) {
         Plot plot = getPlotAt(location);
-        return (plot != null && (plot.isOwner(player) || plot.getPlotbuild().getStaffList().contains(player)));
+        return (plot != null && (plot.isOwner(player) || plot.getPlotbuild().isStaff(player)));
     }
     
     public static boolean hasNoPermissionsToBuild(Player player, Location location) {
         Plot plot = getPlotAt(location);
-        return (!player.hasPermission("plotbuild.staff") && plot != null && !plot.isOwner(player) && !plot.getPlotbuild().getStaffList().contains(player));
+        return (!player.hasPermission("plotbuild.staff") && plot != null && !plot.isOwner(player) && !plot.getPlotbuild().isStaff(player));
     }
     
     public static boolean canSelectArea(Player player) {
         PlotBuild pb = getCurrentPlotbuild(player);
-        return player.hasPermission("plotbuild.staff") || (pb == null ? false : pb.getStaffList().contains(player));
+        return player.hasPermission("plotbuild.staff") || (pb == null ? false : pb.isStaff(player));
     }
     
     private static void savePlotBuild(PlotBuild plotbuild) throws IOException {
@@ -267,8 +267,8 @@ public class PluginData {
         if(plotBuildFile.exists() && plotDir.exists()) {
             FileWriter fw = new FileWriter(plotBuildFile.toString());
             PrintWriter writer = new PrintWriter(fw);
-            writer.println(ListUtil.playerListToString(plotbuild.getStaffList()));
-            writer.println(ListUtil.playerListToString(plotbuild.getBannedPlayers()));
+            writer.println(ListUtil.playerListToString(plotbuild.getOfflineStaffList()));
+            writer.println(ListUtil.playerListToString(plotbuild.getOfflineBannedPlayers()));
             writer.println(plotbuild.isLocked());
             writer.println(plotbuild.isPriv());
             writer.println(plotbuild.isCuboid());
@@ -303,7 +303,7 @@ public class PluginData {
             writer.println(plot.getCorner2().getBlockX() + " "
                          + plot.getCorner2().getBlockY() + " "
                          + plot.getCorner2().getBlockZ());
-            writer.println(ListUtil.playerListToString(plot.getOwners()));
+            writer.println(ListUtil.playerListToString(plot.getOfflineOwners()));
             writer.println(plot.getState());
             for(Location l : plot.getBorder()) {
                 writer.println(l.getWorld().getName());

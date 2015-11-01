@@ -59,7 +59,7 @@ public class PlotEnd extends PlotBuildCommand {
         for(Plot p : plotbuild.getPlots()) {
             if(p.getState() != PlotState.REMOVED) {
                 try {
-                    for(OfflinePlayer builder: p.getOwners()) {
+                    for(OfflinePlayer builder: p.getOfflineOwners()) {
                         if(builder.getPlayer()!=cs) {
                             sendBuilderDeletedMessage(cs, builder, p.getPlotbuild().getName(), p.getID());
                         }

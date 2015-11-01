@@ -49,7 +49,7 @@ public class PlotInfo extends InsidePlotCommand{
             sendInfoMessage(cs, plot.getPlotbuild().getInfo());
         }
         sendStaffHeaderMessage(cs, plot.getPlotbuild().getName());
-        for(OfflinePlayer staff : plot.getPlotbuild().getStaffList()) {
+        for(OfflinePlayer staff : plot.getPlotbuild().getOfflineStaffList()) {
             sendStaffMessage(cs, staff.getName());
         }
     }

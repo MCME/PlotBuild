@@ -56,7 +56,7 @@ public class PlotDelete extends InsidePlotCommand {
         if(args.length > 0 && args[0].equalsIgnoreCase("-k")) {
             keep = true;
             sendDeleteAndKeepMessage(cs);
-            for(OfflinePlayer builder: plot.getOwners()) {
+            for(OfflinePlayer builder: plot.getOfflineOwners()) {
                 if(builder.getPlayer()!=cs) {
                     sendBuilderDeletedMessage(cs, builder, plot.getPlotbuild().getName(), plot.getID());
                 }
@@ -65,7 +65,7 @@ public class PlotDelete extends InsidePlotCommand {
         }
         else {
             sendDeleteMessage(cs);
-            for(OfflinePlayer builder: plot.getOwners()) {
+            for(OfflinePlayer builder: plot.getOfflineOwners()) {
                 if(builder.getPlayer()!=cs) {
                     sendBuilderDeletedAndClearedMessage(cs, builder, plot.getPlotbuild().getName(), plot.getID());
                 }

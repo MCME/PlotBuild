@@ -59,13 +59,13 @@ public class PlotBan extends PlotBuildCommand {
             sendPlayerNotFoundMessage(cs);
             return;
         }
-        if(plotbuild.getBannedPlayers().contains(banned)) {
+        if(plotbuild.isBanned(banned)) {
             sendPlayerAlreadyBannedMessage(cs, banned.getName(), plotbuild.getName());
             return;
         }
         for(Plot plot : plotbuild.getPlots()) {
-            if(plot.getState()!=PlotState.REMOVED && plot.getOwners().contains(banned)) {
-                if(plot.getOwners().size()==1) {
+            if(plot.getState()!=PlotState.REMOVED && plot.isOwner(banned)) {
+                if(plot.countOwners()==1) {
                     try {
                         plot.unclaim();
                     } catch (InvalidRestoreDataException ex) {
@@ -76,7 +76,7 @@ public class PlotBan extends PlotBuildCommand {
                 }
                 else {
                     plot.leave(banned);
-                    for(OfflinePlayer builder: plot.getOwners()) {
+                    for(OfflinePlayer builder: plot.getOfflineOwners()) {
                         if(builder.getPlayer()!=cs) {
                             sendOtherBuilderMessage(cs, builder, banned, plot.getPlotbuild().getName(), plot.getID());
                 }
@@ -84,10 +84,10 @@ public class PlotBan extends PlotBuildCommand {
                 }
             }
         }
-        plotbuild.getBannedPlayers().add(banned);
-        if(plotbuild.getStaffList().contains(banned)) {
-            plotbuild.getStaffList().remove(banned);
-            for(OfflinePlayer staff: plotbuild.getStaffList()) {
+        plotbuild.addBanned(banned);
+        if(plotbuild.isStaff(banned)) {
+            plotbuild.removeStaff(banned);
+            for(OfflinePlayer staff: plotbuild.getOfflineStaffList()) {
                 if(staff.getPlayer()!=(Player) cs) {
                     sendOtherStaffMessage(cs, staff, banned, plotbuild.getName());
                 }

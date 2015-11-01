@@ -62,7 +62,7 @@ public class PlotAccept extends InsidePlotCommand {
             Logger.getLogger(PlotAccept.class.getName()).log(Level.SEVERE, null, ex);
         }
         sendAcceptMessage(cs);
-        for(OfflinePlayer builder: plot.getOwners()) {
+        for(OfflinePlayer builder: plot.getOfflineOwners()) {
             if(builder.getPlayer()!=cs) {
                 sendBuilderMessage(cs, builder, plot.getPlotbuild().getName(), plot.getID());
             }
