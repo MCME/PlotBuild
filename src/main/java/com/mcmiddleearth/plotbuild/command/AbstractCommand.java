@@ -111,7 +111,6 @@ public abstract class AbstractCommand {
                 }
             }
         }
-        Logger.getGlobal().info("permission granted");
         return true;
     }
     
