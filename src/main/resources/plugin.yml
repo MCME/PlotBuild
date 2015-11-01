@@ -1,6 +1,6 @@
 name: PlotBuild
 main: com.mcmiddleearth.plotbuild.PlotBuildPlugin
-version: 0.1
+version: 1.0
 description: PlotBuild plugin
 commands:
     plot:
