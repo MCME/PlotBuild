@@ -45,7 +45,6 @@ import java.util.logging.Logger;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -426,6 +425,7 @@ public class PluginData {
             Location location = new Location(world, coords.get(0), coords.get(1), coords.get(2));
             border.add(location);
         }
+        scanner.close();
         return new Plot(corner1, corner2, ownersList, state, border);
     }
 }

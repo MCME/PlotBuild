@@ -20,7 +20,6 @@ package com.mcmiddleearth.plotbuild.command;
 
 import com.mcmiddleearth.plotbuild.plotbuild.PlotBuild;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
-import java.util.logging.Logger;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.command.CommandSender;

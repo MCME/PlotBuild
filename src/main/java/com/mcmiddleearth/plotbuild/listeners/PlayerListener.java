@@ -24,7 +24,6 @@ import com.mcmiddleearth.plotbuild.data.Selection;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
 import java.util.List;
-import java.util.Map;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
