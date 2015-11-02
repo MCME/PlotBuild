@@ -19,7 +19,6 @@
 package com.mcmiddleearth.plotbuild.utils;
 
 import com.mcmiddleearth.plotbuild.data.PluginData;
-import java.util.logging.Logger;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
