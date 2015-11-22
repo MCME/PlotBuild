@@ -18,12 +18,16 @@
  */
 package com.mcmiddleearth.plotbuild.listeners;
 
+import com.mcmiddleearth.plotbuild.PlotBuildPlugin;
 import com.mcmiddleearth.plotbuild.constants.PlotState;
 import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.data.Selection;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
+import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -108,7 +112,15 @@ public class PlayerListener implements Listener{
             }
             else {
                 if(playersInOwnPlot.contains(player)) {
+                    boolean flying = false;
+                    if(player.isFlying()) {
+                        flying = true;  
+                    }
                     player.setGameMode(GameMode.SURVIVAL);
+                    if(PlotBuildPlugin.getPluginInstance().getConfig().getBoolean("enableFlight",false)) {
+                        player.setAllowFlight(true);
+                        player.setFlying(flying);
+                    }
                     playersInOwnPlot.remove(player);
                 }
             }

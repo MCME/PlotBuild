@@ -2,7 +2,7 @@
 #                         PLOTBUILD CONFIGURATION FILE                         #
 # ---------------------------------------------------------------------------- #
 #                                                                              #
-# Only one setting here - uncomment the line below and add your list of worlds #
+#   Uncomment the line below and add your list of worlds                       #
 #   if you want to turn on full protection. To allow players to build in       #
 #   protected worlds, give them plotbuild.trusted permission. Otherwise they   #
 #   will be able to build only inside their plots.                             #
@@ -11,3 +11,12 @@
 # protectedWorlds:
 #   - world1
 #   - world2
+
+# ---------------------------------------------------------------------------- #
+#                                                                              #
+#   Uncomment the line below if you want to enable flight for players leaving  #
+#   their own plot. Whithout this setting flight of an Adventurer will be      #
+#   disabled when he leaves his plot as his game mode is set back to survival  #
+# ---------------------------------------------------------------------------- #
+
+# enableFlight: true
