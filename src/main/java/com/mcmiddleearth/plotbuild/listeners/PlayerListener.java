@@ -18,6 +18,7 @@
  */
 package com.mcmiddleearth.plotbuild.listeners;
 
+import com.mcmiddleearth.plotbuild.PlotBuildPlugin;
 import com.mcmiddleearth.plotbuild.constants.PlotState;
 import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.data.Selection;
@@ -108,7 +109,15 @@ public class PlayerListener implements Listener{
             }
             else {
                 if(playersInOwnPlot.contains(player)) {
+                    boolean flying = false;
+                    if(player.isFlying()) {
+                        flying = true;  
+                    }
                     player.setGameMode(GameMode.SURVIVAL);
+                    if(PlotBuildPlugin.getPluginInstance().getConfig().getBoolean("enableFlight",false)) {
+                        player.setAllowFlight(true);
+                        player.setFlying(flying);
+                    }
                     playersInOwnPlot.remove(player);
                 }
             }

@@ -47,6 +47,10 @@ public class Plot {
     @Getter
     private Location corner2;
     
+    /**
+     * Allways use OfflinePlayer.getUniqueID() to check if a player is in 
+     * this List
+     */
     private List <OfflinePlayer> owners = new ArrayList <>();
     
     @Getter
