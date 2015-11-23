@@ -156,7 +156,7 @@ public class PluginData {
         for(OfflinePlayer offline: offlineMessages.keySet()) {
             if(offline!=null){
                 Player search = offline.getPlayer();
-                if(search==player) {
+                if(search.getUniqueId().equals(player.getUniqueId())) {
                     return offlineMessages.get(offline);
                 }
             }
