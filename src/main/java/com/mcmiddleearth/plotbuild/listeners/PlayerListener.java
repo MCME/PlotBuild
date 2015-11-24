@@ -55,6 +55,7 @@ public class PlayerListener implements Listener{
                 MessageUtil.sendInfoMessage(event.getPlayer(), message);
             }
             PluginData.deleteOfflineMessagesFor(event.getPlayer());
+            PluginData.saveData();
         }
     }
     
