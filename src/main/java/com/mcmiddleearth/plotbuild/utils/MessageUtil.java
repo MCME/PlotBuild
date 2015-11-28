@@ -58,8 +58,9 @@ public class MessageUtil {
     }
     
     public static void sendOfflineMessage(OfflinePlayer offlinePlayer, String message) {
-        Player player = offlinePlayer.getPlayer();
-        if(player != null) {
+        
+        if(offlinePlayer.isOnline()) {  
+            Player player = offlinePlayer.getPlayer();
             sendInfoMessage(player, message);
         }
         else {

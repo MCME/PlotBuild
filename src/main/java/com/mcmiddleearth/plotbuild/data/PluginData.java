@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import lombok.Getter;
@@ -86,6 +87,8 @@ public class PluginData {
     private static final File plotBuildDir = new File(PlotBuildPlugin.getPluginInstance().getDataFolder()
                                                     + File.separator + "plotbuilds");
     
+    private static final File messageFile = new File(PlotBuildPlugin.getPluginInstance().getDataFolder()
+                                                   + File.separator + "offlineMessages.msg");
     static {
         if(!plotBuildDir.exists()) {
             plotBuildDir.mkdirs();
@@ -152,11 +155,10 @@ public class PluginData {
         }
     }
     
-    public static List<String> getOfflineMessagesFor(Player player) {
+    public static List<String> getOfflineMessagesFor(OfflinePlayer player) {
         for(OfflinePlayer offline: offlineMessages.keySet()) {
             if(offline!=null){
-                Player search = offline.getPlayer();
-                if(search==player) {
+                if(offline.getUniqueId().equals(player.getUniqueId())) {
                     return offlineMessages.get(offline);
                 }
             }
@@ -164,14 +166,21 @@ public class PluginData {
         return null;
     }
     
-    public static void deleteOfflineMessagesFor(Player player) {
-        offlineMessages.remove(player);
+    public static void deleteOfflineMessagesFor(OfflinePlayer player) {
+        for(OfflinePlayer offline: offlineMessages.keySet()) {
+            if(offline!=null){
+                if(offline.getUniqueId().equals(player.getUniqueId())) {
+                    offlineMessages.remove(offline);
+                }
+            }
+        }
     }
     
     public static void saveData() {
         for(PlotBuild plotbuild : plotbuildsList) {
             try {
-                savePlotBuild(plotbuild);
+                savePlotBuild(plotbuild); 
+                saveOfflineMessages();
             } catch (IOException ex) {
                 Logger.getLogger(PluginData.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -205,6 +214,11 @@ public class PluginData {
         } else {
             loaded = true;
             PlotBuildPlugin.getPluginInstance().getLogger().info("All plotbuilds loaded.");
+        }
+        try {
+            loadOfflineMessages();
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(PluginData.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -427,5 +441,29 @@ public class PluginData {
         }
         scanner.close();
         return new Plot(corner1, corner2, ownersList, state, border);
+    }
+
+    private static void saveOfflineMessages() throws IOException{
+        messageFile.createNewFile();
+        if(messageFile.exists()) {
+            FileWriter fw = new FileWriter(messageFile.toString());
+            PrintWriter writer = new PrintWriter(fw);
+            for(OfflinePlayer player : offlineMessages.keySet()) {
+                writer.println(player.getUniqueId().toString());
+                writer.println(ListUtil.messageListToString(offlineMessages.get(player)));
+            }
+            writer.close();
+        } else {
+            throw new IOException();
+        }
+    }
+
+    private static void loadOfflineMessages() throws FileNotFoundException {
+        Scanner scanner = new Scanner(messageFile);
+        while(scanner.hasNext()) {
+            OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(scanner.nextLine()));
+            offlineMessages.put(player, ListUtil.messagesFromString(scanner.nextLine()));
+        }
+        scanner.close();
     }
 }

@@ -65,7 +65,7 @@ public class PlotSetInfo extends PlotBuildCommand {
 
     private void sendPlotbuildInfoMessage(CommandSender cs,String name) {
         MessageUtil.sendInfoMessage(cs, "You added an info URL to plotbuild "+name
-                                       +". Please verify that it is correct by using /plot help within a plot.");
+                                       +". Please verify that it is correct by using /plot info within a plot.");
     }
 
     private void sendNoValidURL(CommandSender cs) {

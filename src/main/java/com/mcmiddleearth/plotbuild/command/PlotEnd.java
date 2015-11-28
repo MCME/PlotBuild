@@ -51,6 +51,9 @@ public class PlotEnd extends PlotBuildCommand {
             sendNoPlotbuildFoundMessage(cs);
             return;
         }
+        if(!hasPermissionsForPlotBuild((Player) cs, plotbuild)) {
+            return;
+        }
         PluginData.getConfFactory().startQuery((Player)cs,getSecurityQuery(plotbuild,keep), plotbuild, keep);
         //this query calls endPlotBuild
     }

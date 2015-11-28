@@ -58,5 +58,19 @@ public class ListUtil {
         }
         return list;
     }
+
+    public static String messageListToString(List<String> messages) {
+        return Joiner.on(';').join(messages);
+    }
+    
+    public static List<String> messagesFromString(String string) {
+        ArrayList <String> messages = new ArrayList<>();
+        if(string.length() > 0) {
+            for(String message : Splitter.on(';').split(string)) {
+                messages.add(message);
+            }
+        }
+        return messages;
+    }
     
 }

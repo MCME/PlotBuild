@@ -110,7 +110,6 @@ public class PlotBuild {
      
     public boolean isBanned(OfflinePlayer player) {
         for(OfflinePlayer offPlayer : bannedPlayers) {
-            //Player search = offPlayer.getPlayer();
             if(player!=null && offPlayer.getUniqueId().equals((player.getUniqueId()))) {
                 return true;
             }
@@ -127,7 +126,12 @@ public class PlotBuild {
     }
     
     public void removeBan(OfflinePlayer player) {
-        bannedPlayers.remove(player);
+        for(OfflinePlayer offPlayer : bannedPlayers) {
+            if(player!=null && offPlayer.getUniqueId().equals((player.getUniqueId()))) {
+                bannedPlayers.remove(player);
+                return;
+            }
+        }
     }
     
     public boolean isStaff(OfflinePlayer player) {
@@ -149,7 +153,12 @@ public class PlotBuild {
     }
     
     public void removeStaff(OfflinePlayer player) {
-        staffList.remove(player);
+        for(OfflinePlayer offPlayer : staffList) {
+            if(player!=null && offPlayer.getUniqueId().equals((player.getUniqueId()))) {
+                staffList.remove(player);
+                return;
+            }
+        }
     }
     
     public List<OfflinePlayer> getOfflineStaffList() {
