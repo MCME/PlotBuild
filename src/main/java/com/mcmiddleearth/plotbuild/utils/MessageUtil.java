@@ -19,6 +19,7 @@
 package com.mcmiddleearth.plotbuild.utils;
 
 import com.mcmiddleearth.plotbuild.data.PluginData;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -58,9 +59,14 @@ public class MessageUtil {
     }
     
     public static void sendOfflineMessage(OfflinePlayer offlinePlayer, String message) {
-        
-        if(offlinePlayer.isOnline()) {  
-            Player player = offlinePlayer.getPlayer();
+        Player player=null;
+        for(Player search : Bukkit.getOnlinePlayers()) {
+            if(search.getUniqueId().equals(offlinePlayer.getUniqueId())) {
+                player = search;
+                break;
+            }
+        }
+        if(player!=null) {  
             sendInfoMessage(player, message);
         }
         else {
