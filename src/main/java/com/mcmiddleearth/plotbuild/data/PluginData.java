@@ -115,7 +115,7 @@ public class PluginData {
     public static Plot getPlotAt(Location location) {
         for(PlotBuild plotbuild : plotbuildsList) {
             for(Plot plot : plotbuild.getPlots()) {
-                if(plot.isInside(location)) {
+                if(plot.isInside(location) && plot.getState()!=PlotState.REMOVED) {
                     return plot;
                 }
             }
