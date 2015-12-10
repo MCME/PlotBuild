@@ -24,6 +24,7 @@ import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.data.Selection;
 import com.mcmiddleearth.plotbuild.exceptions.InvalidPlotLocationException;
 import com.mcmiddleearth.plotbuild.exceptions.InvalidRestoreDataException;
+import com.mcmiddleearth.plotbuild.utils.BukkitUtil;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
@@ -159,7 +160,7 @@ public class Plot {
     
     public void remove(OfflinePlayer player){
         if(owners.size()>1) {
-            owners.remove(player);
+            BukkitUtil.removePlayerFromList(owners, player);
             placeSigns();
         }
     }
@@ -173,7 +174,7 @@ public class Plot {
     }
     
     public void leave(OfflinePlayer player) {
-        owners.remove(player);
+        BukkitUtil.removePlayerFromList(owners, player);
         placeSigns();
     }
     

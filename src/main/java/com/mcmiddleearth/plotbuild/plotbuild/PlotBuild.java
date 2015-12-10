@@ -20,6 +20,7 @@ package com.mcmiddleearth.plotbuild.plotbuild;
 
 import com.mcmiddleearth.plotbuild.constants.BorderType;
 import com.mcmiddleearth.plotbuild.constants.PlotState;
+import com.mcmiddleearth.plotbuild.utils.BukkitUtil;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -128,7 +129,7 @@ public class PlotBuild {
     public void removeBan(OfflinePlayer player) {
         for(OfflinePlayer offPlayer : bannedPlayers) {
             if(player!=null && offPlayer.getUniqueId().equals((player.getUniqueId()))) {
-                bannedPlayers.remove(player);
+                BukkitUtil.removePlayerFromList(bannedPlayers, player);
                 return;
             }
         }
@@ -155,7 +156,7 @@ public class PlotBuild {
     public void removeStaff(OfflinePlayer player) {
         for(OfflinePlayer offPlayer : staffList) {
             if(player!=null && offPlayer.getUniqueId().equals((player.getUniqueId()))) {
-                staffList.remove(player);
+                BukkitUtil.removePlayerFromList(staffList, player);
                 return;
             }
         }
