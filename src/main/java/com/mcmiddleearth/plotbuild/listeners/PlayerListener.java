@@ -23,6 +23,7 @@ import com.mcmiddleearth.plotbuild.constants.PlotState;
 import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.data.Selection;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
+import com.mcmiddleearth.plotbuild.plotbuild.PlotBuild;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
 import java.util.List;
 import org.bukkit.GameMode;
@@ -51,11 +52,13 @@ public class PlayerListener implements Listener{
     public void playerJoins(PlayerJoinEvent event) {
         List<String> messages = PluginData.getOfflineMessagesFor(event.getPlayer());
         if(messages!=null) {
-            for(String message: messages) {
-                MessageUtil.sendInfoMessage(event.getPlayer(), message);
-            }
+            sendOfflineMessages(event.getPlayer(), messages);
             PluginData.deleteOfflineMessagesFor(event.getPlayer());
             PluginData.saveData();
+        }
+        List<Plot> plots = PluginData.getOwnedPlots(event.getPlayer());
+        if(!plots.isEmpty()) {
+            sendToDoInfoMessage(event.getPlayer(),plots);
         }
     }
     
@@ -109,7 +112,7 @@ public class PlayerListener implements Listener{
                 }
             }
             else {
-                if(playersInOwnPlot.contains(player)) {
+                if(playersInOwnPlot.contains(player) && !PluginData.isNearOwnPlot(player)) {
                     boolean flying = false;
                     if(player.isFlying()) {
                         flying = true;  
@@ -240,6 +243,23 @@ public class PlayerListener implements Listener{
     
     private void sendNotAllowedToBuildMessage(CommandSender cs) {
         MessageUtil.sendErrorMessage(cs, "You are not allowed to build here.");
+    }
+
+    private void sendToDoInfoMessage(Player player, List<Plot> plots) {
+        MessageUtil.sendInfoMessage(player, "Your active plots:");
+        for(Plot plot : plots) {
+            MessageUtil.sendNoPrefixInfoMessage(player, "- Plot #"+plot.getID()
+                                + " of plotbuild "+plot.getPlotbuild().getName()+": "
+                                + plot.getState().getStateMessage());
+        }
+        
+    }
+
+    private void sendOfflineMessages(Player player, List<String> messages) {
+        MessageUtil.sendInfoMessage(player, "There are some messages for you:");
+        for(String message: messages) {
+                MessageUtil.sendNoPrefixInfoMessage(player, message);
+            }
     }
 
 }

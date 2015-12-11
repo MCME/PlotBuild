@@ -26,7 +26,9 @@ import com.mcmiddleearth.plotbuild.exceptions.InvalidPlotLocationException;
 import com.mcmiddleearth.plotbuild.exceptions.InvalidRestoreDataException;
 import com.mcmiddleearth.plotbuild.utils.BukkitUtil;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Logger;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Location;
@@ -42,6 +44,7 @@ import org.bukkit.material.MaterialData;
  */
 public class Plot {
     
+    private static final int allowedDist = 5; //area around own plot in which a player gets creative mode
     @Getter
     private Location corner1;
     
@@ -58,7 +61,7 @@ public class Plot {
     private PlotState state;
     
     @Getter
-    private List <Location> border = new ArrayList <>();
+    private LinkedList <Location> border = new LinkedList <>();
     
     @Getter
     @Setter
@@ -81,7 +84,7 @@ public class Plot {
         placeSigns();
     }
     
-    public Plot(Location corner1, Location corner2, List <OfflinePlayer> owners, PlotState state, List <Location> border) {
+    public Plot(Location corner1, Location corner2, List <OfflinePlayer> owners, PlotState state, LinkedList <Location> border) {
         this.corner1 = corner1;
         this.corner2 = corner2;
         this.owners = owners;
@@ -96,6 +99,21 @@ public class Plot {
         }
         if( plotbuild.isCuboid()
             && (location.getBlockY() < corner1.getBlockY() || location.getBlockY() > corner2.getBlockY())) {
+            return false;
+        }
+        return true;
+    }
+    
+    public boolean isNear(Location location) {
+        if(    location.getBlockX() < corner1.getBlockX() - allowedDist 
+            || location.getBlockX() > corner2.getBlockX() + allowedDist
+            || location.getBlockZ() < corner1.getBlockZ() - allowedDist 
+            || location.getBlockZ() > corner2.getBlockZ() + allowedDist){
+            return false;
+        }
+        if( plotbuild.isCuboid()
+            && (   location.getBlockY() < corner1.getBlockY() - allowedDist
+                || location.getBlockY() > corner2.getBlockY() + allowedDist)) {
             return false;
         }
         return true;
@@ -144,59 +162,62 @@ public class Plot {
         return owners;
     }
     
-    public void claim(OfflinePlayer player){
+    public boolean claim(OfflinePlayer player){
         owners.add(player);
         state = PlotState.CLAIMED;
         refreshBorder();
-        placeSigns();
+        return placeSigns();
     }
     
-    public void invite(OfflinePlayer player){
+    public boolean invite(OfflinePlayer player){
         if(!owners.contains(player)) {
             owners.add(player);
-            placeSigns();
         }
+        return placeSigns();
     }
     
-    public void remove(OfflinePlayer player){
+    public boolean remove(OfflinePlayer player){
         if(owners.size()>1) {
             BukkitUtil.removePlayerFromList(owners, player);
-            placeSigns();
         }
+        return placeSigns();
     }
     
-    public void unclaim() throws InvalidRestoreDataException{
+    public boolean unclaim() throws InvalidRestoreDataException{
         owners.removeAll(owners);
         state = PlotState.UNCLAIMED;
         reset();
         refreshBorder();
-        placeSigns();
+        return placeSigns();
     }
     
-    public void leave(OfflinePlayer player) {
+    public boolean leave(OfflinePlayer player) {
         BukkitUtil.removePlayerFromList(owners, player);
-        placeSigns();
+        return placeSigns();
     }
     
-    public void finish(){
+    public boolean finish(){
         state = PlotState.FINISHED;
         refreshBorder();
+        return placeSigns();
     }
     
-    public void refuse(){
+    public boolean refuse(){
         state = PlotState.REFUSED;
         refreshBorder();
+        return placeSigns();
     }
     
     public void accept() throws InvalidRestoreDataException{
         delete(true);
     }
     
-    public void clear(boolean unclaim) throws InvalidRestoreDataException {
+    public boolean clear(boolean unclaim) throws InvalidRestoreDataException {
         if(unclaim) {
             unclaim();
         }
         reset();
+        return placeSigns();
     }
     
     public void delete(boolean keep) throws InvalidRestoreDataException{
@@ -208,32 +229,94 @@ public class Plot {
         removeBorder();
     }
     
-    public final void placeSigns(){
+    private boolean checkSignBlock(Block block0) {
+            Block signBlock = block0.getRelative(0, 3, -1);
+            if(signBlock.getType()!=Material.AIR)
+                return false;
+            signBlock = signBlock.getRelative(0,-1,0);
+            if(signBlock.getType()!=Material.AIR)
+                return false;
+            signBlock = signBlock.getRelative(0,-1,0);
+            if(signBlock.getType()!=Material.AIR)
+                return false;
+            signBlock = signBlock.getRelative(0,0,1);
+            if(signBlock.getType()!=Material.AIR && signBlock.getType()!=Material.WOOL)
+                return false;
+            signBlock = signBlock.getRelative(0,1,0);
+            if(signBlock.getType()!=Material.AIR && signBlock.getType()!=Material.WOOL)
+                return false;
+            signBlock = signBlock.getRelative(0,1,0);
+            if(signBlock.getType()!=Material.AIR && signBlock.getType()!=Material.WOOL)
+                return false;
+            return true;
+    }
+    
+    private boolean findSignBlock() {
+        int nbOfTries;
+        if(plotbuild.isCuboid()) {
+            nbOfTries = 2*(corner2.getBlockY()-corner1.getBlockY());
+        }
+        else {
+            nbOfTries = 4*(corner2.getBlockZ()-corner1.getBlockZ())+2*(corner2.getBlockY()-corner1.getBlockY());
+        }
+        for(int i = 0; i<border.size() && i<nbOfTries;i++) {
+            Location loc = border.get(i);
+            Block block = corner1.getWorld().getBlockAt(loc);
+            if(checkSignBlock(block)) {
+                border.remove(loc);
+                border.addFirst(loc);
+                placeWoolBlock(loc.getBlock().getRelative(0,1,0));
+                placeWoolBlock(loc.getBlock().getRelative(0,2,0));
+                placeWoolBlock(loc.getBlock().getRelative(0,3,0));
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public final boolean _placeSigns(){
+        Block block = border.get(1).getBlock().getRelative(0,1,0);
+        Logger.getGlobal().info(block.getX()+" "+block.getY()+" "+block.getZ());
+        block.setType(Material.WOOL);
+        block = block.getRelative(0,0,-1);
+        block.setType(Material.WALL_SIGN);
+        block.setType(Material.AIR);
+        return true;
+    }
+    public final boolean placeSigns(){
         if(border.size()>0 && state!=PlotState.REMOVED) {
+            removeSigns();
             refreshBorder();
+            if(!findSignBlock()){
+                return false;
+            }
             Block signBlock = border.get(0).getBlock().getRelative(0, 3, -1);
             if(signBlock.isEmpty() || signBlock.getType()==Material.WALL_SIGN) {
                 signBlock.setType(Material.WALL_SIGN);
-                Sign sign = (Sign) signBlock.getState();
-                sign.setLine(0,plotbuild.getName()); 
-                sign.setLine(1,"#"+getID());
-                sign.setLine(3,"Builder:");
-                sign.update();
+                if(signBlock.getState() instanceof Sign) {
+                    Sign sign = (Sign) signBlock.getState();
+                    sign.setLine(0,plotbuild.getName()); 
+                    sign.setLine(1,"#"+getID());
+                    sign.setLine(3,"Builder:");
+                    sign.update();
+                }
             }
             signBlock = signBlock.getRelative(0,-1,0);
             if(signBlock.isEmpty() || signBlock.getType()==Material.WALL_SIGN) {
                 if(owners.size()>0) {
                     signBlock.setType(Material.WALL_SIGN);
-                    Sign sign = (Sign) signBlock.getState();
-                    for(int i = 0; i<4; i++) {
-                        if(i < owners.size()) {
-                            sign.setLine(i, owners.get(i).getName());
+                    if(signBlock.getState() instanceof Sign) {
+                        Sign sign = (Sign) signBlock.getState();
+                        for(int i = 0; i<4; i++) {
+                            if(i < owners.size()) {
+                                sign.setLine(i, owners.get(i).getName());
+                            }
+                            else {
+                                sign.setLine(i, "");
+                            }
                         }
-                        else {
-                            sign.setLine(i, "");
-                        }
+                        sign.update();
                     }
-                    sign.update();
                 }
                 else {
                     signBlock.setType(Material.AIR);
@@ -243,59 +326,82 @@ public class Plot {
             if(signBlock.isEmpty() || signBlock.getType()==Material.WALL_SIGN) {
                 if(owners.size()>4) {
                     signBlock.setType(Material.WALL_SIGN);
-                    Sign sign = (Sign) signBlock.getState();
-                    for(int i = 4; i<8; i++) {
-                        if(i < owners.size()) {
-                            sign.setLine(i-4, owners.get(i).getName());
+                    if(signBlock.getState() instanceof Sign) {
+                        Sign sign = (Sign) signBlock.getState();
+                        for(int i = 4; i<8; i++) {
+                            if(i < owners.size()) {
+                                sign.setLine(i-4, owners.get(i).getName());
+                            }
+                            else {
+                                sign.setLine(i-4, "");
+                            }
                         }
-                        else {
-                            sign.setLine(i-4, "");
-                        }
+                        sign.update();
                     }
-                    sign.update();
                 }
                 else {
                     signBlock.setType(Material.AIR);
                 }
             }
         }
+        return true;
     }
     
     private void removeSigns(){
         if(border.size()>0) {
             Block signBlock = border.get(0).getBlock().getRelative(0, 3, -1);
-            signBlock.setType(Material.AIR);
+            if(signBlock.getType()==Material.WALL_SIGN) {
+                signBlock.setType(Material.AIR);
+            }
             signBlock = signBlock.getRelative(0,-1,0);
-            signBlock.setType(Material.AIR);
+            if(signBlock.getType()==Material.WALL_SIGN){
+                signBlock.setType(Material.AIR);
+            }
             signBlock = signBlock.getRelative(0,-1,0);
-            signBlock.setType(Material.AIR);
+            if(signBlock.getType()==Material.WALL_SIGN){
+                signBlock.setType(Material.AIR);
+            }
+        }
+        Location signLoc = border.get(0);
+        int signBlockX = signLoc.getBlockX();
+        int signBlockZ = signLoc.getBlockZ();
+        List<Location> removeList = new ArrayList<>();
+        if(!isCorner(signBlockX,signBlockZ) || plotbuild.getBorderType()!=BorderType.CAGE) {
+            for(Location loc : border) {
+                if(loc!=signLoc &&loc.getBlockX()==signBlockX && loc.getBlockZ()==signBlockZ) {
+                    if(loc.getBlock().getType() == Material.WOOL) {
+                        loc.getBlock().setType(Material.AIR);
+                    }
+                    removeList.add(loc);
+                }
+            }
+            border.removeAll(removeList);
         }
     }
     
     private void placeBorder(){
         if(plotbuild.getBorderType()!=BorderType.NONE) {
-            for(int i = corner1.getBlockX()-1; i<=corner2.getBlockX()+1;i++){
-                this.placeWoolBlock(i, plotbuild.getBorderHeight(), corner1.getBlockZ()-1);
-                this.placeWoolBlock(i, plotbuild.getBorderHeight(), corner2.getBlockZ()+1);
-            }
-            for(int i = corner1.getBlockZ(); i<=corner2.getBlockZ();i++){
-                this.placeWoolBlock(corner1.getBlockX()-1, plotbuild.getBorderHeight(), i);
-                this.placeWoolBlock(corner2.getBlockX()+1, plotbuild.getBorderHeight(), i);
+            for(int i = corner2.getBlockZ()+1; i>=corner1.getBlockZ()-1;i--){
+                this.placeBorderColumn(corner1.getBlockX()-1, plotbuild.getBorderHeight(), i);
+                this.placeBorderColumn(corner2.getBlockX()+1, plotbuild.getBorderHeight(), i);
             }  
+            for(int i = corner1.getBlockX(); i<=corner2.getBlockX();i++){
+                this.placeBorderColumn(i, plotbuild.getBorderHeight(), corner1.getBlockZ()-1);
+                this.placeBorderColumn(i, plotbuild.getBorderHeight(), corner2.getBlockZ()+1);
+            }
         }
         else {
-            this.placeWoolBlock(corner1.getBlockX()-1, plotbuild.getBorderHeight(), corner1.getBlockZ()-1);
+            this.placeBorderColumn(corner1.getBlockX()-1, plotbuild.getBorderHeight(), corner1.getBlockZ()-1);
         }
         if(!border.isEmpty()){
             Location first = border.get(0);
-            placeWoolBlock(first.getBlockX(),first.getBlockY()+1,first.getBlockZ());
-            placeWoolBlock(first.getBlockX(),first.getBlockY()+2,first.getBlockZ());
-            placeWoolBlock(first.getBlockX(),first.getBlockY()+3,first.getBlockZ());
+            placeWoolBlock(corner1.getWorld().getBlockAt(first.getBlockX(),first.getBlockY()+1,first.getBlockZ()));
+            placeWoolBlock(corner1.getWorld().getBlockAt(first.getBlockX(),first.getBlockY()+2,first.getBlockZ()));
+            placeWoolBlock(corner1.getWorld().getBlockAt(first.getBlockX(),first.getBlockY()+3,first.getBlockZ()));
         }
     }
  
-    @SuppressWarnings("deprecation")
-    private void placeWoolBlock(int x, int y, int z){
+    private void placeBorderColumn(int x, int y, int z){
     	Block currentBlock=corner1.getWorld().getBlockAt(x,y,z);
     	if(plotbuild.getBorderType()==BorderType.GROUND){
             if(currentBlock.isEmpty()) {
@@ -315,18 +421,41 @@ public class Plot {
                 currentBlock = corner1.getWorld().getBlockAt(x,y-1,z); 
            }
         }
-    	if(currentBlock.isEmpty()) {
-            currentBlock.setType(Material.WOOL);
-            currentBlock.setData((byte) state.getState());            
-            border.add(currentBlock.getLocation());
+    	if(plotbuild.isCuboid()) {
+            if(isCorner(x,z)) {
+                for(int i = corner1.getBlockY(); i<=corner2.getBlockY(); i++) {
+                    placeWoolBlock(corner1.getWorld().getBlockAt(x,i,z));
+                }
+            }
+            currentBlock = corner1.getWorld().getBlockAt(x,corner1.getBlockY()-1,z);
+            placeWoolBlock(currentBlock);
+            currentBlock = corner2.getWorld().getBlockAt(x,corner2.getBlockY()+1,z);
+        }
+        placeWoolBlock(currentBlock);
+    }
+        
+    private boolean isCorner(int x, int z){
+        return (   corner1.getBlockX()-1==x && corner1.getBlockZ()-1==z
+                || corner1.getBlockX()-1==x && corner2.getBlockZ()+1==z
+                || corner2.getBlockX()+1==x && corner1.getBlockZ()-1==z
+                || corner2.getBlockX()+1==x && corner2.getBlockZ()+1==z);
+    }
+        
+    private void placeWoolBlock(Block block) {
+        if(block.isEmpty()) {
+            block.setType(Material.WOOL);
+            block.setData((byte) state.getState());            
+            border.add(block.getLocation());
         }
     }
 
     private void refreshBorder(){
         for(Location loc : border) {
             Block block = corner1.getWorld().getBlockAt(loc);
-            block.setType(Material.WOOL);
-            block.setData((byte) state.getState());
+            if(block.isEmpty() || block.getType() == Material.WOOL) {
+                block.setType(Material.WOOL);
+                block.setData((byte) state.getState());
+            }
         }
     }
     

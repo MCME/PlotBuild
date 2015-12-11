@@ -57,7 +57,7 @@ public class QueryPrompt extends BooleanPrompt{
     
     @Override
     protected String getFailedValidationText(ConversationContext context, String invalidInput){
-        return "Type in 'yes' or 'no'.";
+        return "Type 'yes' or 'no' in chat.";
     }
     
 }

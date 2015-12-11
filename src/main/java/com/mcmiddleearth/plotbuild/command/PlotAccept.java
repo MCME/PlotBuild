@@ -52,10 +52,10 @@ public class PlotAccept extends InsidePlotCommand {
         if(!hasPermissionsForPlotBuild((Player) cs, plot.getPlotbuild())) {
             return;
         }
-        if(plot.getState()!=PlotState.FINISHED) {
+        /*if(plot.getState()!=PlotState.FINISHED) {
             sendNotFinishedMessage(cs);
             return;
-        }
+        }*/
         try {
             plot.accept();
         } catch (InvalidRestoreDataException ex) {
@@ -90,7 +90,8 @@ public class PlotAccept extends InsidePlotCommand {
     }
 
     private String getLastPlotAcceptedQuery(PlotBuild plotbuild) {
-        return "You accepted the last plot of the plotbuild "+plotbuild.getName()+". Do you want to end this plotbuild now?";
+        return "You accepted the last plot of the plotbuild "+plotbuild.getName()
+                +". Do you want to end this plotbuild now? Type 'yes' or 'no' in chat.";
     }
     
 }

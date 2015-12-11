@@ -20,11 +20,14 @@ package com.mcmiddleearth.plotbuild.plotbuild;
 
 import com.mcmiddleearth.plotbuild.constants.BorderType;
 import com.mcmiddleearth.plotbuild.constants.PlotState;
+import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.utils.BukkitUtil;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.OfflinePlayer;
@@ -174,4 +177,17 @@ public class PlotBuild {
     public void log(String entry) {
         history.add(LocalDateTime.now().format(formatter)+entry);
     }
+    
+    public Set<OfflinePlayer> getBuilders() {
+        Set<OfflinePlayer> builders = new HashSet<>();
+        for(Plot plot : getPlots()) {
+            if(plot.getState()!=PlotState.REMOVED) {
+                List<OfflinePlayer> owners = plot.getOfflineOwners();
+                builders.addAll(owners);
+            }
+        }
+        return builders;
+    }
+    
+    
 }

@@ -75,7 +75,9 @@ public class PlotInvite extends InsidePlotCommand {
             sendPlayerBannedMessage(cs, invitedPlayer.getName());
             return;
         }
-        plot.invite(invitedPlayer);
+        if(!plot.invite(invitedPlayer)) {
+            sendNoSignPlaceMessage(cs);
+        }
         sendInvitedMessage(cs, invitedPlayer.getName());
         sendInvitedPlayerMessage(cs, invitedPlayer, plot.getPlotbuild().getName(), plot.getID());
         for(OfflinePlayer builder: plot.getOfflineOwners()) {
@@ -88,7 +90,11 @@ public class PlotInvite extends InsidePlotCommand {
     }
 
     private void sendAlreadyMemberMessage(CommandSender cs, String name) {
-        MessageUtil.sendErrorMessage(cs, name + " is already owner of an other plot in this plotbuild.");
+        MessageUtil.sendErrorMessage(cs, name + " is already owner of another plot in this plotbuild.");
+    }
+    
+        protected void sendPlotbuildPrivateMessage(CommandSender cs) {
+        MessageUtil.sendErrorMessage(cs, "This plotbuild is private. Ask staff if you want additional players to be assigned to your plot.");
     }
 
     private void sendAlreadyOwnerMessage(CommandSender cs, String name) {

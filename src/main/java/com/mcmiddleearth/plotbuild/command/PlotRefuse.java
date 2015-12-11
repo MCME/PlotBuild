@@ -47,7 +47,9 @@ public class PlotRefuse extends InsidePlotCommand {
         if(!hasPermissionsForPlotBuild((Player) cs, plot.getPlotbuild())) {
             return;
         }
-        plot.refuse();
+        if(!plot.refuse()) {
+            sendNoSignPlaceMessage(cs);
+        }
         for(OfflinePlayer builder: plot.getOfflineOwners()) {
             if(builder.getPlayer()!=cs) {
                 sendBuilderMessage(cs, builder, plot.getPlotbuild().getName(), plot.getID());
@@ -63,9 +65,10 @@ public class PlotRefuse extends InsidePlotCommand {
     }
  
     private void sendBuilderMessage(CommandSender cs, OfflinePlayer builder, String name, int id) {
-        MessageUtil.sendOfflineMessage(builder, "Your plot #" + id
-                                                     + " of plotbuild " + name 
-                                                     + " need some improvements. Please ask "+ cs.getName()+" for instructions.");
+        MessageUtil.sendOfflineMessage(builder, "Your plot #" + id + " of plotbuild " + name 
+                                                     + " needs some improvements. " 
+                                                     + "Check for notes on your build or ask "
+                                                     + cs.getName()+" for instructions.");
     }
 
 }

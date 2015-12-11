@@ -101,6 +101,10 @@ public abstract class AbstractCommand {
         MessageUtil.sendErrorMessage(cs, "No plotbuild with this name.");
     }   
 
+    protected void sendNoSignPlaceMessage(CommandSender cs) {
+        MessageUtil.sendErrorMessage(cs, "No suited place for plot signs was found.");
+    }
+
     protected boolean hasPermissionsForPlotBuild(Player p, PlotBuild plotbuild) {
         if(permissionNodes != null && !plotbuild.isStaff(p)) {
             for(String permission : permissionNodes) {
