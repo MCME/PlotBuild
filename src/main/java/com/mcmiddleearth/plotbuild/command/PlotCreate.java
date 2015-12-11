@@ -66,7 +66,6 @@ public class PlotCreate extends AbstractCommand {
                 isPrivate = true;
             }
             if(args[i].equalsIgnoreCase("-3D")) {
-                MessageUtil.sendInfoMessage(cs, "cuboid");
                 isCuboid = true;
             }
             try {
@@ -76,13 +75,13 @@ public class PlotCreate extends AbstractCommand {
         }
         if(!borderTypeDefined) {
             if(isCuboid) {
-                borderType = BorderType.CAGE;
+                borderType = BorderType.BOX;
             }
             else {
                 borderType = BorderType.GROUND;
             }
         }
-        if(!isCuboid && borderType == BorderType.CAGE) {
+        if(!isCuboid && borderType == BorderType.BOX) {
             sendWrongBorderErrorMessage((Player) cs, isCuboid);
             return;
         }

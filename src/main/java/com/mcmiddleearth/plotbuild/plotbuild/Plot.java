@@ -366,7 +366,7 @@ public class Plot {
         int signBlockX = signLoc.getBlockX();
         int signBlockZ = signLoc.getBlockZ();
         List<Location> removeList = new ArrayList<>();
-        if(!isCorner(signBlockX,signBlockZ) || plotbuild.getBorderType()!=BorderType.CAGE) {
+        if(!isCorner(signBlockX,signBlockZ) || plotbuild.getBorderType()!=BorderType.BOX) {
             for(Location loc : border) {
                 if(loc!=signLoc &&loc.getBlockX()==signBlockX && loc.getBlockZ()==signBlockZ) {
                     if(loc.getBlock().getType() == Material.WOOL) {

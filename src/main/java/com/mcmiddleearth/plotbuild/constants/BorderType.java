@@ -28,7 +28,7 @@ public enum BorderType {
     GROUND  ("ground"),
     FLOAT   ("float"),
     NONE    ("none"),
-    CAGE    ("cage");
+    BOX    ("box");
     
     @Getter
     private final String type;
