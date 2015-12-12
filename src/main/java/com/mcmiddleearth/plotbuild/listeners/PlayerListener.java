@@ -101,9 +101,8 @@ public class PlayerListener implements Listener{
     public void playerMove(PlayerMoveEvent event) {
         if(event.getFrom().getBlock()!=event.getTo().getBlock()) {
             Player player = event.getPlayer();
-            Plot plot = PluginData.getPlotAt(event.getTo());
             List playersInOwnPlot = PluginData.getPlayersInOwnPlot();
-            if(plot != null && plot.getState()!=PlotState.REMOVED && plot.isOwner(player)) {
+            if(PluginData.isNearOwnPlot(player)) {
                 if(player.getGameMode()==GameMode.SURVIVAL) {
                     if(!playersInOwnPlot.contains(player)) {
                         playersInOwnPlot.add(player);
