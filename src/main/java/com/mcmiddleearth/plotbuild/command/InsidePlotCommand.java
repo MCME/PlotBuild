@@ -65,10 +65,7 @@ public abstract class InsidePlotCommand extends AbstractCommand {
     private void sendNotOwnerMessage(CommandSender cs) {
         MessageUtil.sendErrorMessage(cs, "You are not owner of this plot.");
     }
-
-    protected void sendPlotbuildPrivateMessage(CommandSender cs) {
-        MessageUtil.sendErrorMessage(cs, "This plotbuild is private. Ask staff to assign you to a plot.");
-    }
+    
 
 
 

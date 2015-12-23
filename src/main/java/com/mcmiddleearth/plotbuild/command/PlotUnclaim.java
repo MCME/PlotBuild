@@ -56,7 +56,9 @@ public class PlotUnclaim extends InsidePlotCommand {
             return;
         }
         try {
-            plot.unclaim();
+            if(!plot.unclaim()){
+                sendNoSignPlaceMessage(cs);
+            }
         } catch (InvalidRestoreDataException ex) {
             Logger.getLogger(PlotDelete.class.getName()).log(Level.SEVERE, null, ex);
             sendRestoreErrorMessage(cs);

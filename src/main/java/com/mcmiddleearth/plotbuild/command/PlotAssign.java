@@ -66,11 +66,15 @@ public class PlotAssign extends InsidePlotCommand {
             sendMaxTeamSize(cs);
             return;
         }
+        boolean signsPlaced;
         if(plot.getState()==PlotState.UNCLAIMED) {
-            plot.claim(assignedPlayer);
+            signsPlaced = plot.claim(assignedPlayer);
         }
         else {
-            plot.invite(assignedPlayer);
+            signsPlaced = plot.invite(assignedPlayer);
+        }
+        if(!signsPlaced) {
+            sendNoSignPlaceMessage(cs);
         }
         sendAssignedMessage(cs, assignedPlayer.getName());
         if(cs!=assignedPlayer.getPlayer()) {

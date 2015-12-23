@@ -52,6 +52,7 @@ public class PlotCreate extends AbstractCommand {
             
         //evaluate parameters
         BorderType borderType = BorderType.GROUND;
+        boolean borderTypeDefined = false;
     	int borderHeight = ((Player)cs).getLocation().getBlockY();
     	boolean isPrivate = false;
         boolean isCuboid = false;
@@ -59,18 +60,34 @@ public class PlotCreate extends AbstractCommand {
             BorderType newBorderType = BorderType.fromString(args[i]);
             if(newBorderType!=null) {
                 borderType = newBorderType;
+                borderTypeDefined = true;
             }
             if(args[i].equalsIgnoreCase("-p")) {
                 isPrivate = true;
             }
             if(args[i].equalsIgnoreCase("-3D")) {
-                MessageUtil.sendInfoMessage(cs, "cuboid");
                 isCuboid = true;
             }
             try {
                 borderHeight = Integer.parseInt(args[i]);
             }
             catch(NumberFormatException e){}
+        }
+        if(!borderTypeDefined) {
+            if(isCuboid) {
+                borderType = BorderType.BOX;
+            }
+            else {
+                borderType = BorderType.GROUND;
+            }
+        }
+        if(!isCuboid && borderType == BorderType.BOX) {
+            sendWrongBorderErrorMessage((Player) cs, isCuboid);
+            return;
+        }
+        if(isCuboid && ((borderType == BorderType.GROUND) || (borderType == BorderType.FLOAT))) {
+            sendWrongBorderErrorMessage((Player) cs, isCuboid);
+            return;
         }
        
         //create new plotbuild
@@ -99,4 +116,13 @@ public class PlotCreate extends AbstractCommand {
     protected void sendPlotbuildCreatedMessage(CommandSender cs){
         MessageUtil.sendInfoMessage(cs, "Plotbuild created.");
     }   
+
+    private void sendWrongBorderErrorMessage(Player player, boolean cuboid) {
+        if(cuboid) {
+            MessageUtil.sendErrorMessage(player, "Only border type cage (default) or none allowed with option -3D. No plotbuild created.");
+        }
+        else {
+            MessageUtil.sendErrorMessage(player, "Border type cage is not allowed without option -3D. No plotbuild created.");
+        }
+    }
 }

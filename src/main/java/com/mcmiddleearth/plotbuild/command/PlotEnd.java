@@ -82,7 +82,7 @@ public class PlotEnd extends PlotBuildCommand {
     }
     
     private static void sendPlotbuildDeletedMessage(CommandSender cs) {
-        MessageUtil.sendInfoMessage(cs, "Plotbuild successfully deleted.");
+        MessageUtil.sendInfoMessage(cs, "Plotbuild successfully ended.");
     }
     
     private static void sendPlotbuildDeleteFailedMessage(CommandSender cs) {
@@ -118,7 +118,7 @@ public class PlotEnd extends PlotBuildCommand {
                 query = query + spl3 + " will be restored to initial state. ";
             }
         }
-        return query + "Are you sure to end this plotbuild?";
+        return query + "Are you sure to end this plotbuild? Type 'yes' or 'no' in chat.";
     }
 
 }

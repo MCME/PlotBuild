@@ -27,7 +27,8 @@ import lombok.Getter;
 public enum BorderType {
     GROUND  ("ground"),
     FLOAT   ("float"),
-    NONE    ("none");
+    NONE    ("none"),
+    BOX    ("box");
     
     @Getter
     private final String type;
