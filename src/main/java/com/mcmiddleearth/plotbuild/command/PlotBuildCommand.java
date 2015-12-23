@@ -21,6 +21,7 @@ package com.mcmiddleearth.plotbuild.command;
 import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.plotbuild.PlotBuild;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
+import java.util.logging.Logger;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -37,17 +38,17 @@ public abstract class PlotBuildCommand extends AbstractCommand{
     protected PlotBuild checkPlotBuild(Player player, int nameIndex, String... args) {
         //setting plotbuild
         PlotBuild plotbuild = null;
-        if(args.length <= nameIndex){
-            plotbuild = PluginData.getCurrentPlotbuild(player);
+        if(args.length > nameIndex){
+            plotbuild=PluginData.getPlotBuild(args[nameIndex]);
             if(plotbuild == null){
-                sendNoCurrentPlotbuildMessage(player);
+                sendNoPlotbuildFoundMessage(player);
                 return null;
             }
         }
         else{
-            plotbuild=PluginData.getPlotBuild(args[nameIndex]);
+            plotbuild = PluginData.getCurrentPlotbuild(player);
             if(plotbuild == null){
-                sendNoPlotbuildFoundMessage(player);
+                sendNoCurrentPlotbuildMessage(player);
                 return null;
             }
         }

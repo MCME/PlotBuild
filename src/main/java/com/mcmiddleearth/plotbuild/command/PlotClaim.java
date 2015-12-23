@@ -67,7 +67,9 @@ public class PlotClaim extends InsidePlotCommand {
             sendPlayerBannedMessage(cs);
             return;
         }
-        plot.claim((Player) cs);
+        if(!plot.claim((Player) cs)) {
+            sendNoSignPlaceMessage(cs);
+        }
         sendPlotClaimedMessage(cs);
         plot.getPlotbuild().log(((Player) cs).getName()+" claimed plot "+plot.getID()+".");
         PluginData.saveData();
@@ -75,6 +77,10 @@ public class PlotClaim extends InsidePlotCommand {
 
     private void sendPlotClaimedMessage(CommandSender cs) {
         MessageUtil.sendInfoMessage(cs, "You claimed this plot. For build instructions type: /plot info");
+    }
+
+        protected void sendPlotbuildPrivateMessage(CommandSender cs) {
+        MessageUtil.sendErrorMessage(cs, "This plotbuild is private. Ask staff to assign you to a plot.");
     }
 
     private void sendPlotAlreadyClaimedMessage(CommandSender cs) {
@@ -86,7 +92,7 @@ public class PlotClaim extends InsidePlotCommand {
     }
 
     private void sendAlreadyMemberMessage(CommandSender cs) {
-        MessageUtil.sendErrorMessage(cs, "You are already owner of an other plot in this plotbuild.");
+        MessageUtil.sendErrorMessage(cs, "You are already owner of another plot in this plotbuild.");
     }
 
     private void sendPlotbuildLockedMessage(CommandSender cs) {

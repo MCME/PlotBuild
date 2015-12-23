@@ -61,7 +61,7 @@ public class PlotDelete extends InsidePlotCommand {
                     sendBuilderDeletedMessage(cs, builder, plot.getPlotbuild().getName(), plot.getID());
                 }
             }
-            plot.getPlotbuild().log(((Player) cs).getName()+" claimed plot "+plot.getID()+".");
+            logMessage1 = " deleted and kept changes ";
         }
         else {
             sendDeleteMessage(cs);
@@ -78,7 +78,7 @@ public class PlotDelete extends InsidePlotCommand {
             Logger.getLogger(PlotDelete.class.getName()).log(Level.SEVERE, null, ex);
             sendRestoreErrorMessage(cs);
             logMessage1 = " deleted ";
-            logMessage2 = " There was an error during clearing of the plot.";
+            logMessage2 = " Changes were kept as there was an error during clearing of the plot.";
         }
         PlotBuild plotbuild = plot.getPlotbuild();
         plotbuild.log(((Player) cs).getName()+logMessage1+"plot "+plot.getID()+"."+logMessage2);
@@ -109,7 +109,8 @@ public class PlotDelete extends InsidePlotCommand {
     }
     
     private String getLastPlotDeletedQuery(PlotBuild plotbuild) {
-        return "You deleted the last open plot of the plotbuild "+plotbuild.getName()+". Do you want to end this plotbuild now?";
+        return "You deleted the last open plot of the plotbuild "+plotbuild.getName()
+                +". Do you want to end this plotbuild now? Type 'yes' or 'no' in chat.";
     }
     
 }

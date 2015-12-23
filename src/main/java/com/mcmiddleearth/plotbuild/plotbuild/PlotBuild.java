@@ -24,7 +24,9 @@ import com.mcmiddleearth.plotbuild.utils.BukkitUtil;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.OfflinePlayer;
@@ -118,10 +120,6 @@ public class PlotBuild {
         return false;
     }
     
-    /*public boolean isOfflineBanned(OfflinePlayer player) {
-        return bannedPlayers.contains(player);
-    }*/
-    
     public List<OfflinePlayer> getOfflineBannedPlayers() {
         return bannedPlayers;
     }
@@ -144,10 +142,6 @@ public class PlotBuild {
         }
         return false;
     }
-    
-    /*public boolean isOfflineStaff(OfflinePlayer player) {
-        return staffList.contains(player);
-    }*/
     
     public void addStaff(OfflinePlayer player) {
         staffList.add(player);
@@ -174,4 +168,17 @@ public class PlotBuild {
     public void log(String entry) {
         history.add(LocalDateTime.now().format(formatter)+entry);
     }
+    
+    public Set<OfflinePlayer> getBuilders() {
+        Set<OfflinePlayer> builders = new HashSet<>();
+        for(Plot plot : getPlots()) {
+            if(plot.getState()!=PlotState.REMOVED) {
+                List<OfflinePlayer> owners = plot.getOfflineOwners();
+                builders.addAll(owners);
+            }
+        }
+        return builders;
+    }
+    
+    
 }

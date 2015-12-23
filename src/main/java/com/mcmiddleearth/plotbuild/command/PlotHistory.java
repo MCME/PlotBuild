@@ -39,7 +39,7 @@ public class PlotHistory extends PlotBuildCommand {
     
     @Override
     protected void execute(CommandSender cs, String... args) {
-        PlotBuild plotbuild = checkPlotBuild((Player) cs, 1, args);
+        PlotBuild plotbuild = checkPlotBuild((Player) cs, 0, args);
         if(plotbuild == null) {
             return;
         }
@@ -63,7 +63,8 @@ public class PlotHistory extends PlotBuildCommand {
             page = maxPage;
         }
         sendHistoryHeaderMessage(cs, plotbuild.getName(), page, maxPage);
-        for(int i = (page-1)*10; i < history.size() && i < (page-1)*10+10; i++) {
+        //for(int i = (page-1)*10; i < history.size() && i < (page-1)*10+10; i++) {
+        for(int i = history.size()-1-(page-1)*10; i >= 0 && i > history.size()-1-(page-1)*10-10; i--) {
             sendHistoryEntryMessage(cs, history.get(i));
         }
         

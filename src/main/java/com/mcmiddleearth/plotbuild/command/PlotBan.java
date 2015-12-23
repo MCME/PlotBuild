@@ -23,6 +23,7 @@ import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.exceptions.InvalidRestoreDataException;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.plotbuild.PlotBuild;
+import com.mcmiddleearth.plotbuild.utils.BukkitUtil;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -63,11 +64,16 @@ public class PlotBan extends PlotBuildCommand {
             sendPlayerAlreadyBannedMessage(cs, banned.getName(), plotbuild.getName());
             return;
         }
+        if(BukkitUtil.isSame(banned, (Player) cs)) {
+            sendBanYourselfMessage(cs);
+            return;
+        }
+        boolean signsPlaced = true;
         for(Plot plot : plotbuild.getPlots()) {
             if(plot.getState()!=PlotState.REMOVED && plot.isOwner(banned)) {
                 if(plot.countOwners()==1) {
                     try {
-                        plot.unclaim();
+                        signsPlaced = plot.unclaim();
                     } catch (InvalidRestoreDataException ex) {
                         Logger.getLogger(PlotDelete.class.getName()).log(Level.SEVERE, null, ex);
                         sendRestoreErrorMessage(cs);
@@ -75,7 +81,7 @@ public class PlotBan extends PlotBuildCommand {
                     }
                 }
                 else {
-                    plot.leave(banned);
+                    signsPlaced = plot.leave(banned);
                     for(OfflinePlayer builder: plot.getOfflineOwners()) {
                         if(builder.getPlayer()!=cs) {
                             sendOtherBuilderMessage(cs, builder, banned, plot.getPlotbuild().getName(), plot.getID());
@@ -83,6 +89,9 @@ public class PlotBan extends PlotBuildCommand {
             }
                 }
             }
+        }
+        if(!signsPlaced) {
+            sendNoSignPlaceMessage(cs);
         }
         plotbuild.addBanned(banned);
         if(plotbuild.isStaff(banned)) {
@@ -122,6 +131,11 @@ public class PlotBan extends PlotBuildCommand {
     private void sendOtherStaffMessage(CommandSender cs, OfflinePlayer staff, OfflinePlayer banned, String name) {
         MessageUtil.sendOfflineMessage(staff, cs.getName()+" removed " + banned.getName()+ " from staff"
                                                      + " of plotbuild " + name +" and banned him.");
+    }
+
+    private void sendBanYourselfMessage(CommandSender cs) {
+        MessageUtil.sendErrorMessage(cs, "You want to ban yourself? Doesn't make sense apart from rare cases of schizophrenic disorder. "
+                                        +"If you really think you should be banned, please talk to Head Enforcer/Designer ;)");
     }
 
 }

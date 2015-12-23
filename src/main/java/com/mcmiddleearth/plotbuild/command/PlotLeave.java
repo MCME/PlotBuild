@@ -47,7 +47,9 @@ public class PlotLeave extends InsidePlotCommand {
             sendNoMoreOwnersMessage(cs);
             return;
         }
-        plot.leave((Player)cs);
+        if(!plot.leave((Player)cs)){
+            sendNoSignPlaceMessage(cs);
+        }
         sendPlotLeaveMessage(cs);
         for(OfflinePlayer builder: plot.getOfflineOwners()) {
             sendOtherBuilderMessage(cs, builder, plot.getPlotbuild().getName(), plot.getID());
@@ -57,7 +59,7 @@ public class PlotLeave extends InsidePlotCommand {
     }
     
     private void sendNoMoreOwnersMessage(CommandSender cs) {
-        MessageUtil.sendErrorMessage(cs, "You are no other owners of this plot. Try /plot unclaim instead.");
+        MessageUtil.sendErrorMessage(cs, "There are no other owners of this plot. Try /plot unclaim instead.");
     }
 
     private void sendPlotLeaveMessage(CommandSender cs) {
