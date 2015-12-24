@@ -18,7 +18,6 @@
  */
 package com.mcmiddleearth.plotbuild.command;
 
-import com.mcmiddleearth.plotbuild.constants.Permission;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -38,32 +37,32 @@ public class PlotCommandExecutor implements CommandExecutor {
     private final Map <String, AbstractCommand> commands = new LinkedHashMap <>();
     
     public PlotCommandExecutor() {
-        addCommandHandler("create", new PlotCreate(Permission.STAFF));
-        addCommandHandler("setinfo", new PlotSetInfo(Permission.STAFF));
-        addCommandHandler("sign", new PlotSign(Permission.STAFF));
-        addCommandHandler("info", new PlotInfo(Permission.USER));
-        addCommandHandler("help", new PlotHelp(Permission.USER));
-        addCommandHandler("current", new PlotCurrent(Permission.STAFF));
-        addCommandHandler("addstaff", new PlotAddstaff(Permission.STAFF));
-        addCommandHandler("removestaff", new PlotRemoveStaff(Permission.STAFF));
-        addCommandHandler("new", new PlotNew(Permission.STAFF));
-        addCommandHandler("list", new PlotList(Permission.USER));
-        addCommandHandler("claim", new PlotClaim(Permission.USER));
-        addCommandHandler("assign", new PlotAssign(Permission.STAFF));
-        addCommandHandler("invite", new PlotInvite(Permission.USER));
-        addCommandHandler("leave", new PlotLeave(Permission.USER));
-        addCommandHandler("finish", new PlotFinish(Permission.USER));
-        addCommandHandler("unclaim", new PlotUnclaim(Permission.USER));
-        addCommandHandler("accept", new PlotAccept(Permission.STAFF));
-        addCommandHandler("refuse", new PlotRefuse(Permission.STAFF));
-        addCommandHandler("clear", new PlotClear(Permission.STAFF));
-        addCommandHandler("delete", new PlotDelete(Permission.STAFF));
-        addCommandHandler("ban", new PlotBan(Permission.STAFF));
-        addCommandHandler("unban", new PlotUnban(Permission.STAFF));
-        addCommandHandler("history", new PlotHistory(Permission.STAFF));
-        addCommandHandler("lock", new PlotLock(Permission.STAFF));
-        addCommandHandler("unlock", new PlotUnlock(Permission.STAFF));
-        addCommandHandler("end", new PlotEnd(Permission.STAFF));
+        addCommandHandler("create", new PlotCreate("plotbuild.staff"));
+        addCommandHandler("setinfo", new PlotSetInfo("plotbuild.staff"));
+        addCommandHandler("sign", new PlotSign("plotbuild.staff"));
+        addCommandHandler("info", new PlotInfo("plotbuild.user"));
+        addCommandHandler("help", new PlotHelp("plotbuild.user"));
+        addCommandHandler("current", new PlotCurrent("plotbuild.staff"));
+        addCommandHandler("addstaff", new PlotAddstaff("plotbuild.staff"));
+        addCommandHandler("removestaff", new PlotRemoveStaff("plotbuild.staff"));
+        addCommandHandler("new", new PlotNew("plotbuild.staff"));
+        addCommandHandler("list", new PlotList("plotbuild.user"));
+        addCommandHandler("claim", new PlotClaim("plotbuild.user"));
+        addCommandHandler("assign", new PlotAssign("plotbuild.staff"));
+        addCommandHandler("invite", new PlotInvite("plotbuild.user"));
+        addCommandHandler("leave", new PlotLeave("plotbuild.user"));
+        addCommandHandler("finish", new PlotFinish("plotbuild.user"));
+        addCommandHandler("unclaim", new PlotUnclaim("plotbuild.user"));
+        addCommandHandler("accept", new PlotAccept("plotbuild.staff"));
+        addCommandHandler("refuse", new PlotRefuse("plotbuild.staff"));
+        addCommandHandler("clear", new PlotClear("plotbuild.staff"));
+        addCommandHandler("delete", new PlotDelete("plotbuild.staff"));
+        addCommandHandler("ban", new PlotBan("plotbuild.staff"));
+        addCommandHandler("unban", new PlotUnban("plotbuild.staff"));
+        addCommandHandler("history", new PlotHistory("plotbuild.staff"));
+        addCommandHandler("lock", new PlotLock("plotbuild.staff"));
+        addCommandHandler("unlock", new PlotUnlock("plotbuild.staff"));
+        addCommandHandler("end", new PlotEnd("plotbuild.staff"));
     }
     
     @Override
