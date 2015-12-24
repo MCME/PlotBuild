@@ -19,6 +19,7 @@
 package com.mcmiddleearth.plotbuild.listeners;
 
 import com.mcmiddleearth.plotbuild.PlotBuildPlugin;
+import com.mcmiddleearth.plotbuild.constants.Permission;
 import com.mcmiddleearth.plotbuild.constants.PlotState;
 import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.data.Selection;
@@ -84,12 +85,12 @@ public class PlayerListener implements Listener{
             if(PluginData.hasPermissionsToBuild(event.getPlayer(), event.getClickedBlock().getLocation())) {
                 Plot plot = PluginData.getPlotAt(event.getClickedBlock().getLocation());
                 if(plot != null && plot.isOwner(event.getPlayer()) && plot.getPlotbuild().isLocked() &&
-                        !plot.getPlotbuild().isStaff(event.getPlayer()) && !event.getPlayer().hasPermission("plotbuild.staff")) {
+                        !plot.getPlotbuild().isStaff(event.getPlayer()) && !event.getPlayer().hasPermission(Permission.SUPERVISOR)) {
                     sendPlotbuildLockedMessage(event.getPlayer());
                     event.setUseItemInHand(Event.Result.DENY);
                     event.setCancelled(true);
                 }
-            } else if(fullProtection && !event.getPlayer().hasPermission("plotbuild.trusted")) {
+            } else if(fullProtection && !event.getPlayer().hasPermission(Permission.TRUSTED)) {
                 sendNotAllowedToBuildMessage(event.getPlayer());
                 event.setUseItemInHand(Event.Result.DENY);
                 event.setCancelled(true);
@@ -136,12 +137,12 @@ public class PlayerListener implements Listener{
         if(PluginData.hasPermissionsToBuild(event.getPlayer(), event.getBlock().getLocation())) {
             Plot plot = PluginData.getPlotAt(event.getBlock().getLocation());
             if(plot != null && plot.isOwner(event.getPlayer()) && plot.getPlotbuild().isLocked() &&
-                    !plot.getPlotbuild().isStaff(event.getPlayer()) && !event.getPlayer().hasPermission("plotbuild.staff")) {
+                    !plot.getPlotbuild().isStaff(event.getPlayer()) && !event.getPlayer().hasPermission(Permission.SUPERVISOR)) {
                 sendPlotbuildLockedMessage(event.getPlayer());
                 event.setCancelled(true);
                 return;
             }
-        } else if(fullProtection && !event.getPlayer().hasPermission("plotbuild.trusted")) {
+        } else if(fullProtection && !event.getPlayer().hasPermission(Permission.TRUSTED)) {
             sendNotAllowedToBuildMessage(event.getPlayer());
             event.setCancelled(true);
             return;
@@ -158,12 +159,12 @@ public class PlayerListener implements Listener{
         if(PluginData.hasPermissionsToBuild(event.getPlayer(), event.getBlock().getLocation())) {
             Plot plot = PluginData.getPlotAt(event.getBlock().getLocation());
             if(plot != null && plot.isOwner(event.getPlayer()) && plot.getPlotbuild().isLocked() &&
-                    !plot.getPlotbuild().isStaff(event.getPlayer()) && !event.getPlayer().hasPermission("plotbuild.staff")) {
+                    !plot.getPlotbuild().isStaff(event.getPlayer()) && !event.getPlayer().hasPermission(Permission.SUPERVISOR)) {
                 sendPlotbuildLockedMessage(event.getPlayer());
                 event.setCancelled(true);
                 return;
             }
-        } else if(fullProtection && !event.getPlayer().hasPermission("plotbuild.trusted")) {
+        } else if(fullProtection && !event.getPlayer().hasPermission(Permission.TRUSTED)) {
             sendNotAllowedToBuildMessage(event.getPlayer());
             event.setCancelled(true);
             return;
@@ -180,12 +181,12 @@ public class PlayerListener implements Listener{
         if(PluginData.hasPermissionsToBuild(event.getPlayer(), event.getEntity().getLocation())) {
             Plot plot = PluginData.getPlotAt(event.getEntity().getLocation());
             if(plot != null && plot.isOwner(event.getPlayer()) && plot.getPlotbuild().isLocked() &&
-                    !plot.getPlotbuild().isStaff(event.getPlayer()) && !event.getPlayer().hasPermission("plotbuild.staff")) {
+                    !plot.getPlotbuild().isStaff(event.getPlayer()) && !event.getPlayer().hasPermission(Permission.SUPERVISOR)) {
                 sendPlotbuildLockedMessage(event.getPlayer());
                 event.setCancelled(true);
                 return;
             }
-        } else if(fullProtection && !event.getPlayer().hasPermission("plotbuild.trusted")) {
+        } else if(fullProtection && !event.getPlayer().hasPermission(Permission.TRUSTED)) {
             sendNotAllowedToBuildMessage(event.getPlayer());
             event.setCancelled(true);
             return;
@@ -203,12 +204,12 @@ public class PlayerListener implements Listener{
         if(PluginData.hasPermissionsToBuild(player, event.getEntity().getLocation())) {
             Plot plot = PluginData.getPlotAt(event.getEntity().getLocation());
             if(plot != null && plot.isOwner(player) && plot.getPlotbuild().isLocked() &&
-                    !plot.getPlotbuild().isStaff(player) && !player.hasPermission("plotbuild.staff")) {
+                    !plot.getPlotbuild().isStaff(player) && !player.hasPermission(Permission.SUPERVISOR)) {
                 sendPlotbuildLockedMessage(player);
                 event.setCancelled(true);
                 return;
             }
-        } else if(fullProtection && !player.hasPermission("plotbuild.trusted")) {
+        } else if(fullProtection && !player.hasPermission(Permission.TRUSTED)) {
             sendNotAllowedToBuildMessage(player);
             event.setCancelled(true);
             return;

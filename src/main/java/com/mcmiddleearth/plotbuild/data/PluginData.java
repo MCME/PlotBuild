@@ -20,6 +20,7 @@ package com.mcmiddleearth.plotbuild.data;
 
 import com.mcmiddleearth.plotbuild.PlotBuildPlugin;
 import com.mcmiddleearth.plotbuild.constants.BorderType;
+import com.mcmiddleearth.plotbuild.constants.Permission;
 import com.mcmiddleearth.plotbuild.constants.PlotState;
 import com.mcmiddleearth.plotbuild.conversations.PlotBuildConversationFactory;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
@@ -307,12 +308,12 @@ public class PluginData {
     
     public static boolean hasNoPermissionsToBuild(Player player, Location location) {
         Plot plot = getPlotAt(location);
-        return (!player.hasPermission("plotbuild.staff") && plot != null && !plot.isOwner(player) && !plot.getPlotbuild().isStaff(player));
+        return (!player.hasPermission(Permission.SUPERVISOR) && plot != null && !plot.isOwner(player) && !plot.getPlotbuild().isStaff(player));
     }
     
     public static boolean canSelectArea(Player player) {
         PlotBuild pb = getCurrentPlotbuild(player);
-        return player.hasPermission("plotbuild.staff") || (pb == null ? false : pb.isStaff(player));
+        return player.hasPermission(Permission.STAFF) || (pb == null ? false : pb.isStaff(player));
     }
     
     private static void savePlotBuild(PlotBuild plotbuild) throws IOException {
