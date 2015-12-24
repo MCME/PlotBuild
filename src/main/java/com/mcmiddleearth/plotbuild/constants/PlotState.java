@@ -39,4 +39,15 @@ public enum PlotState {
         this.state = state;
     }
     
+    public String getStateMessage() {
+        switch(this) {
+            case UNCLAIMED: return "Not started.";
+            case CLAIMED: return "Unfinished.";
+            case FINISHED: return "Waiting for staff feedback.";
+            case REFUSED: return "Has been reviewed and needs improvements.";
+            case REMOVED: return "Has been removed (accepted or deleted).";
+            default: return "Illegal state.";
+        }
+    }
+    
 }

@@ -48,7 +48,9 @@ public class PlotFinish extends InsidePlotCommand {
             sendPlotAlreadyFinishedMessage(cs);
             return;
         }
-        plot.finish();
+        if(!plot.finish()) {
+            sendNoSignPlaceMessage(cs);
+        }
         sendFinishedMessage(cs);
         for(OfflinePlayer builder: plot.getOfflineOwners()) {
             if(builder.getPlayer()!=(Player) cs) {

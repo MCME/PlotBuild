@@ -55,11 +55,11 @@ public class PlotInfo extends InsidePlotCommand{
     }
 
     private void sendNoInfoMessage(CommandSender cs) {
-        MessageUtil.sendInfoMessage(cs, "Sorry there is no bulding guide for this plot. Please ask staff for instructions.");
+        MessageUtil.sendInfoMessage(cs, "Sorry there no further informations on this plotbuild. Please ask staff for instructions.");
     }
 
     private void sendInfoMessage(CommandSender cs, String info) {
-        MessageUtil.sendInfoMessage(cs, "There is a building guide for this plot at "+info+".");
+        MessageUtil.sendInfoMessage(cs, "More information on this plotbuild can be found here: "+info+".");
     }
 
     private void sendStaffHeaderMessage(CommandSender cs, String name) {

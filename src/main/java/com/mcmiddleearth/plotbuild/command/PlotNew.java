@@ -67,6 +67,7 @@ public class PlotNew extends PlotBuildCommand {
                 Logger.getLogger(PlotNew.class.getName()).log(Level.SEVERE, null, ex);
             }
             sendPlotCreatedMessage(cs);
+            PluginData.clearSelection((Player)cs);
             newPlot.getPlotbuild().log(((Player) cs).getName()+" added plot "+newPlot.getID()+".");
             PluginData.saveData();
         }

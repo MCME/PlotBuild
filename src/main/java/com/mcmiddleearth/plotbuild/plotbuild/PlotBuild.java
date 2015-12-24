@@ -20,10 +20,13 @@ package com.mcmiddleearth.plotbuild.plotbuild;
 
 import com.mcmiddleearth.plotbuild.constants.BorderType;
 import com.mcmiddleearth.plotbuild.constants.PlotState;
+import com.mcmiddleearth.plotbuild.utils.BukkitUtil;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.OfflinePlayer;
@@ -117,10 +120,6 @@ public class PlotBuild {
         return false;
     }
     
-    /*public boolean isOfflineBanned(OfflinePlayer player) {
-        return bannedPlayers.contains(player);
-    }*/
-    
     public List<OfflinePlayer> getOfflineBannedPlayers() {
         return bannedPlayers;
     }
@@ -128,7 +127,7 @@ public class PlotBuild {
     public void removeBan(OfflinePlayer player) {
         for(OfflinePlayer offPlayer : bannedPlayers) {
             if(player!=null && offPlayer.getUniqueId().equals((player.getUniqueId()))) {
-                bannedPlayers.remove(player);
+                BukkitUtil.removePlayerFromList(bannedPlayers, player);
                 return;
             }
         }
@@ -144,10 +143,6 @@ public class PlotBuild {
         return false;
     }
     
-    /*public boolean isOfflineStaff(OfflinePlayer player) {
-        return staffList.contains(player);
-    }*/
-    
     public void addStaff(OfflinePlayer player) {
         staffList.add(player);
     }
@@ -155,7 +150,7 @@ public class PlotBuild {
     public void removeStaff(OfflinePlayer player) {
         for(OfflinePlayer offPlayer : staffList) {
             if(player!=null && offPlayer.getUniqueId().equals((player.getUniqueId()))) {
-                staffList.remove(player);
+                BukkitUtil.removePlayerFromList(staffList, player);
                 return;
             }
         }
@@ -173,4 +168,17 @@ public class PlotBuild {
     public void log(String entry) {
         history.add(LocalDateTime.now().format(formatter)+entry);
     }
+    
+    public Set<OfflinePlayer> getBuilders() {
+        Set<OfflinePlayer> builders = new HashSet<>();
+        for(Plot plot : getPlots()) {
+            if(plot.getState()!=PlotState.REMOVED) {
+                List<OfflinePlayer> owners = plot.getOfflineOwners();
+                builders.addAll(owners);
+            }
+        }
+        return builders;
+    }
+    
+    
 }

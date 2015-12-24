@@ -24,6 +24,7 @@ import com.mcmiddleearth.plotbuild.constants.PlotState;
 import com.mcmiddleearth.plotbuild.conversations.PlotBuildConversationFactory;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.plotbuild.PlotBuild;
+import com.mcmiddleearth.plotbuild.utils.BukkitUtil;
 import com.mcmiddleearth.plotbuild.utils.FileUtil;
 import com.mcmiddleearth.plotbuild.utils.ListUtil;
 import java.io.File;
@@ -36,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -112,15 +114,56 @@ public class PluginData {
         return selection;
     }
     
+    public static void clearSelection(Player player) {
+        for(Player search : selections.keySet()) {
+            if(BukkitUtil.isSame(search, player)) {
+                selections.remove(search);
+            }
+        }
+    }
+    
+    public static List<Plot> getOwnedPlots(OfflinePlayer player) {
+        List<Plot> plots = new ArrayList<>();
+        for(PlotBuild plotbuild : PluginData.getPlotbuildsList()) {
+            for(Plot plot : plotbuild.getPlots()) {
+                if(plot.getState()!=PlotState.REMOVED && plot.isOwner(player)) {
+                    plots.add(plot);
+                }
+            }
+        }
+        return plots;
+    }
+    
+    public static Set<OfflinePlayer> getBuilders() {
+        Set<OfflinePlayer> builders = new HashSet<>();
+        for(PlotBuild plotbuild : PluginData.getPlotbuildsList()) {
+            builders.addAll(plotbuild.getBuilders());
+        }
+        return builders;
+    }
+    
     public static Plot getPlotAt(Location location) {
         for(PlotBuild plotbuild : plotbuildsList) {
             for(Plot plot : plotbuild.getPlots()) {
-                if(plot.isInside(location)) {
+                if(plot.isInside(location) && plot.getState()!=PlotState.REMOVED) {
                     return plot;
                 }
             }
         }
         return null;
+    }
+    
+    public static boolean isNearOwnPlot(Player player) {
+        for(PlotBuild plotbuild : plotbuildsList) {
+            for(Plot plot : plotbuild.getPlots()) {
+                if(plot.getState()!=PlotState.REMOVED
+                        && plot.isOwner(player) 
+                        && plot.isNear(player.getLocation())) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
     
     public static Plot getIntersectingPlot(Selection selection, boolean cuboid) {
@@ -428,7 +471,7 @@ public class PluginData {
         Location corner2 = new Location(world2, coords2.get(0), coords2.get(1), coords2.get(2));
         List <OfflinePlayer> ownersList = ListUtil.playerListFromString(scanner.nextLine());
         PlotState state = PlotState.valueOf(scanner.nextLine());
-        List <Location> border = new ArrayList<>();
+        LinkedList <Location> border = new LinkedList<>();
         while(scanner.hasNext()) {
             String worldName = scanner.nextLine();
             World world = Bukkit.getWorld(worldName);
@@ -466,4 +509,5 @@ public class PluginData {
         }
         scanner.close();
     }
+
 }

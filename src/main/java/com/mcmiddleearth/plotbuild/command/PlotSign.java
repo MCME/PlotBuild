@@ -45,11 +45,16 @@ public class PlotSign extends InsidePlotCommand{
         if(!hasPermissionsForPlotBuild((Player) cs, plot.getPlotbuild())) {
             return;
         }
-        plot.placeSigns();
-        sendSignsPlacedMessage(cs);
+        if(plot.placeSigns()) {
+            sendSignsPlacedMessage(cs);
+        }
+        else {
+            sendNoSignPlaceMessage(cs);
+        }
     }
 
     private void sendSignsPlacedMessage(CommandSender cs) {
         MessageUtil.sendInfoMessage(cs, "Plot signs placed.");
     }
+
 }

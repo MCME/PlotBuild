@@ -67,7 +67,9 @@ public class PlotClear extends InsidePlotCommand {
             }
         }
         try {
-            plot.clear(unclaim);
+            if(!plot.clear(unclaim)) {
+                sendNoSignPlaceMessage(cs);
+            }
         } catch (InvalidRestoreDataException ex) {
             Logger.getLogger(PlotClear.class.getName()).log(Level.SEVERE, null, ex);
             sendRestoreErrorMessage(cs);
@@ -81,7 +83,7 @@ public class PlotClear extends InsidePlotCommand {
     }
 
     private void sendClearAndUnclaimMessgage(CommandSender cs) {
-        MessageUtil.sendInfoMessage(cs, "You cleared  and unclaimed this plot.");
+        MessageUtil.sendInfoMessage(cs, "You cleared and unclaimed this plot.");
     }
 
     private void sendClearMessage(CommandSender cs) {
