@@ -4,6 +4,28 @@
 
 *PlotBuild* is a bukkit plugin that generates plots where players can build in.
 
+A high number of commands make this plugin very versatile, the commands are as simple as possible to remember and use.
+
+This plugin is capable of handling Plotworlds on multiple worlds.
+
+Each Plot has a border of wool blocks with color showing the state of the Plot:
+
+* __White__: unclaimed
+* __Purple__: claimed
+* __Blue__: ready for check
+* __Yellow__: needs changes
+
+The builders of a plot are shown on signs at the border of the plot.
+
+#Permissions
+
+Available permissions:
+
+* __plotbuild.user__: Allows to claim plots in plotbuild. Default: __op__.
+* __plotbuild.trusted__: Allows to build outside of plots when world is protected. Default: __op__.
+* __plotbuild.supervisor__: Allows to build in plots claimed by other players. Default: __op__.
+* __plotbuild.staff__: Gives staff access to plotbuilds (create, end, add plots etc). Default: __op__.
+
 # Usage
 
 Full list of commands you can execute.
