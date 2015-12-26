@@ -20,15 +20,15 @@ package com.mcmiddleearth.plotbuild.listeners;
 
 import com.mcmiddleearth.plotbuild.PlotBuildPlugin;
 import com.mcmiddleearth.plotbuild.constants.Permission;
-import com.mcmiddleearth.plotbuild.constants.PlotState;
 import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.data.Selection;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
-import com.mcmiddleearth.plotbuild.plotbuild.PlotBuild;
+import com.mcmiddleearth.plotbuild.utils.BukkitUtil;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
 import java.util.List;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -102,17 +102,17 @@ public class PlayerListener implements Listener{
     public void playerMove(PlayerMoveEvent event) {
         if(event.getFrom().getBlock()!=event.getTo().getBlock()) {
             Player player = event.getPlayer();
-            List playersInOwnPlot = PluginData.getPlayersInOwnPlot();
+            List<OfflinePlayer> playersSwitchedToCreative = PluginData.getSwitchedToCreative();
             if(PluginData.isNearOwnPlot(player)) {
                 if(player.getGameMode()==GameMode.SURVIVAL) {
-                    if(!playersInOwnPlot.contains(player)) {
-                        playersInOwnPlot.add(player);
+                    if(!BukkitUtil.isPlayerInList(playersSwitchedToCreative, player)) {
+                        playersSwitchedToCreative.add(player);
                     }
                     player.setGameMode(GameMode.CREATIVE);
                 }
             }
             else {
-                if(playersInOwnPlot.contains(player) && !PluginData.isNearOwnPlot(player)) {
+                if(BukkitUtil.isPlayerInList(playersSwitchedToCreative, player)) {
                     boolean flying = false;
                     if(player.isFlying()) {
                         flying = true;  
@@ -122,7 +122,7 @@ public class PlayerListener implements Listener{
                         player.setAllowFlight(true);
                         player.setFlying(flying);
                     }
-                    playersInOwnPlot.remove(player);
+                    BukkitUtil.removePlayerFromList(playersSwitchedToCreative, player);
                 }
             }
         }

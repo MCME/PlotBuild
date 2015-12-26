@@ -67,7 +67,7 @@ public class PluginData {
     private static PlotBuildConversationFactory confFactory;
     
     @Getter
-    private static final List <Player> playersInOwnPlot = new ArrayList<>(); 
+    private static final List <OfflinePlayer> switchedToCreative = new ArrayList<>(); 
     
     @Getter
     private static final List <PlotBuild> plotbuildsList = new ArrayList <>();
