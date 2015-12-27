@@ -64,6 +64,7 @@ public class PlotCommandExecutor implements CommandExecutor {
         addCommandHandler("lock", new PlotLock(Permission.STAFF));
         addCommandHandler("unlock", new PlotUnlock(Permission.STAFF));
         addCommandHandler("end", new PlotEnd(Permission.STAFF));
+        addCommandHandler("warp", new PlotWarp(Permission.USER));
     }
     
     @Override
