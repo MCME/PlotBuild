@@ -22,11 +22,20 @@ public class BukkitUtil {
     
     public static void removePlayerFromList(List<OfflinePlayer> list, OfflinePlayer player) {
         for(OfflinePlayer search: list) {
-            if(search.getUniqueId().equals(player.getUniqueId())) {
+            if(isSame(search, player)) {
                 list.remove(search);
                 return;
             }
         }
+    }
+    
+    public static boolean isPlayerInList(List<OfflinePlayer> list, OfflinePlayer player) {
+        for(OfflinePlayer search : list) {
+            if(isSame(search,player)) {
+                return true;
+            }
+        }
+        return false;
     }
     
     public static boolean isOnline(OfflinePlayer player) {
