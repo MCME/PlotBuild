@@ -18,6 +18,7 @@
  */
 package com.mcmiddleearth.plotbuild.command;
 
+import com.mcmiddleearth.plotbuild.constants.PlotState;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.plotbuild.PlotBuild;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
@@ -48,6 +49,10 @@ public class PlotWarp extends PlotBuildCommand {
             return;
         }
         int plotID = 1;
+        while(plotID < plotbuild.getPlots().size() 
+                && plotbuild.getPlots().get(plotID-1).getState().equals(PlotState.REMOVED)) {
+            plotID++;
+        }
         if(args.length>1) {
             try {
                 plotID = Integer.parseInt(args[1]);
