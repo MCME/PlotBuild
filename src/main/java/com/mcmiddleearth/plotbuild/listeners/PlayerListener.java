@@ -73,7 +73,7 @@ public class PlayerListener implements Listener{
         if(player.getItemInHand().getType().equals(Material.FEATHER)) {
             if(event.getAction().equals(Action.LEFT_CLICK_BLOCK) && PluginData.canSelectArea(player)){
         	selection.setFirstPoint(event.getClickedBlock().getLocation());
-        	sendFirstPointSetMessage(player, selection);
+                sendFirstPointSetMessage(player, selection);
             }
             else if(event.getAction().equals(Action.RIGHT_CLICK_BLOCK) && PluginData.canSelectArea(player)){
         	selection.setSecondPoint(event.getClickedBlock().getLocation());
