@@ -62,7 +62,13 @@ public class PlotWarp extends PlotBuildCommand {
             }
         }
         Plot plot = plotbuild.getPlots().get(plotID-1); 
-        Location loc = plot.getBorder().get(0).getBlock().getRelative(0, 1, -2).getLocation();
+        Location loc;
+        if(plot.getBorder().size()>0) {
+            loc = plot.getBorder().get(0).getBlock().getRelative(0, 1, -2).getLocation();
+        }
+        else {
+            loc = plot.getCorner1().getBlock().getRelative(0,1,0).getLocation();
+        }
         for(int i=0; i<100; i++) {
             if(loc.getBlock().isEmpty() && loc.getBlock().getRelative(0,1,0).isEmpty()) {
                 loc.setX(loc.getX() +0.5);
