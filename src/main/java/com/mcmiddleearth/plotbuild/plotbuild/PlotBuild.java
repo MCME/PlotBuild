@@ -110,6 +110,15 @@ public class PlotBuild {
         }
         return false;
     }
+    
+    public Plot getPlot(OfflinePlayer player) {
+        for(Plot plot : plots) {
+            if((plot.getState()==PlotState.CLAIMED || plot.getState()==PlotState.REFUSED) && plot.isOwner(player)) {
+                return plot;
+            }
+        }
+        return null;
+    }
      
     public boolean isBanned(OfflinePlayer player) {
         for(OfflinePlayer offPlayer : bannedPlayers) {

@@ -7,14 +7,20 @@ package com.mcmiddleearth.plotbuild.plotbuild;
 
 import com.mcmiddleearth.plotbuild.constants.BorderType;
 import com.mcmiddleearth.plotbuild.constants.PlotState;
+import com.mcmiddleearth.plotbuild.utils.BukkitUtil;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Logger;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.ItemFrame;
+import org.bukkit.entity.Painting;
 
 /**
  *
@@ -25,6 +31,8 @@ public class PlotBorder {
     private final Plot plot;
 
     private LinkedList<Location> border;
+    
+    private List<Location> entityLocs = new ArrayList<>();
     
     PlotBorder(Plot plot) {
         this.plot = plot;
@@ -77,6 +85,7 @@ public class PlotBorder {
     }
     
     boolean placeSigns(){
+        refreshEntityLocations();
         if(border.size()>0 && plot.getState()!=PlotState.REMOVED) {
             removeSigns();
             refreshBorder();
@@ -175,6 +184,7 @@ public class PlotBorder {
     }
     
     void placeBorder(){
+        refreshEntityLocations();
         if(plotbuild().getBorderType()!=BorderType.NONE) {
             for(int i = corner2().getBlockZ()+1; i>=corner1().getBlockZ()-1;i--){
                 this.placeBorderColumn(corner1().getBlockX()-1, plotbuild().getBorderHeight(), i);
@@ -237,7 +247,7 @@ public class PlotBorder {
     }
         
     private void placeWoolBlock(Block block) {
-        if(block.isEmpty()) {
+        if(block.isEmpty() && ! isEntityBlock(block.getLocation())) {
             block.setType(Material.WOOL);
             block.setData((byte) plot.getState().getState());            
             border.add(block.getLocation());
@@ -283,4 +293,31 @@ public class PlotBorder {
         return plot.getCorner2();
     }
    
+    private void refreshEntityLocations() {
+        entityLocs.clear();
+        Collection<Entity> entityList = new ArrayList<>();
+        entityList.addAll(corner1().getWorld().getEntitiesByClass(Painting.class));
+        entityList.addAll(corner1().getWorld().getEntitiesByClass(ItemFrame.class));
+        for(Entity entity : entityList) {
+            int x = entity.getLocation().getBlockX();
+            int z = entity.getLocation().getBlockZ();
+            if(   (    x>corner1().getBlockX()-2 
+                    && x<corner2().getBlockX()+2 
+                    && ( z==corner1().getBlockZ()-1 || z==corner2().getBlockZ()+1))
+               || (    z>corner1().getBlockZ()-2 
+                    && z<corner2().getBlockZ()+2 
+                    && ( x==corner1().getBlockX()-1 || x==corner2().getBlockX()+1))) {
+                entityLocs.add(entity.getLocation());
+            }
+        }
+    }
+    
+    private boolean isEntityBlock(Location loc) {
+        for(Location entityLoc : entityLocs) {
+            if(BukkitUtil.isSameBlock(entityLoc, loc)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

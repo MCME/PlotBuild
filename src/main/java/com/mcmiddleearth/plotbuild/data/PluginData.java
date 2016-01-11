@@ -26,6 +26,7 @@ import com.mcmiddleearth.plotbuild.conversations.PlotBuildConversationFactory;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.plotbuild.PlotBuild;
 import com.mcmiddleearth.plotbuild.utils.BukkitUtil;
+import com.mcmiddleearth.plotbuild.utils.EntityUtil;
 import com.mcmiddleearth.plotbuild.utils.FileUtil;
 import com.mcmiddleearth.plotbuild.utils.ListUtil;
 import java.io.File;
@@ -53,6 +54,11 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.ItemFrame;
+import org.bukkit.entity.Painting;
 import org.bukkit.entity.Player;
 import org.bukkit.material.MaterialData;
 
@@ -286,6 +292,18 @@ public class PluginData {
         return ret;
     }
     
+    public static void restoreEntities(PlotBuild plotbuild, Plot plot) {
+        File plotDir = new File(plotBuildDir, plotbuild.getName());
+        File plotRestoreData = new File(plotDir, Integer.toString(plotbuild.getPlots().indexOf(plot)) + ".e");
+        try {
+            EntityUtil.restore(plotRestoreData, new ArrayList<Entity>());
+        } catch (IOException ex) {
+            Logger.getLogger(PluginData.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvalidConfigurationException ex) {
+            Logger.getLogger(PluginData.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     public static boolean deletePlotBuild(PlotBuild plotbuild) {
         File plotBuildFile = new File(plotBuildDir, plotbuild.getName()+".pb");
         File plotDir = new File(plotBuildDir, plotbuild.getName());
@@ -346,6 +364,7 @@ public class PluginData {
     private static void savePlot(Plot plot, File plotDir, int i) throws IOException {
         File plotDataFile = new File(plotDir, Integer.toString(i) + ".p");
         File plotRestoreFile = new File(plotDir, Integer.toString(i) + ".r");
+        File plotEntityRestoreFile = new File(plotDir, Integer.toString(i) + ".e");
         boolean saveRestoreData = !plotRestoreFile.exists();
         plotDataFile.createNewFile();
         plotRestoreFile.createNewFile();
@@ -371,9 +390,31 @@ public class PluginData {
             writer.close();
             if(saveRestoreData) {
                 savePlotRestoreData(plot, plotRestoreFile);
+                savePlotRestoreEntityData(plot, plotEntityRestoreFile);
             }
         } else {
             throw new IOException();
+        }
+    }
+    
+    private static void savePlotRestoreEntityData(Plot plot, File file) {
+        List<Entity> entities = new ArrayList<>();
+        entities.addAll(plot.getCorner1().getWorld().getEntitiesByClass(Painting.class));
+        entities.addAll(plot.getCorner1().getWorld().getEntitiesByClass(ItemFrame.class));
+        entities.addAll(plot.getCorner1().getWorld().getEntitiesByClass(ArmorStand.class));
+        Location cor1 = plot.getCorner1();
+        Location cor2 = plot.getCorner2();
+        List<Entity> plotEntities = new ArrayList<>();
+        for(Entity entity : entities) {
+            Location loc = entity.getLocation();
+            if(plot.isInside(loc)) {
+                plotEntities.add(entity);
+            }
+        }
+        try {
+            EntityUtil.store(file, plotEntities);
+        } catch (IOException ex) {
+            Logger.getLogger(PluginData.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
