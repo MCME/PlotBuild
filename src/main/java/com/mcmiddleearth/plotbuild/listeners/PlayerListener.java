@@ -26,6 +26,7 @@ import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.utils.BukkitUtil;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
 import java.util.List;
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -248,17 +249,13 @@ public class PlayerListener implements Listener{
     private void sendToDoInfoMessage(Player player, List<Plot> plots) {
         MessageUtil.sendInfoMessage(player, "Your active plots:");
         for(Plot plot : plots) {
-            MessageUtil.sendNoPrefixRawMessage(player,
-                        "{ text:\"- Plot #"+plot.getID()
-                                +" of plotbuild " + plot.getPlotbuild().getName()+": "
-                                +MessageUtil.chatColorForPlotState(plot.getState())
-                                +plot.getState().getStateMessage()+"\", "
-                        +"clickEvent:{ action:run_command,"
-                                      + "value:\"/plot warp "+plot.getPlotbuild().getName()+" "+
-                                               + plot.getID() +"\"}}");
-                                   /*"- Plot #"+plot.getID()
-                                + " of plotbuild "+plot.getPlotbuild().getName()+": "
-                                + plot.getState().getStateMessage());*/
+            MessageUtil.sendClickableMessage(player, ChatColor.AQUA+MessageUtil.getNOPREFIX()
+                                                     +"- Plot #"+plot.getID()
+                                                     +" of plotbuild " + plot.getPlotbuild().getName()+": "
+                                                     +MessageUtil.chatColorForPlotState(plot.getState())
+                                                     +plot.getState().getStateMessage(),
+                                            "/plot warp "+plot.getPlotbuild().getName()+" "
+                                                     + plot.getID());
         }
         
     }

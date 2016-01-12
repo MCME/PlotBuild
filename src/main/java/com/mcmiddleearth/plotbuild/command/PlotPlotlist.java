@@ -51,7 +51,8 @@ public class PlotPlotlist extends PlotBuildCommand {
         }
         List<String> plotList = new ArrayList<>();
         for(Plot plot : plotbuild.getPlots()) {
-            plotList.add("{ text:\"Plot #"+plot.getID()+" "
+            plotList.add("{ text:\""+ChatColor.AQUA+MessageUtil.getNOPREFIX()
+                                 +"Plot #"+plot.getID()+" "
                                  +MessageUtil.chatColorForPlotState(plot.getState())
                                  +plot.getState().getStateMessage()+"\", "
                           +"clickEvent:{ action:run_command,"

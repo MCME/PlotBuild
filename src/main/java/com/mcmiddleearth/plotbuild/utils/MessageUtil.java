@@ -20,15 +20,11 @@ package com.mcmiddleearth.plotbuild.utils;
 
 import com.mcmiddleearth.plotbuild.constants.PlotState;
 import com.mcmiddleearth.plotbuild.data.PluginData;
-import static net.minecraft.server.v1_8_R3.Block.p;
-import net.minecraft.server.v1_8_R3.IChatBaseComponent.ChatSerializer;
-import net.minecraft.server.v1_8_R3.Packet;
-import net.minecraft.server.v1_8_R3.PacketPlayOutChat;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 /**
@@ -38,6 +34,8 @@ import org.bukkit.entity.Player;
 public class MessageUtil {
     
     private static final String PREFIX   = "[PlotBuild] ";
+    
+    @Getter
     private static final String NOPREFIX = "    ";
     
     public static void sendErrorMessage(CommandSender sender, String message) {
@@ -75,6 +73,13 @@ public class MessageUtil {
         }
     }
     
+    public static void sendClickableMessage(Player sender, String message, String onClickCommand) {
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "tellraw "+ sender.getName()+" "
+                    +"{ text:\""+message+"\", "
+                      +"clickEvent:{ action:run_command,"
+                                   + "value:\""+ onClickCommand +"\"}}");
+    }
+        
     public static void sendOfflineMessage(OfflinePlayer offlinePlayer, String message) {
         Player player=null;
         for(Player search : Bukkit.getOnlinePlayers()) {
