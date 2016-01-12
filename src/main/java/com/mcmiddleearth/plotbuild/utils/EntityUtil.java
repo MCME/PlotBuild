@@ -257,7 +257,7 @@ public class EntityUtil {
             frame.setRotation(rotation);
             return frame;
         }
-        catch(NullPointerException e) {
+        catch(NullPointerException | IllegalArgumentException e) {
             Logger.getGlobal().info("Cannot create ItemFrame");
             return null;
         }
