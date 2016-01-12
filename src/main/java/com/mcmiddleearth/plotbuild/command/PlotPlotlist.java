@@ -51,15 +51,12 @@ public class PlotPlotlist extends PlotBuildCommand {
         }
         List<String> plotList = new ArrayList<>();
         for(Plot plot : plotbuild.getPlots()) {
-            plotList.add("Plot #"+plot.getID()+" "
-                         +MessageUtil.chatColorForPlotState(plot.getState())
-                         +plot.getState().getStateMessage());
-            /*plotList.add("{ text:\"Plot #"+plot.getID()+" "
-                                 //+MessageUtil.chatColorForPlotState(plot.getState())
-                                 +plot.getState().getStateMessage()+"\""
+            plotList.add("{ text:\"Plot #"+plot.getID()+" "
+                                 +MessageUtil.chatColorForPlotState(plot.getState())
+                                 +plot.getState().getStateMessage()+"\", "
                           +"clickEvent:{ action:run_command,"
                                       + "value:\"/plot warp "+plotbuild.getName()+" "+
-                                               + plot.getID() +"\"}}");*/
+                                               + plot.getID() +"\"}}");
         }
         int page=1;
         int maxPage=(plotList.size()-1)/10+1;

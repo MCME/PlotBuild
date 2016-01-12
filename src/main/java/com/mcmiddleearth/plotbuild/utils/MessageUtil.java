@@ -68,7 +68,8 @@ public class MessageUtil {
         if (sender instanceof Player) {
             //Packet packet = new PacketPlayOutChat(ChatSerializer.a(message));
             //((CraftPlayer) sender).getHandle().playerConnection.sendPacket(packet);
-            ((Player)sender).sendRawMessage(ChatColor.AQUA + NOPREFIX + message);
+            //((Player)sender).sendRawMessage(ChatColor.AQUA + NOPREFIX + message);
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "tellraw "+ ((Player)sender).getName()+" "+message);
         } else {
             sender.sendMessage(NOPREFIX + message);
         }
