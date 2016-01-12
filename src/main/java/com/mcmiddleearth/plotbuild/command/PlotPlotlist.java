@@ -37,7 +37,7 @@ public class PlotPlotlist extends PlotBuildCommand {
         super(0, true, permissionNodes);
         setAdditionalPermissionsEnabled(true);
         setShortDescription(": plot list for a plotbuild");
-        setUsageDescription(": Displays all plots of current plotbuild with their current states.");
+        setUsageDescription(" [plotbuild]: Displays for current plotbuild or the plotbuild with the specified name all plots with their current states.");
     }
     
     @Override
