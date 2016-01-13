@@ -35,7 +35,7 @@ public class PlotWarp extends PlotBuildCommand {
     public PlotWarp(String... permissionNodes) {
         super(0, true, permissionNodes);
         setShortDescription(": Teleports player to plotbuild.");
-        setUsageDescription(" [name] [number]: Withou a given number teleports a player to the first plot of the plotbuild name or the current plotbuild if no name is specified. Otherwise to the plot with the given number.");
+        setUsageDescription(" [name] [number]: Without a given number teleports a player to the first owned plot of the plotbuild name or the current plotbuild if no name is specified. If the player doesn't own a plot he is teleported to first plot of plotbuild. Otherwise to the plot with the given number.");
     }
     
     @Override
@@ -52,6 +52,10 @@ public class PlotWarp extends PlotBuildCommand {
         while(plotID < plotbuild.getPlots().size() 
                 && plotbuild.getPlots().get(plotID-1).getState().equals(PlotState.REMOVED)) {
             plotID++;
+        }
+        Plot ownPlot = plotbuild.getPlot((Player) cs);
+        if(ownPlot!=null) {
+            plotID = ownPlot.getID();
         }
         if(args.length>1) {
             try {

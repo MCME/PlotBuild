@@ -7,6 +7,7 @@ package com.mcmiddleearth.plotbuild.utils;
 
 import java.util.List;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
@@ -45,4 +46,11 @@ public class BukkitUtil {
     public static Player getPlayer(OfflinePlayer player) {
         return Bukkit.getPlayer(player.getUniqueId());
     }
+    
+    public static boolean isSameBlock(Location loc1, Location loc2) {
+        return loc1.getBlockX()==loc2.getBlockX() 
+            && loc1.getBlockY()==loc2.getBlockY() 
+            && loc1.getBlockZ()==loc2.getBlockZ(); 
+    }
+
 }
