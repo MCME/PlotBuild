@@ -102,6 +102,13 @@ public class PluginData {
         if(!plotBuildDir.exists()) {
             plotBuildDir.mkdirs();
         }
+        if(!messageFile.exists()) {
+            try {
+                messageFile.createNewFile();
+            } catch (IOException ex) {
+                Logger.getLogger(PluginData.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 
     public static void setCurrentPlotbuild(Player p, PlotBuild plotbuild) {
@@ -227,10 +234,14 @@ public class PluginData {
     }
     
     public static void saveData() {
+        try {
+            saveOfflineMessages();
+        } catch (IOException ex) {
+            Logger.getLogger(PluginData.class.getName()).log(Level.SEVERE, null, ex);
+        }
         for(PlotBuild plotbuild : plotbuildsList) {
             try {
-                savePlotBuild(plotbuild); 
-                saveOfflineMessages();
+                savePlotBuild(plotbuild);
             } catch (IOException ex) {
                 Logger.getLogger(PluginData.class.getName()).log(Level.SEVERE, null, ex);
             }

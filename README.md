@@ -59,6 +59,14 @@ When inside a plot and user is builder of the plot, the plot is marked as being 
 
 When inside a plot and user is the only builder of the plot, unclaims and resets plot. For resetting see notes on __/plot clear__.
 
+#### /plot warp [name] [number]
+
+Without a given number teleports a player to the first owned plot of the plotbuild name or the current plotbuild if no name is specified. If the player doesn't own a plot he is teleported to first plot of plotbuild. Otherwise to the plot with the given number.
+
+#### /plot plotlist [plotbuild]
+
+Displays for current plotbuild or the plotbuild with the specified name all plots with their current states.
+
 #### /plot help [command]
 
 Shows a usage description for [command]. If [command] is not specified a list of short descriptions for all plotbuild commands are shown.
