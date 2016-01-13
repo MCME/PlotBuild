@@ -23,6 +23,7 @@ import com.mcmiddleearth.plotbuild.conversations.PlotBuildConversationFactory;
 import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.listeners.PlayerListener;
 import com.mcmiddleearth.plotbuild.listeners.WorldListener;
+import com.mcmiddleearth.plotbuild.utils.EntityUtil;
 import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -40,6 +41,7 @@ public class PlotBuildPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         pluginInstance = this;
+        EntityUtil.init(this);
         this.saveDefaultConfig();
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
         getServer().getPluginManager().registerEvents(new WorldListener(), this);

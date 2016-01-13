@@ -90,12 +90,23 @@ public class Plot {
     }
     
     public boolean isInside(Location location) {
-        if(    location.getBlockX() < corner1.getBlockX() || location.getBlockX() > corner2.getBlockX()
-           ||  location.getBlockZ() < corner1.getBlockZ() || location.getBlockZ() > corner2.getBlockZ()){
+        return isInside(location, 0);
+    }
+    
+    public boolean isInsideWithBorder(Location location) {
+        return isInside(location, 1);
+    }
+    
+    private boolean isInside(Location location, int tolerance) {
+        if(    location.getBlockX() < corner1.getBlockX() - tolerance 
+           || location.getBlockX() > corner2.getBlockX() + tolerance
+           ||  location.getBlockZ() < corner1.getBlockZ() - tolerance
+           || location.getBlockZ() > corner2.getBlockZ() + tolerance){
             return false;
         }
         if( plotbuild.isCuboid()
-            && (location.getBlockY() < corner1.getBlockY() || location.getBlockY() > corner2.getBlockY())) {
+            && (location.getBlockY() < corner1.getBlockY() - tolerance
+                || location.getBlockY() > corner2.getBlockY() +  tolerance) ) {
             return false;
         }
         return true;
@@ -117,20 +128,24 @@ public class Plot {
     }
     
     public boolean isIntersecting(Selection selection, boolean cuboid) {
+        int spacing = 1;
         int selMinX = Math.min(selection.getFirstPoint().getBlockX(),selection.getSecondPoint().getBlockX());
         int selMaxX = Math.max(selection.getFirstPoint().getBlockX(),selection.getSecondPoint().getBlockX());
         int selMinZ = Math.min(selection.getFirstPoint().getBlockZ(),selection.getSecondPoint().getBlockZ());
         int selMaxZ = Math.max(selection.getFirstPoint().getBlockZ(),selection.getSecondPoint().getBlockZ());
-        if(selMinX > corner2.getBlockX() || selMaxX < corner1.getBlockX()) {
+        if(selMinX > corner2.getBlockX() + spacing 
+                || selMaxX < corner1.getBlockX() - spacing) {
             return false;
         }
-        if(selMinZ > corner2.getBlockZ() || selMaxZ < corner1.getBlockZ()) {
+        if(selMinZ > corner2.getBlockZ() + spacing 
+                || selMaxZ < corner1.getBlockZ() - spacing) {
             return false;
         }
         if(plotbuild.isCuboid() && cuboid) {
             int selMinY = Math.min(selection.getFirstPoint().getBlockY(),selection.getSecondPoint().getBlockY());
             int selMaxY = Math.max(selection.getFirstPoint().getBlockY(),selection.getSecondPoint().getBlockY());
-            if(selMinY > corner2.getBlockY() || selMaxY < corner1.getBlockY()) {
+            if(selMinY > corner2.getBlockY() + spacing 
+                    || selMaxY < corner1.getBlockY() - spacing) {
                 return false;
             }
         }
@@ -259,6 +274,7 @@ public class Plot {
                 }
             }
         }
+        PluginData.restoreEntities(plotbuild,this);
     }
     
     public int getID() {
