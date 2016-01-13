@@ -31,7 +31,7 @@ import org.bukkit.command.CommandSender;
 public class PlotHelp extends AbstractCommand{
     
     public PlotHelp(String... permissionNodes) {
-        super(0, true, permissionNodes);
+        super(0, false, permissionNodes);
         setShortDescription(": displays help about plotbuild commands.");
         setUsageDescription(" [command]: Shows a description for [command]. If [command] is not specified a list of short descriptions for all plotbuild commands are shown.");
     }
