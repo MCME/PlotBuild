@@ -50,10 +50,16 @@ public class PlotList extends AbstractCommand {
                         Integer.toString(plotbuild.countUnclaimedPlots()) + ")\", "
                           +"clickEvent:{ action:run_command,"
                                       + "value:\"/plot plotlist "+plotbuild.getName()+"\"}}");*/
-                MessageUtil.sendClickableMessage((Player)cs, ChatColor.AQUA+MessageUtil.getNOPREFIX()+plotbuild.getName()
+                if(cs instanceof Player) {
+                    MessageUtil.sendClickableMessage((Player)cs, ChatColor.AQUA+MessageUtil.getNOPREFIX()+plotbuild.getName()
                                                             +" (unclaimed plots: " 
                                                             + Integer.toString(plotbuild.countUnclaimedPlots()) + ")",
                                                   "/plot plotlist "+plotbuild.getName());
+                } else {
+                    MessageUtil.sendNoPrefixInfoMessage(cs, plotbuild.getName()
+                                                            +" (unclaimed plots: " 
+                                                            + Integer.toString(plotbuild.countUnclaimedPlots()) + ")");
+                }
             }
         }
     }
