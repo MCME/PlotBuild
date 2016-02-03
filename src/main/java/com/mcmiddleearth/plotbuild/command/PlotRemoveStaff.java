@@ -20,7 +20,9 @@ package com.mcmiddleearth.plotbuild.command;
 
 import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.plotbuild.PlotBuild;
+import com.mcmiddleearth.plotbuild.utils.BukkitUtil;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
+import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -48,7 +50,10 @@ public class PlotRemoveStaff extends PlotBuildCommand{
         if(!hasPermissionsForPlotBuild((Player) cs, plotbuild)) {
             return;
         }
-        OfflinePlayer removedStaff = Bukkit.getOfflinePlayer(args[0]);
+        OfflinePlayer removedStaff = BukkitUtil.matchPlayer(args[0]);
+        if(removedStaff==null) {
+            removedStaff = Bukkit.getOfflinePlayer(args[0]);
+        }
         if(removedStaff.getLastPlayed()==0) {
             sendPlayerNotFoundMessage(cs);
             return;
@@ -62,9 +67,10 @@ public class PlotRemoveStaff extends PlotBuildCommand{
         if(removedStaff.getPlayer()!=cs) {
             sendRemovedStaffPlayerMessage(cs, removedStaff, plotbuild.getName());
         }
-        for(OfflinePlayer staff: plotbuild.getOfflineStaffList()) {
-            if(staff.getPlayer()!=(Player) cs && staff!=removedStaff) {
-                sendOtherStaffMessage(cs, staff, removedStaff, plotbuild.getName());
+        for(UUID staff: plotbuild.getOfflineStaffList()) {
+            if(!staff.equals(((Player) cs).getUniqueId())
+                    && !staff.equals(removedStaff.getUniqueId())) {
+                sendOtherStaffMessage(cs, Bukkit.getOfflinePlayer(staff), removedStaff, plotbuild.getName());
             }
         }
         plotbuild.log(((Player) cs).getName()+" removed "+removedStaff.getName()+" from staff.");

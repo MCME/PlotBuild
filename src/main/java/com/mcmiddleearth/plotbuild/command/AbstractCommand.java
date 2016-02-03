@@ -90,7 +90,7 @@ public abstract class AbstractCommand {
     }
     
     protected void sendPlayerNotFoundMessage(CommandSender cs) {
-        MessageUtil.sendErrorMessage(cs, "Player not found. You need to type in the full name.");
+        MessageUtil.sendErrorMessage(cs, "Player not found or more than one player found. For players who are offline you have to type in the full name");
     }
     
     protected static void sendRestoreErrorMessage(CommandSender cs) {

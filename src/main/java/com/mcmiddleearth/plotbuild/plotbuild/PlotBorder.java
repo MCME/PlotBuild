@@ -12,10 +12,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Logger;
+import java.util.UUID;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
@@ -104,7 +104,7 @@ public class PlotBorder {
                 }
             }
             signBlock = signBlock.getRelative(0,-1,0);
-            List<OfflinePlayer> owners = plot.getOfflineOwners();
+            List<UUID> owners = plot.getOfflineOwners();
             if(signBlock.isEmpty() || signBlock.getType()==Material.WALL_SIGN) {
                 if(owners.size()>0) {
                     signBlock.setType(Material.WALL_SIGN);
@@ -112,7 +112,7 @@ public class PlotBorder {
                         Sign sign = (Sign) signBlock.getState();
                         for(int i = 0; i<4; i++) {
                             if(i < owners.size()) {
-                                sign.setLine(i, owners.get(i).getName());
+                                sign.setLine(i, Bukkit.getOfflinePlayer(owners.get(i)).getName());
                             }
                             else {
                                 sign.setLine(i, "");
@@ -133,7 +133,7 @@ public class PlotBorder {
                         Sign sign = (Sign) signBlock.getState();
                         for(int i = 4; i<8; i++) {
                             if(i < owners.size()) {
-                                sign.setLine(i-4, owners.get(i).getName());
+                                sign.setLine(i-4, Bukkit.getOfflinePlayer(owners.get(i)).getName());
                             }
                             else {
                                 sign.setLine(i-4, "");

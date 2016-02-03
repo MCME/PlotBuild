@@ -23,10 +23,10 @@ import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.data.Selection;
 import com.mcmiddleearth.plotbuild.exceptions.InvalidPlotLocationException;
 import com.mcmiddleearth.plotbuild.exceptions.InvalidRestoreDataException;
-import com.mcmiddleearth.plotbuild.utils.BukkitUtil;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Location;
@@ -51,7 +51,7 @@ public class Plot {
      * OfflinePlayer.getUniqueID() to check if a player is in 
      * this List
      */
-    private List <OfflinePlayer> owners = new ArrayList <>();
+    private List <UUID> owners = new ArrayList <>();
     
     @Getter
     private PlotState state;
@@ -80,7 +80,7 @@ public class Plot {
         border.placeSigns();
     }
     
-    public Plot(Location corner1, Location corner2, List <OfflinePlayer> owners, PlotState state, LinkedList <Location> border) {
+    public Plot(Location corner1, Location corner2, List <UUID> owners, PlotState state, LinkedList <Location> border) {
         this.corner1 = corner1;
         this.corner2 = corner2;
         this.owners = owners;
@@ -153,9 +153,9 @@ public class Plot {
     }
     
     public boolean isOwner(OfflinePlayer player) {
-        for(OfflinePlayer offPlayer : owners) {
+        for(UUID offPlayer : owners) {
             //Player search = offPlayer.getPlayer();
-            if(player!=null && offPlayer.getUniqueId().equals(player.getUniqueId())) {
+            if(player!=null && offPlayer.equals(player.getUniqueId())) {
                 return true;
             }
         }
@@ -166,27 +166,27 @@ public class Plot {
         return owners.size();
     }
     
-    public List<OfflinePlayer> getOfflineOwners() {
+    public List<UUID> getOfflineOwners() {
         return owners;
     }
     
     public boolean claim(OfflinePlayer player){
-        owners.add(player);
+        owners.add(player.getUniqueId());
         state = PlotState.CLAIMED;
         border.refreshBorder();
         return border.placeSigns();
     }
     
     public boolean invite(OfflinePlayer player){
-        if(!owners.contains(player)) {
-            owners.add(player);
+        if(!owners.contains(player.getUniqueId())) {
+            owners.add(player.getUniqueId());
         }
         return border.placeSigns();
     }
     
     public boolean remove(OfflinePlayer player){
         if(owners.size()>1) {
-            BukkitUtil.removePlayerFromList(owners, player);
+            owners.remove(player.getUniqueId());
         }
         return border.placeSigns();
     }
@@ -200,7 +200,7 @@ public class Plot {
     }
     
     public boolean leave(OfflinePlayer player) {
-        BukkitUtil.removePlayerFromList(owners, player);
+        owners.remove(player.getUniqueId());
         return border.placeSigns();
     }
     

@@ -42,6 +42,11 @@ public class PlotCreate extends AbstractCommand {
     protected void execute(CommandSender cs, String... args) {
     	//check plotbuild name
         String name = args[0];
+        try{
+            Integer.parseInt(args[0]);
+            sendNumberNotAllowedMessage(cs);
+        }
+        catch(NumberFormatException e) {}
         List<PlotBuild> plotbuildsList = PluginData.getPlotbuildsList();
         for(PlotBuild plotbuild : plotbuildsList){
             if(plotbuild.getName().equalsIgnoreCase(name)){
@@ -124,5 +129,9 @@ public class PlotCreate extends AbstractCommand {
         else {
             MessageUtil.sendErrorMessage(player, "Border type cage is not allowed without option -3D. No plotbuild created.");
         }
+    }
+
+    private void sendNumberNotAllowedMessage(CommandSender cs) {
+        MessageUtil.sendErrorMessage(cs,"The name of a plotbuild must not be a number.");
     }
 }

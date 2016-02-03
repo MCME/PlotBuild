@@ -22,6 +22,8 @@ import com.mcmiddleearth.plotbuild.constants.PlotState;
 import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
+import java.util.UUID;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -52,14 +54,14 @@ public class PlotFinish extends InsidePlotCommand {
             sendNoSignPlaceMessage(cs);
         }
         sendFinishedMessage(cs);
-        for(OfflinePlayer builder: plot.getOfflineOwners()) {
-            if(builder.getPlayer()!=(Player) cs) {
-                sendBuilderMessage(cs, builder, plot.getPlotbuild().getName(), plot.getID());
+        for(UUID builder: plot.getOfflineOwners()) {
+            if(!builder.equals(((Player)cs).getUniqueId())) {
+                sendBuilderMessage(cs, Bukkit.getOfflinePlayer(builder), plot.getPlotbuild().getName(), plot.getID());
             }
         }
-        for(OfflinePlayer staff: plot.getPlotbuild().getOfflineStaffList()) {
-            if(staff.getPlayer()!=(Player) cs) {
-                sendStaffMessage(cs, staff, plot.getPlotbuild().getName(), plot.getID());
+        for(UUID staff: plot.getPlotbuild().getOfflineStaffList()) {
+            if(!staff.equals(((Player)cs).getUniqueId())) {
+                sendStaffMessage(cs, Bukkit.getOfflinePlayer(staff), plot.getPlotbuild().getName(), plot.getID());
             }
         }
         plot.getPlotbuild().log(((Player) cs).getName()+" finished plot "+plot.getID()+".");

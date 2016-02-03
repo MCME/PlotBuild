@@ -18,14 +18,15 @@
  */
 package com.mcmiddleearth.plotbuild.command;
 
-import com.mcmiddleearth.plotbuild.constants.PlotState;
 import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.exceptions.InvalidRestoreDataException;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.plotbuild.PlotBuild;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -62,9 +63,9 @@ public class PlotAccept extends InsidePlotCommand {
             Logger.getLogger(PlotAccept.class.getName()).log(Level.SEVERE, null, ex);
         }
         sendAcceptMessage(cs);
-        for(OfflinePlayer builder: plot.getOfflineOwners()) {
-            if(builder.getPlayer()!=cs) {
-                sendBuilderMessage(cs, builder, plot.getPlotbuild().getName(), plot.getID());
+        for(UUID builder: plot.getOfflineOwners()) {
+            if(!builder.equals(((Player)cs).getUniqueId())) {
+                sendBuilderMessage(cs, Bukkit.getOfflinePlayer(builder), plot.getPlotbuild().getName(), plot.getID());
             }
         }
         PlotBuild plotbuild = plot.getPlotbuild();

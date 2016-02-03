@@ -21,7 +21,9 @@ package com.mcmiddleearth.plotbuild.command;
 import com.mcmiddleearth.plotbuild.constants.PlotState;
 import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
+import com.mcmiddleearth.plotbuild.utils.BukkitUtil;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
+import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -49,7 +51,10 @@ public class PlotAssign extends InsidePlotCommand {
         if(!hasPermissionsForPlotBuild((Player) cs, plot.getPlotbuild())) {
             return;
         }
-        OfflinePlayer assignedPlayer = Bukkit.getOfflinePlayer(args[0]);
+        OfflinePlayer assignedPlayer = BukkitUtil.matchPlayer(args[0]);
+        if(assignedPlayer==null) {
+            assignedPlayer = Bukkit.getOfflinePlayer(args[0]);
+        }
         if(assignedPlayer.getLastPlayed()==0) {
             sendPlayerNotFoundMessage(cs);
             return;
@@ -80,9 +85,10 @@ public class PlotAssign extends InsidePlotCommand {
         if(cs!=assignedPlayer.getPlayer()) {
             sendAssignedPlayerMessage(cs, assignedPlayer, plot.getPlotbuild().getName(), plot.getID());
         }
-        for(OfflinePlayer builder: plot.getOfflineOwners()) {
-            if(builder.getPlayer()!=cs && builder!=assignedPlayer) {
-                sendOtherBuilderMessage(cs, builder, assignedPlayer, plot.getPlotbuild().getName(), plot.getID());
+        for(UUID builder: plot.getOfflineOwners()) {
+            if(!builder.equals(((Player)cs).getUniqueId()) && !builder.equals(assignedPlayer.getUniqueId())) {
+                sendOtherBuilderMessage(cs, Bukkit.getOfflinePlayer(builder), 
+                                        assignedPlayer, plot.getPlotbuild().getName(), plot.getID());
             }
         }
         plot.getPlotbuild().log(((Player) cs).getName()+" assigned "+assignedPlayer.getName()+" to plot #"+plot.getID()+".");

@@ -23,8 +23,10 @@ import com.mcmiddleearth.plotbuild.exceptions.InvalidRestoreDataException;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.plotbuild.PlotBuild;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -56,18 +58,18 @@ public class PlotDelete extends InsidePlotCommand {
         if(args.length > 0 && args[0].equalsIgnoreCase("-k")) {
             keep = true;
             sendDeleteAndKeepMessage(cs);
-            for(OfflinePlayer builder: plot.getOfflineOwners()) {
-                if(builder.getPlayer()!=cs) {
-                    sendBuilderDeletedMessage(cs, builder, plot.getPlotbuild().getName(), plot.getID());
+            for(UUID builder: plot.getOfflineOwners()) {
+                if(!builder.equals(((Player)cs).getUniqueId())) {
+                    sendBuilderDeletedMessage(cs, Bukkit.getOfflinePlayer(builder), plot.getPlotbuild().getName(), plot.getID());
                 }
             }
             logMessage1 = " deleted and kept changes ";
         }
         else {
             sendDeleteMessage(cs);
-            for(OfflinePlayer builder: plot.getOfflineOwners()) {
-                if(builder.getPlayer()!=cs) {
-                    sendBuilderDeletedAndClearedMessage(cs, builder, plot.getPlotbuild().getName(), plot.getID());
+            for(UUID builder: plot.getOfflineOwners()) {
+                if(!builder.equals(((Player)cs).getUniqueId())) {
+                    sendBuilderDeletedAndClearedMessage(cs, Bukkit.getOfflinePlayer(builder), plot.getPlotbuild().getName(), plot.getID());
                 }
             }
             logMessage1 =  " deleted and cleared ";
