@@ -20,7 +20,8 @@ package com.mcmiddleearth.plotbuild.command;
 
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
-import org.bukkit.OfflinePlayer;
+import java.util.UUID;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -49,8 +50,8 @@ public class PlotInfo extends InsidePlotCommand{
             sendInfoMessage(cs, plot.getPlotbuild().getInfo());
         }
         sendStaffHeaderMessage(cs, plot.getPlotbuild().getName());
-        for(OfflinePlayer staff : plot.getPlotbuild().getOfflineStaffList()) {
-            sendStaffMessage(cs, staff.getName());
+        for(UUID staff : plot.getPlotbuild().getOfflineStaffList()) {
+            sendStaffMessage(cs, Bukkit.getOfflinePlayer(staff).getName());
         }
     }
 

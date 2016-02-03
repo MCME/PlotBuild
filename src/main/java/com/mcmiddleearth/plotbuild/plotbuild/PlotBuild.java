@@ -20,13 +20,13 @@ package com.mcmiddleearth.plotbuild.plotbuild;
 
 import com.mcmiddleearth.plotbuild.constants.BorderType;
 import com.mcmiddleearth.plotbuild.constants.PlotState;
-import com.mcmiddleearth.plotbuild.utils.BukkitUtil;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.OfflinePlayer;
@@ -49,10 +49,10 @@ public class PlotBuild {
     private List <Plot> plots = new ArrayList <>();
     
     @Setter
-    private List <OfflinePlayer> staffList = new ArrayList <>();
+    private List <UUID> staffList = new ArrayList <>();
     
     @Setter
-    private List <OfflinePlayer> bannedPlayers = new ArrayList <>();
+    private List <UUID> bannedPlayers = new ArrayList <>();
     
     @Getter
     @Setter
@@ -121,31 +121,30 @@ public class PlotBuild {
     }
      
     public boolean isBanned(OfflinePlayer player) {
-        for(OfflinePlayer offPlayer : bannedPlayers) {
-            if(player!=null && offPlayer.getUniqueId().equals((player.getUniqueId()))) {
+        for(UUID offPlayer : bannedPlayers) {
+            if(player!=null && offPlayer.equals((player.getUniqueId()))) {
                 return true;
             }
         }
         return false;
     }
     
-    public List<OfflinePlayer> getOfflineBannedPlayers() {
+    public List<UUID> getOfflineBannedPlayers() {
         return bannedPlayers;
     }
     
     public void removeBan(OfflinePlayer player) {
-        for(OfflinePlayer offPlayer : bannedPlayers) {
-            if(player!=null && offPlayer.getUniqueId().equals((player.getUniqueId()))) {
-                BukkitUtil.removePlayerFromList(bannedPlayers, player);
+        for(UUID offPlayer : bannedPlayers) {
+            if(player!=null && offPlayer.equals((player.getUniqueId()))) {
+                bannedPlayers.remove(player.getUniqueId());
                 return;
             }
         }
     }
     
     public boolean isStaff(OfflinePlayer player) {
-        for(OfflinePlayer offPlayer : staffList) {
-            //Player search = offPlayer.getPlayer();
-            if(offPlayer!=null && offPlayer.getUniqueId().equals(player.getUniqueId())) {
+        for(UUID offPlayer : staffList) {
+            if(player!=null && offPlayer.equals(player.getUniqueId())) {
                 return true;
             }
         }
@@ -153,23 +152,23 @@ public class PlotBuild {
     }
     
     public void addStaff(OfflinePlayer player) {
-        staffList.add(player);
+        staffList.add(player.getUniqueId());
     }
     
     public void removeStaff(OfflinePlayer player) {
-        for(OfflinePlayer offPlayer : staffList) {
-            if(player!=null && offPlayer.getUniqueId().equals((player.getUniqueId()))) {
-                BukkitUtil.removePlayerFromList(staffList, player);
+        for(UUID offPlayer : staffList) {
+            if(player!=null && offPlayer.equals((player.getUniqueId()))) {
+                staffList.remove(player.getUniqueId());
                 return;
             }
         }
     }
     
-    public List<OfflinePlayer> getOfflineStaffList() {
+    public List<UUID> getOfflineStaffList() {
         return staffList;
     }
     public void addBanned(OfflinePlayer player) {
-        bannedPlayers.add(player);
+        bannedPlayers.add(player.getUniqueId());
     }
     
     private final static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yy'-'MM'-'dd' | 'HH':'mm ");
@@ -178,11 +177,11 @@ public class PlotBuild {
         history.add(LocalDateTime.now().format(formatter)+entry);
     }
     
-    public Set<OfflinePlayer> getBuilders() {
-        Set<OfflinePlayer> builders = new HashSet<>();
+    public Set<UUID> getBuilders() {
+        Set<UUID> builders = new HashSet<>();
         for(Plot plot : getPlots()) {
             if(plot.getState()!=PlotState.REMOVED) {
-                List<OfflinePlayer> owners = plot.getOfflineOwners();
+                List<UUID> owners = plot.getOfflineOwners();
                 builders.addAll(owners);
             }
         }

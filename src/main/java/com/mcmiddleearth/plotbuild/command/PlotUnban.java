@@ -20,7 +20,10 @@ package com.mcmiddleearth.plotbuild.command;
 
 import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.plotbuild.PlotBuild;
+import com.mcmiddleearth.plotbuild.utils.BukkitUtil;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
+import java.util.UUID;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -47,11 +50,14 @@ public class PlotUnban extends PlotBuildCommand {
         if(!hasPermissionsForPlotBuild((Player) cs, plotbuild)) {
             return;
         }
-        OfflinePlayer banned = null;
-        for(OfflinePlayer search : plotbuild.getOfflineBannedPlayers()) {
-            if(search.getName().equals(args[0])) {
-                banned = search;
-                break;
+        OfflinePlayer banned = BukkitUtil.matchPlayer(args[0]);
+        if(!plotbuild.getOfflineBannedPlayers().contains(banned.getUniqueId())) {
+            banned = null;
+            for(UUID search : plotbuild.getOfflineBannedPlayers()) {
+                if(Bukkit.getOfflinePlayer(search).getName().equals(args[0])) {
+                    banned = Bukkit.getOfflinePlayer(search);
+                    break;
+                }
             }
         }
         if(banned==null) {

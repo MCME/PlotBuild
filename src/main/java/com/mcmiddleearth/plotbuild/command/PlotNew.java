@@ -64,7 +64,9 @@ public class PlotNew extends PlotBuildCommand {
             try {
                 newPlot = new Plot(plotbuild, selection.getFirstPoint(),selection.getSecondPoint());
             } catch (InvalidPlotLocationException ex) {
+                sendInvalidSelectionMessage(cs);
                 Logger.getLogger(PlotNew.class.getName()).log(Level.SEVERE, null, ex);
+                return;
             }
             sendPlotCreatedMessage(cs);
             PluginData.clearSelection((Player)cs);

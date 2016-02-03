@@ -21,6 +21,8 @@ package com.mcmiddleearth.plotbuild.command;
 import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
+import java.util.UUID;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -50,9 +52,9 @@ public class PlotRefuse extends InsidePlotCommand {
         if(!plot.refuse()) {
             sendNoSignPlaceMessage(cs);
         }
-        for(OfflinePlayer builder: plot.getOfflineOwners()) {
-            if(builder.getPlayer()!=cs) {
-                sendBuilderMessage(cs, builder, plot.getPlotbuild().getName(), plot.getID());
+        for(UUID builder: plot.getOfflineOwners()) {
+            if(!builder.equals(((Player)cs).getUniqueId())) {
+                sendBuilderMessage(cs, Bukkit.getOfflinePlayer(builder), plot.getPlotbuild().getName(), plot.getID());
             }
         }
         sendRefuseMessgage(cs);

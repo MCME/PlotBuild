@@ -23,13 +23,12 @@ import com.mcmiddleearth.plotbuild.constants.Permission;
 import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.data.Selection;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
-import com.mcmiddleearth.plotbuild.utils.BukkitUtil;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
 import java.util.List;
+import java.util.UUID;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -103,17 +102,17 @@ public class PlayerListener implements Listener{
     public void playerMove(PlayerMoveEvent event) {
         if(event.getFrom().getBlock()!=event.getTo().getBlock()) {
             Player player = event.getPlayer();
-            List<OfflinePlayer> playersSwitchedToCreative = PluginData.getSwitchedToCreative();
+            List<UUID> playersSwitchedToCreative = PluginData.getSwitchedToCreative();
             if(PluginData.isNearOwnPlot(player)) {
                 if(player.getGameMode()==GameMode.SURVIVAL) {
-                    if(!BukkitUtil.isPlayerInList(playersSwitchedToCreative, player)) {
-                        playersSwitchedToCreative.add(player);
+                    if(playersSwitchedToCreative.contains(player.getUniqueId())) {
+                        playersSwitchedToCreative.add(player.getUniqueId());
                     }
                     player.setGameMode(GameMode.CREATIVE);
                 }
             }
             else {
-                if(BukkitUtil.isPlayerInList(playersSwitchedToCreative, player)) {
+                if(playersSwitchedToCreative.contains(player.getUniqueId())) {
                     boolean flying = false;
                     if(player.isFlying()) {
                         flying = true;  
@@ -123,7 +122,7 @@ public class PlayerListener implements Listener{
                         player.setAllowFlight(true);
                         player.setFlying(flying);
                     }
-                    BukkitUtil.removePlayerFromList(playersSwitchedToCreative, player);
+                    playersSwitchedToCreative.remove(player.getUniqueId());
                 }
             }
         }
