@@ -128,10 +128,15 @@ public class PluginData {
     }
     
     public static void clearSelection(Player player) {
+        UUID found = null;
         for(UUID search : selections.keySet()) {
             if(search.equals(player.getUniqueId())) {
-                selections.remove(search);
+                found = search;
+                break;
             }
+        }
+        if(found!=null) {
+            selections.remove(found);
         }
     }
     
@@ -223,12 +228,17 @@ public class PluginData {
     }
     
     public static void deleteOfflineMessagesFor(OfflinePlayer player) {
+        UUID found = null;
         for(UUID offline: offlineMessages.keySet()) {
             if(offline!=null){
                 if(offline.equals(player.getUniqueId())) {
-                    offlineMessages.remove(offline);
+                    found = offline;
+                    break;
                 }
             }
+        }
+        if(found != null) {
+            offlineMessages.remove(found);
         }
     }
     

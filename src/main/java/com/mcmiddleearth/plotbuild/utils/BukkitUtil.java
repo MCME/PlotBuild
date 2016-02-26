@@ -23,11 +23,14 @@ public class BukkitUtil {
     }
     
     public static void removePlayerFromList(List<OfflinePlayer> list, OfflinePlayer player) {
+        OfflinePlayer found = null;
         for(OfflinePlayer search: list) {
             if(isSame(search, player)) {
-                list.remove(search);
-                return;
+                found = search;
             }
+        }
+        if(found!=null) {
+             list.remove(found);
         }
     }
     
