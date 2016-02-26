@@ -25,6 +25,7 @@ import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.plotbuild.PlotBuild;
 import com.mcmiddleearth.plotbuild.utils.BukkitUtil;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.Bukkit;
@@ -55,7 +56,10 @@ public class PlotBan extends PlotBuildCommand {
         if(!hasPermissionsForPlotBuild((Player) cs, plotbuild)) {
             return;
         }
-        OfflinePlayer banned = Bukkit.getOfflinePlayer(args[0]);
+        OfflinePlayer banned = BukkitUtil.matchPlayer(args[0]);
+        if(banned==null) {
+            banned = Bukkit.getOfflinePlayer(args[0]);
+        }
         if(banned.getLastPlayed()==0) {
             sendPlayerNotFoundMessage(cs);
             return;
@@ -82,9 +86,9 @@ public class PlotBan extends PlotBuildCommand {
                 }
                 else {
                     signsPlaced = plot.leave(banned);
-                    for(OfflinePlayer builder: plot.getOfflineOwners()) {
-                        if(builder.getPlayer()!=cs) {
-                            sendOtherBuilderMessage(cs, builder, banned, plot.getPlotbuild().getName(), plot.getID());
+                    for(UUID builder: plot.getOfflineOwners()) {
+                        if(!builder.equals(((Player) cs).getUniqueId())) {
+                            sendOtherBuilderMessage(cs, Bukkit.getOfflinePlayer(builder), banned, plot.getPlotbuild().getName(), plot.getID());
                 }
             }
                 }
@@ -96,9 +100,9 @@ public class PlotBan extends PlotBuildCommand {
         plotbuild.addBanned(banned);
         if(plotbuild.isStaff(banned)) {
             plotbuild.removeStaff(banned);
-            for(OfflinePlayer staff: plotbuild.getOfflineStaffList()) {
-                if(staff.getPlayer()!=(Player) cs) {
-                    sendOtherStaffMessage(cs, staff, banned, plotbuild.getName());
+            for(UUID staff: plotbuild.getOfflineStaffList()) {
+                if(!staff.equals(((Player) cs).getUniqueId())) {
+                    sendOtherStaffMessage(cs, Bukkit.getOfflinePlayer(staff), banned, plotbuild.getName());
                 }
             }
         }

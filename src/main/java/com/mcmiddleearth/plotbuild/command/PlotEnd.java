@@ -24,8 +24,10 @@ import com.mcmiddleearth.plotbuild.exceptions.InvalidRestoreDataException;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.plotbuild.PlotBuild;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -62,9 +64,9 @@ public class PlotEnd extends PlotBuildCommand {
         for(Plot p : plotbuild.getPlots()) {
             if(p.getState() != PlotState.REMOVED) {
                 try {
-                    for(OfflinePlayer builder: p.getOfflineOwners()) {
-                        if(builder.getPlayer()!=cs) {
-                            sendBuilderDeletedMessage(cs, builder, p.getPlotbuild().getName(), p.getID());
+                    for(UUID builder: p.getOfflineOwners()) {
+                        if(!builder.equals(((Player)cs).getUniqueId())) {
+                            sendBuilderDeletedMessage(cs, Bukkit.getOfflinePlayer(builder), p.getPlotbuild().getName(), p.getID());
                         }
                     }
                     p.delete(keep);

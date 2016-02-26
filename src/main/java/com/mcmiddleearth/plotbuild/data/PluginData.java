@@ -25,7 +25,6 @@ import com.mcmiddleearth.plotbuild.constants.PlotState;
 import com.mcmiddleearth.plotbuild.conversations.PlotBuildConversationFactory;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.plotbuild.PlotBuild;
-import com.mcmiddleearth.plotbuild.utils.BukkitUtil;
 import com.mcmiddleearth.plotbuild.utils.EntityUtil;
 import com.mcmiddleearth.plotbuild.utils.FileUtil;
 import com.mcmiddleearth.plotbuild.utils.ListUtil;
@@ -73,16 +72,16 @@ public class PluginData {
     private static PlotBuildConversationFactory confFactory;
     
     @Getter
-    private static final List <OfflinePlayer> switchedToCreative = new ArrayList<>(); 
+    private static final List <UUID> switchedToCreative = new ArrayList<>(); 
     
     @Getter
     private static final List <PlotBuild> plotbuildsList = new ArrayList <>();
     
-    private static final Map <Player, PlotBuild> currentPlotbuild = new LinkedHashMap <>();
+    private static final Map <UUID, PlotBuild> currentPlotbuild = new LinkedHashMap <>();
     
-    private static final Map <Player, Selection> selections = new LinkedHashMap <>();
+    private static final Map <UUID, Selection> selections = new LinkedHashMap <>();
     
-    private static final Map <OfflinePlayer, List<String>> offlineMessages = new LinkedHashMap<>();
+    private static final Map <UUID, List<String>> offlineMessages = new LinkedHashMap<>();
     
     @Getter
     private static final Set <String> missingWorlds = new HashSet<>();
@@ -112,27 +111,32 @@ public class PluginData {
     }
 
     public static void setCurrentPlotbuild(Player p, PlotBuild plotbuild) {
-        currentPlotbuild.put(p, plotbuild);
+        currentPlotbuild.put(p.getUniqueId(), plotbuild);
     }
     
     public static PlotBuild getCurrentPlotbuild(Player p) {
-        return currentPlotbuild.get(p);
+        return currentPlotbuild.get(p.getUniqueId());
     }
     
     public static Selection getCurrentSelection(Player p){
-        Selection selection = selections.get(p);
+        Selection selection = selections.get(p.getUniqueId());
         if(selection == null) {
             selection = new Selection();
-            selections.put(p, selection);
+            selections.put(p.getUniqueId(), selection);
         }
         return selection;
     }
     
     public static void clearSelection(Player player) {
-        for(Player search : selections.keySet()) {
-            if(BukkitUtil.isSame(search, player)) {
-                selections.remove(search);
+        UUID found = null;
+        for(UUID search : selections.keySet()) {
+            if(search.equals(player.getUniqueId())) {
+                found = search;
+                break;
             }
+        }
+        if(found!=null) {
+            selections.remove(found);
         }
     }
     
@@ -148,8 +152,8 @@ public class PluginData {
         return plots;
     }
     
-    public static Set<OfflinePlayer> getBuilders() {
-        Set<OfflinePlayer> builders = new HashSet<>();
+    public static Set<UUID> getBuilders() {
+        Set<UUID> builders = new HashSet<>();
         for(PlotBuild plotbuild : PluginData.getPlotbuildsList()) {
             builders.addAll(plotbuild.getBuilders());
         }
@@ -201,21 +205,21 @@ public class PluginData {
     }
     
     public static void addOfflineMessage(OfflinePlayer player, String message) {
-        if(offlineMessages.containsKey(player)) {
-            List<String> messages = offlineMessages.get(player);
+        if(offlineMessages.containsKey(player.getUniqueId())) {
+            List<String> messages = offlineMessages.get(player.getUniqueId());
             messages.add(message);
         }
         else {
             List<String> messages = new ArrayList<>();
             messages.add(message);
-            offlineMessages.put(player, messages);
+            offlineMessages.put(player.getUniqueId(), messages);
         }
     }
     
     public static List<String> getOfflineMessagesFor(OfflinePlayer player) {
-        for(OfflinePlayer offline: offlineMessages.keySet()) {
+        for(UUID offline: offlineMessages.keySet()) {
             if(offline!=null){
-                if(offline.getUniqueId().equals(player.getUniqueId())) {
+                if(offline.equals(player.getUniqueId())) {
                     return offlineMessages.get(offline);
                 }
             }
@@ -224,12 +228,17 @@ public class PluginData {
     }
     
     public static void deleteOfflineMessagesFor(OfflinePlayer player) {
-        for(OfflinePlayer offline: offlineMessages.keySet()) {
+        UUID found = null;
+        for(UUID offline: offlineMessages.keySet()) {
             if(offline!=null){
-                if(offline.getUniqueId().equals(player.getUniqueId())) {
-                    offlineMessages.remove(offline);
+                if(offline.equals(player.getUniqueId())) {
+                    found = offline;
+                    break;
                 }
             }
+        }
+        if(found != null) {
+            offlineMessages.remove(found);
         }
     }
     
@@ -455,8 +464,8 @@ public class PluginData {
         String name = f.getName();
         name = name.substring(0, name.length()-3);
         Scanner scanner = new Scanner(f);
-        List <OfflinePlayer> staffList = ListUtil.playerListFromString(scanner.nextLine());
-        List <OfflinePlayer> bannedList = ListUtil.playerListFromString(scanner.nextLine());
+        List <UUID> staffList = ListUtil.playerListFromString(scanner.nextLine());
+        List <UUID> bannedList = ListUtil.playerListFromString(scanner.nextLine());
         boolean locked = scanner.nextBoolean();
         scanner.nextLine();
         boolean priv = scanner.nextBoolean();
@@ -522,7 +531,7 @@ public class PluginData {
         List <Integer> coords2 = ListUtil.integersFromString(scanner.nextLine(), ' ');
         Location corner1 = new Location(world1, coords1.get(0), coords1.get(1), coords1.get(2));
         Location corner2 = new Location(world2, coords2.get(0), coords2.get(1), coords2.get(2));
-        List <OfflinePlayer> ownersList = ListUtil.playerListFromString(scanner.nextLine());
+        List <UUID> ownersList = ListUtil.playerListFromString(scanner.nextLine());
         PlotState state = PlotState.valueOf(scanner.nextLine());
         LinkedList <Location> border = new LinkedList<>();
         while(scanner.hasNext()) {
@@ -544,8 +553,8 @@ public class PluginData {
         if(messageFile.exists()) {
             FileWriter fw = new FileWriter(messageFile.toString());
             PrintWriter writer = new PrintWriter(fw);
-            for(OfflinePlayer player : offlineMessages.keySet()) {
-                writer.println(player.getUniqueId().toString());
+            for(UUID player : offlineMessages.keySet()) {
+                writer.println(player.toString());
                 writer.println(ListUtil.messageListToString(offlineMessages.get(player)));
             }
             writer.close();
@@ -557,7 +566,7 @@ public class PluginData {
     private static void loadOfflineMessages() throws FileNotFoundException {
         Scanner scanner = new Scanner(messageFile);
         while(scanner.hasNext()) {
-            OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(scanner.nextLine()));
+            UUID player = UUID.fromString(scanner.nextLine());
             offlineMessages.put(player, ListUtil.messagesFromString(scanner.nextLine()));
         }
         scanner.close();

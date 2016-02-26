@@ -23,8 +23,6 @@ import com.google.common.base.Splitter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 
 /**
  *
@@ -32,19 +30,19 @@ import org.bukkit.OfflinePlayer;
  */
 public class ListUtil {
     
-    public static String playerListToString(List <OfflinePlayer> players) {
+    public static String playerListToString(List <UUID> players) {
         ArrayList <String> uuids = new ArrayList<>();
-        for (OfflinePlayer player : players) {
-            uuids.add(player.getUniqueId().toString());
+        for (UUID player : players) {
+            uuids.add(player.toString());
         }
         return Joiner.on(';').join(uuids);
     }
     
-    public static List <OfflinePlayer> playerListFromString(String uuids) {
-        ArrayList <OfflinePlayer> players = new ArrayList<>();
+    public static List <UUID> playerListFromString(String uuids) {
+        ArrayList <UUID> players = new ArrayList<>();
         if(uuids.length() > 0) {
             for(String uuid : Splitter.on(';').split(uuids)) {
-                players.add(Bukkit.getOfflinePlayer(UUID.fromString(uuid)));
+                players.add(UUID.fromString(uuid));
             }
         }
         return players;

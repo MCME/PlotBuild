@@ -21,6 +21,8 @@ package com.mcmiddleearth.plotbuild.command;
 import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
+import java.util.UUID;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -51,8 +53,8 @@ public class PlotLeave extends InsidePlotCommand {
             sendNoSignPlaceMessage(cs);
         }
         sendPlotLeaveMessage(cs);
-        for(OfflinePlayer builder: plot.getOfflineOwners()) {
-            sendOtherBuilderMessage(cs, builder, plot.getPlotbuild().getName(), plot.getID());
+        for(UUID builder: plot.getOfflineOwners()) {
+            sendOtherBuilderMessage(cs, Bukkit.getOfflinePlayer(builder), plot.getPlotbuild().getName(), plot.getID());
         }
         plot.getPlotbuild().log(((Player) cs).getName()+" left plot "+plot.getID()+".");
         PluginData.saveData();

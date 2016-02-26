@@ -19,11 +19,12 @@
 package com.mcmiddleearth.plotbuild.command;
 
 import com.mcmiddleearth.plotbuild.data.PluginData;
-import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.plotbuild.PlotBuild;
 import com.mcmiddleearth.plotbuild.utils.BukkitUtil;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
 import java.util.Set;
+import java.util.UUID;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -65,10 +66,10 @@ public class PlotLock extends PlotBuildCommand {
     }
 
     private void sendBuilderMessages(CommandSender cs, PlotBuild plotbuild) {
-        Set<OfflinePlayer> builders = plotbuild.getBuilders();
-        for(OfflinePlayer player : builders) {
-            if(BukkitUtil.isOnline(player) && !BukkitUtil.isSame(player, (Player) cs)) {
-                MessageUtil.sendInfoMessage(BukkitUtil.getPlayer(player), cs.getName() + "locked plotbuild "
+        Set<UUID> builders = plotbuild.getBuilders();
+        for(UUID player : builders) {
+            if(BukkitUtil.isOnline(player) && !player.equals(((Player) cs).getUniqueId())) {
+                MessageUtil.sendInfoMessage(Bukkit.getPlayer(player), cs.getName() + "locked plotbuild "
                                                +plotbuild.getName()+".");
             }
         }
@@ -83,10 +84,10 @@ public class PlotLock extends PlotBuildCommand {
     }
 
     private void sendAllLockBuilderMessages(CommandSender cs) {
-        Set<OfflinePlayer> builders = PluginData.getBuilders();
-        for(OfflinePlayer player : builders) {
-            if(BukkitUtil.isOnline(player) && !BukkitUtil.isSame(player, (Player) cs)) {
-                MessageUtil.sendInfoMessage(BukkitUtil.getPlayer(player), cs.getName() + "locked all plotbuilds.");
+        Set<UUID> builders = PluginData.getBuilders();
+        for(UUID player : builders) {
+            if(BukkitUtil.isOnline(player) && !player.equals(((Player) cs).getUniqueId())) {
+                MessageUtil.sendInfoMessage(Bukkit.getPlayer(player), cs.getName() + " locked all plotbuilds.");
             }
         }
     }

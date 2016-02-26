@@ -6,6 +6,7 @@
 package com.mcmiddleearth.plotbuild.utils;
 
 import java.util.List;
+import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
@@ -22,11 +23,14 @@ public class BukkitUtil {
     }
     
     public static void removePlayerFromList(List<OfflinePlayer> list, OfflinePlayer player) {
+        OfflinePlayer found = null;
         for(OfflinePlayer search: list) {
             if(isSame(search, player)) {
-                list.remove(search);
-                return;
+                found = search;
             }
+        }
+        if(found!=null) {
+             list.remove(found);
         }
     }
     
@@ -39,14 +43,23 @@ public class BukkitUtil {
         return false;
     }
     
-    public static boolean isOnline(OfflinePlayer player) {
-        return Bukkit.getPlayer(player.getUniqueId())!=null;
+    public static boolean isOnline(UUID player) {
+        return Bukkit.getPlayer(player)!=null;
     }
     
     public static Player getPlayer(OfflinePlayer player) {
         return Bukkit.getPlayer(player.getUniqueId());
     }
     
+    public static Player matchPlayer(String name) {
+        List<Player> matches = Bukkit.matchPlayer(name);
+        if(matches.size()==1) {
+            return matches.get(0);
+        }
+        else {
+            return null;
+        }
+    }
     public static boolean isSameBlock(Location loc1, Location loc2) {
         return loc1.getBlockX()==loc2.getBlockX() 
             && loc1.getBlockY()==loc2.getBlockY() 
