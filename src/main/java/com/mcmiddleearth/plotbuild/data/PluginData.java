@@ -128,10 +128,15 @@ public class PluginData {
     }
     
     public static void clearSelection(Player player) {
+        UUID found = null;
         for(UUID search : selections.keySet()) {
             if(search.equals(player.getUniqueId())) {
-                selections.remove(search);
+                found = search;
+                break;
             }
+        }
+        if(found!=null) {
+            selections.remove(found);
         }
     }
     
