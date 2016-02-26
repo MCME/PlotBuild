@@ -134,11 +134,15 @@ public class PlotBuild {
     }
     
     public void removeBan(OfflinePlayer player) {
+        UUID found = null;
         for(UUID offPlayer : bannedPlayers) {
             if(player!=null && offPlayer.equals((player.getUniqueId()))) {
-                bannedPlayers.remove(player.getUniqueId());
-                return;
+                found = offPlayer;
+                break;
             }
+        }
+        if(found !=null) {
+            bannedPlayers.remove(found);
         }
     }
     
@@ -156,11 +160,15 @@ public class PlotBuild {
     }
     
     public void removeStaff(OfflinePlayer player) {
+        UUID found = null;
         for(UUID offPlayer : staffList) {
             if(player!=null && offPlayer.equals((player.getUniqueId()))) {
-                staffList.remove(player.getUniqueId());
-                return;
+                found = offPlayer;
+                break;
             }
+        }
+        if(found!=null) {
+            staffList.remove(found);
         }
     }
     
