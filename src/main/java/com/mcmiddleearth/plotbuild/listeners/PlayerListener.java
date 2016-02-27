@@ -26,6 +26,7 @@ import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Logger;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -105,7 +106,7 @@ public class PlayerListener implements Listener{
             List<UUID> playersSwitchedToCreative = PluginData.getSwitchedToCreative();
             if(PluginData.isNearOwnPlot(player)) {
                 if(player.getGameMode()==GameMode.SURVIVAL) {
-                    if(playersSwitchedToCreative.contains(player.getUniqueId())) {
+                    if(!playersSwitchedToCreative.contains(player.getUniqueId())) {
                         playersSwitchedToCreative.add(player.getUniqueId());
                     }
                     player.setGameMode(GameMode.CREATIVE);
