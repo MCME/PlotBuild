@@ -18,6 +18,7 @@
  */
 package com.mcmiddleearth.plotbuild.command;
 
+import com.mcmiddleearth.plotbuild.constants.Permission;
 import com.mcmiddleearth.plotbuild.plotbuild.PlotBuild;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
 import lombok.Getter;
@@ -118,6 +119,9 @@ public abstract class AbstractCommand {
     }
     
     private boolean hasPermissions(Player p) {
+        if(!p.hasPermission(Permission.USER)) {
+            return false;
+        }
         if(permissionNodes != null && !additionalPermissionsEnabled) {
             for(String permission : permissionNodes) {
                 if (!p.hasPermission(permission)) {
