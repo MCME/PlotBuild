@@ -341,7 +341,9 @@ public class PluginData {
     
     public static boolean hasPermissionsToBuild(Player player, Location location) {
         Plot plot = getPlotAt(location);
-        return (plot != null && (plot.isOwner(player) || plot.getPlotbuild().isStaff(player)));
+        return (plot != null 
+                && (plot.isOwner(player) || plot.getPlotbuild().isStaff(player)) 
+                && player.hasPermission(Permission.USER));
     }
     
     public static boolean hasNoPermissionsToBuild(Player player, Location location) {
