@@ -39,12 +39,18 @@ public class PlotNew extends PlotBuildCommand {
         super(0, true, permissionNodes);
         setAdditionalPermissionsEnabled(true);
         setShortDescription(": Creates a new plot.");
-        setUsageDescription(" [name]: Creates a new plot to the current plotbuild, respectively to plotbuild [name] if specified. To select the area of the plot right/left click opposite corner. The y-values of the corners are only used for cuboid plot in plotbuilds with -3D flag.");
+        setUsageDescription(" [-r] [name]: Creates a new plot to the current plotbuild, respectively to plotbuild [name] if specified. To select the area of the plot right/left click opposite corner. The y-values of the corners are only used for cuboid plot in plotbuilds with -3D flag. If -r flag is set, plot restore data will not be saved.");
     }
     
     @Override
     protected void execute(CommandSender cs, String... args) {
-        PlotBuild plotbuild = checkPlotBuild((Player) cs, 0, args);
+        int nameIndex = 0;
+        boolean useRestoreData = true;
+        if (args.length > 0 && args[0].equalsIgnoreCase("-r")) {
+            nameIndex++;
+            useRestoreData = false;
+        }
+        PlotBuild plotbuild = checkPlotBuild((Player) cs, nameIndex, args);
         if(plotbuild == null) {
             return;
         }
@@ -63,6 +69,7 @@ public class PlotNew extends PlotBuildCommand {
             Plot newPlot=null;
             try {
                 newPlot = new Plot(plotbuild, selection.getFirstPoint(),selection.getSecondPoint());
+                newPlot.setUsingRestoreData(useRestoreData);
             } catch (InvalidPlotLocationException ex) {
                 sendInvalidSelectionMessage(cs);
                 Logger.getLogger(PlotNew.class.getName()).log(Level.SEVERE, null, ex);
