@@ -22,6 +22,7 @@ import com.mcmiddleearth.plotbuild.PlotBuildPlugin;
 import com.mcmiddleearth.plotbuild.constants.BorderType;
 import com.mcmiddleearth.plotbuild.constants.Permission;
 import com.mcmiddleearth.plotbuild.constants.PlotState;
+import com.mcmiddleearth.plotbuild.conversations.NewPlotConversationFactory;
 import com.mcmiddleearth.plotbuild.conversations.PlotBuildConversationFactory;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.plotbuild.PlotBuild;
@@ -70,6 +71,10 @@ public class PluginData {
     @Setter
     @Getter
     private static PlotBuildConversationFactory confFactory;
+    
+    @Setter
+    @Getter
+    private static NewPlotConversationFactory newPlotFactory;
     
     @Getter
     private static final List <UUID> switchedToCreative = new ArrayList<>(); 

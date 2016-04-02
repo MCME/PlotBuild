@@ -66,33 +66,45 @@ public class PlotNew extends PlotBuildCommand {
                 sendPlotIntersectingMessage(cs, intersectingPlot.getPlotbuild().getName());
                 return;
             }
-            Plot newPlot=null;
-            try {
-                newPlot = new Plot(plotbuild, selection.getFirstPoint(),selection.getSecondPoint());
-                newPlot.setUsingRestoreData(useRestoreData);
-            } catch (InvalidPlotLocationException ex) {
-                sendInvalidSelectionMessage(cs);
-                Logger.getLogger(PlotNew.class.getName()).log(Level.SEVERE, null, ex);
-                return;
+            if (selection.getArea() <= 2500 || !useRestoreData) {
+                createPlot(plotbuild, selection, cs, useRestoreData);
+            } else {
+                PluginData.getNewPlotFactory().startConversation((Player) cs, plotbuild, selection);
             }
-            sendPlotCreatedMessage(cs);
-            PluginData.clearSelection((Player)cs);
-            newPlot.getPlotbuild().log(((Player) cs).getName()+" added plot "+newPlot.getID()+".");
-            PluginData.saveData();
         }
         else {
             sendInvalidSelectionMessage(cs);
         }
                    
     }
+    
+    public static void createPlot(PlotBuild plotbuild, Selection selection, CommandSender cs, boolean useRestoreData) {
+        Plot newPlot=null;
+        try {
+            newPlot = new Plot(plotbuild, selection.getFirstPoint(),selection.getSecondPoint());
+            newPlot.setUsingRestoreData(useRestoreData);
+        } catch (InvalidPlotLocationException ex) {
+            sendInvalidSelectionMessage(cs);
+            Logger.getLogger(PlotNew.class.getName()).log(Level.SEVERE, null, ex);
+            return;
+        }
+        sendPlotCreatedMessage(cs);
+        PluginData.clearSelection((Player)cs);
+        newPlot.getPlotbuild().log(((Player) cs).getName()+" added plot "+newPlot.getID()+".");
+        PluginData.saveData();
+    }
         
-    protected void sendInvalidSelectionMessage(CommandSender cs){
+    protected static void sendInvalidSelectionMessage(CommandSender cs){
         MessageUtil.sendErrorMessage(cs, "Invalid selection for a plot. Choose two corners with feather.");
     }   
     
-    protected void sendPlotCreatedMessage(CommandSender cs){
+    protected static void sendPlotCreatedMessage(CommandSender cs){
         MessageUtil.sendInfoMessage(cs, "Plot created.");
-    }   
+    }
+    
+    public static void sendAbortMessage(CommandSender cs) {
+        MessageUtil.sendInfoMessage(cs, "Aborted. No plot created.");
+    }
     
     private void sendPlotIntersectingMessage(CommandSender cs, String name) {
         MessageUtil.sendErrorMessage(cs, "Your selection intersects with a plot from plotbuild "+name+". No plot created.");
