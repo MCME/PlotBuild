@@ -18,6 +18,7 @@
  */
 package com.mcmiddleearth.plotbuild.command;
 
+import com.mcmiddleearth.plotbuild.constants.Permission;
 import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.plotbuild.PlotBuild;
 import com.mcmiddleearth.plotbuild.utils.BukkitUtil;
@@ -100,5 +101,5 @@ public class PlotAddstaff extends PlotBuildCommand {
     private void sendBannedMessage(CommandSender cs, OfflinePlayer newStaff, String name) {
         MessageUtil.sendErrorMessage(cs, newStaff.getName()+" is banned from plotbuild "+name + ". You have to unban him first.");
     }
-    
+
 }
