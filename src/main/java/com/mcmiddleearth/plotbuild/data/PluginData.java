@@ -22,6 +22,7 @@ import com.mcmiddleearth.plotbuild.PlotBuildPlugin;
 import com.mcmiddleearth.plotbuild.constants.BorderType;
 import com.mcmiddleearth.plotbuild.constants.Permission;
 import com.mcmiddleearth.plotbuild.constants.PlotState;
+import com.mcmiddleearth.plotbuild.conversations.NewPlotConversationFactory;
 import com.mcmiddleearth.plotbuild.conversations.PlotBuildConversationFactory;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.plotbuild.PlotBuild;
@@ -70,6 +71,10 @@ public class PluginData {
     @Setter
     @Getter
     private static PlotBuildConversationFactory confFactory;
+    
+    @Setter
+    @Getter
+    private static NewPlotConversationFactory newPlotFactory;
     
     @Getter
     private static final List <UUID> switchedToCreative = new ArrayList<>(); 
@@ -298,12 +303,16 @@ public class PluginData {
         ArrayList <MaterialData> ret = new ArrayList<>();
         try {
             try (Scanner scanner = new Scanner(plotRestoreData)) {
-                scanner.nextLine();
-                while(scanner.hasNext()) {
-                    Material material = Material.valueOf(scanner.nextLine());
-                    byte data = scanner.nextByte();
-                    scanner.nextLine();
-                    ret.add(new MaterialData(material, data));
+                String firstLine = scanner.nextLine();
+                if (!("<!NODATA!>".equals(firstLine))) {
+                    while(scanner.hasNext()) {
+                        Material material = Material.valueOf(scanner.nextLine());
+                        byte data = scanner.nextByte();
+                        scanner.nextLine();
+                        ret.add(new MaterialData(material, data));
+                    }
+                } else {
+                    ret = null;
                 }
             }
         } catch (FileNotFoundException ex) {
@@ -393,6 +402,7 @@ public class PluginData {
         if(plotDataFile.exists() && plotRestoreFile.exists()) {
             FileWriter fw = new FileWriter(plotDataFile.toString());
             PrintWriter writer = new PrintWriter(fw);
+            writer.println(plot.isUsingRestoreData());
             writer.println(plot.getCorner1().getWorld().getName());
             writer.println(plot.getCorner1().getBlockX() + " "
                          + plot.getCorner1().getBlockY() + " "
@@ -427,10 +437,12 @@ public class PluginData {
         Location cor1 = plot.getCorner1();
         Location cor2 = plot.getCorner2();
         List<Entity> plotEntities = new ArrayList<>();
-        for(Entity entity : entities) {
-            Location loc = entity.getLocation();
-            if(plot.isInside(loc)) {
-                plotEntities.add(entity);
+        if (plot.isUsingRestoreData()) {
+            for(Entity entity : entities) {
+                Location loc = entity.getLocation();
+                if(plot.isInside(loc)) {
+                    plotEntities.add(entity);
+                }
             }
         }
         try {
@@ -443,21 +455,25 @@ public class PluginData {
     private static void savePlotRestoreData(Plot plot, File file) throws IOException {
         FileWriter fw = new FileWriter(file.toString());
         PrintWriter writer = new PrintWriter(fw);
-        World world = plot.getCorner1().getWorld();
-        writer.println(world.getName());
-        int miny = 0;
-        int maxy = world.getMaxHeight()-1;
-        if(plot.getPlotbuild().isCuboid()) {
-            miny = plot.getCorner1().getBlockY();
-            maxy = plot.getCorner2().getBlockY();
-        }
-        for(int x = plot.getCorner1().getBlockX(); x <= plot.getCorner2().getBlockX(); ++x) {
-            for(int y = miny; y <= maxy; ++y) {
-                for(int z = plot.getCorner1().getBlockZ(); z <= plot.getCorner2().getBlockZ(); ++z) {
-                    writer.println(world.getBlockAt(x, y, z).getType());
-                    writer.println(world.getBlockAt(x, y, z).getData());
+        if (plot.isUsingRestoreData()) {
+            World world = plot.getCorner1().getWorld();
+            writer.println(world.getName());
+            int miny = 0;
+            int maxy = world.getMaxHeight()-1;
+            if(plot.getPlotbuild().isCuboid()) {
+                miny = plot.getCorner1().getBlockY();
+                maxy = plot.getCorner2().getBlockY();
+            }
+            for(int x = plot.getCorner1().getBlockX(); x <= plot.getCorner2().getBlockX(); ++x) {
+                for(int y = miny; y <= maxy; ++y) {
+                    for(int z = plot.getCorner1().getBlockZ(); z <= plot.getCorner2().getBlockZ(); ++z) {
+                        writer.println(world.getBlockAt(x, y, z).getType());
+                        writer.println(world.getBlockAt(x, y, z).getData());
+                    }
                 }
             }
+        } else {
+            writer.println("<!NODATA!>");
         }
         writer.close();
     }
@@ -519,6 +535,7 @@ public class PluginData {
     
     private static Plot loadPlot(File f) throws FileNotFoundException {
         Scanner scanner = new Scanner(f);
+        boolean useRestoreData = "true".equalsIgnoreCase(scanner.nextLine());
         String worldName1 = scanner.nextLine();
         World world1 = Bukkit.getWorld(worldName1);
         if(world1 == null) {
@@ -547,7 +564,9 @@ public class PluginData {
             border.add(location);
         }
         scanner.close();
-        return new Plot(corner1, corner2, ownersList, state, border);
+        Plot ret = new Plot(corner1, corner2, ownersList, state, border);
+        ret.setUsingRestoreData(useRestoreData);
+        return ret;
     }
 
     private static void saveOfflineMessages() throws IOException{
