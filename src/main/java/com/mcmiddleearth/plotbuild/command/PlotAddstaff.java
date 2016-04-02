@@ -59,10 +59,6 @@ public class PlotAddstaff extends PlotBuildCommand {
             sendPlayerNotFoundMessage(cs);
             return;
         }
-        if(newStaff.isOnline() && !Bukkit.getPlayer(newStaff.getUniqueId()).hasPermission(Permission.USER)) {
-            sendNoUserPerm(cs);
-            return;
-        }
         if(plotbuild.isStaff(newStaff)) {
             sendAlreadyStaffMessage(cs, newStaff, plotbuild.getName());
             return;
@@ -106,8 +102,4 @@ public class PlotAddstaff extends PlotBuildCommand {
         MessageUtil.sendErrorMessage(cs, newStaff.getName()+" is banned from plotbuild "+name + ". You have to unban him first.");
     }
 
-    private void sendNoUserPerm(CommandSender cs) {
-        MessageUtil.sendErrorMessage(cs, "The new staff you want to had, has no permission to use plotbuild.");
-    }
-    
 }

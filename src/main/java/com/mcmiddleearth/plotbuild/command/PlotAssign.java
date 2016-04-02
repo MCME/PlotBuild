@@ -60,11 +60,6 @@ public class PlotAssign extends InsidePlotCommand {
             sendPlayerNotFoundMessage(cs);
             return;
         }
-        if(assignedPlayer.isOnline() 
-                && !Bukkit.getPlayer(assignedPlayer.getUniqueId()).hasPermission(Permission.USER)) {
-            sendNoUserPerm(cs);
-            return;
-        }
         if(plot.isOwner(assignedPlayer)) {
             sendAlreadyOwnerMessage(cs, assignedPlayer.getName());
             return;
