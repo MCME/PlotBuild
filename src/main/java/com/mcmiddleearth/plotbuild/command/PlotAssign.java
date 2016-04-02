@@ -18,6 +18,7 @@
  */
 package com.mcmiddleearth.plotbuild.command;
 
+import com.mcmiddleearth.plotbuild.constants.Permission;
 import com.mcmiddleearth.plotbuild.constants.PlotState;
 import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
@@ -57,6 +58,11 @@ public class PlotAssign extends InsidePlotCommand {
         }
         if(assignedPlayer.getLastPlayed()==0) {
             sendPlayerNotFoundMessage(cs);
+            return;
+        }
+        if(assignedPlayer.isOnline() 
+                && !Bukkit.getPlayer(assignedPlayer.getUniqueId()).hasPermission(Permission.USER)) {
+            sendNoUserPerm(cs);
             return;
         }
         if(plot.isOwner(assignedPlayer)) {
@@ -127,4 +133,8 @@ public class PlotAssign extends InsidePlotCommand {
                                                      + " of plotbuild " + name+".");
     }
 
+    private void sendNoUserPerm(CommandSender cs) {
+        MessageUtil.sendErrorMessage(cs, "The player you want to assign, has no permission to use plotbuild.");
+    }
+    
 }
