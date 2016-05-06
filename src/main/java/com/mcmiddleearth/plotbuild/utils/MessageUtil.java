@@ -75,9 +75,9 @@ public class MessageUtil {
     
     public static void sendClickableMessage(Player sender, String message, String onClickCommand) {
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "tellraw "+ sender.getName()+" "
-                    +"{ text:\""+message+"\", "
-                      +"clickEvent:{ action:run_command,"
-                                   + "value:\""+ onClickCommand +"\"}}");
+                    +"{\"text\":\""+message+"\", "
+                      +"\"clickEvent\":{\"action\":\"suggest_command\","
+                                   + "\"value\":\""+ onClickCommand +"\"}}");
     }
         
     public static void sendOfflineMessage(OfflinePlayer offlinePlayer, String message) {
