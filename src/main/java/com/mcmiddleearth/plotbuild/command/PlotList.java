@@ -118,7 +118,7 @@ public class PlotList extends PlotBuildCommand {
                                  +"Plot #"+plot.getID()+" "
                                  +MessageUtil.chatColorForPlotState(plot.getState())
                                  +plot.getState().getStateMessage()+"\", "
-                          +"\"clickEvent\":{\"action\":\"run_command\","
+                          +"\"clickEvent\":{\"action\":\"suggest_command\","
                                       + "\"value\":\"/plot warp "+plotbuild.getName()+" "+
                                                + plot.getID() +"\"}}");
         }

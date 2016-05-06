@@ -20,6 +20,9 @@ package com.mcmiddleearth.plotbuild.utils;
 
 import com.mcmiddleearth.plotbuild.constants.PlotState;
 import com.mcmiddleearth.plotbuild.data.PluginData;
+import java.lang.reflect.Constructor;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -64,20 +67,24 @@ public class MessageUtil {
     
     public static void sendNoPrefixRawMessage(CommandSender sender, String message) {
         if (sender instanceof Player) {
-            //Packet packet = new PacketPlayOutChat(ChatSerializer.a(message));
-            //((CraftPlayer) sender).getHandle().playerConnection.sendPacket(packet);
-            //((Player)sender).sendRawMessage(ChatColor.AQUA + NOPREFIX + message);
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "tellraw "+ ((Player)sender).getName()+" "+message);
+            try {
+                Object chatBaseComponent = NMSUtil.getNMSClass("IChatBaseComponent").getDeclaredClasses()[0].getMethod("a", String.class).invoke(null, message);
+                Constructor<?> titleConstructor = NMSUtil.getNMSClass("PacketPlayOutChat").getConstructor(NMSUtil.getNMSClass("IChatBaseComponent"));
+                Object chatPacket = titleConstructor.newInstance(chatBaseComponent);
+                NMSUtil.sendPacket((Player)sender, chatPacket);
+            } catch(Error | Exception e ) {
+                Logger.getLogger(MessageUtil.class.getName()).log(Level.WARNING, "Error in Plotbuild plugin while accessing NMS class. This plugin version was not made for your server. Please look for an update. Plugin will use Bukkit.dispatchCommand to send '/tellraw ...' instead of directly sending message packets.");
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "tellraw " + sender.getName()+ " " + message);
+            }    
         } else {
             sender.sendMessage(NOPREFIX + message);
         }
     }
     
     public static void sendClickableMessage(Player sender, String message, String onClickCommand) {
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "tellraw "+ sender.getName()+" "
-                    +"{\"text\":\""+message+"\", "
-                      +"\"clickEvent\":{\"action\":\"suggest_command\","
-                                   + "\"value\":\""+ onClickCommand +"\"}}");
+            sendNoPrefixRawMessage(sender,"{\"text\":\""+message+"\", "
+                                    +"\"clickEvent\":{\"action\":\"suggest_command\","
+                                    + "\"value\":\""+ onClickCommand +"\"}}");
     }
         
     public static void sendOfflineMessage(OfflinePlayer offlinePlayer, String message) {
