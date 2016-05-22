@@ -177,7 +177,7 @@ public class Plot {
     public boolean claim(OfflinePlayer player){
         owners.add(player.getUniqueId());
         state = PlotState.CLAIMED;
-        border.refreshBorder();
+        //border.refreshBorder();
         return border.placeSigns();
     }
     
@@ -199,7 +199,7 @@ public class Plot {
         owners.removeAll(owners);
         state = PlotState.UNCLAIMED;
         reset();
-        border.refreshBorder();
+        //border.refreshBorder();
         return border.placeSigns();
     }
     
@@ -210,13 +210,13 @@ public class Plot {
     
     public boolean finish(){
         state = PlotState.FINISHED;
-        border.refreshBorder();
+        //border.refreshBorder();
         return border.placeSigns();
     }
     
     public boolean refuse(){
         state = PlotState.REFUSED;
-        border.refreshBorder();
+        //border.refreshBorder();
         return border.placeSigns();
     }
     
@@ -239,6 +239,7 @@ public class Plot {
         state = PlotState.REMOVED;
         border.removeSigns();
         border.removeBorder();
+        PluginData.refreshPlotNearbyBorders(this);
     }
     
     public boolean placeSigns() {

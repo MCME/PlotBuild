@@ -41,6 +41,9 @@ public class PlotBorder {
     
     private boolean checkSignBlock(Block block0) {
             Block signBlock = block0.getRelative(0, 3, -1);
+            if(plot.getPlotbuild().isCuboid() && signBlock.getLocation().getBlockY()>plot.getCorner2().getBlockY()) {
+                return false;
+            }
             if(signBlock.getType()!=Material.AIR)
                 return false;
             signBlock = signBlock.getRelative(0,-1,0);
@@ -88,7 +91,8 @@ public class PlotBorder {
         refreshEntityLocations();
         if(border.size()>0 && plot.getState()!=PlotState.REMOVED) {
             removeSigns();
-            refreshBorder();
+            removeBorder();
+            placeBorder();
             if(!findSignBlock()){
                 return false;
             }
@@ -254,7 +258,7 @@ public class PlotBorder {
         }
     }
 
-    void refreshBorder(){
+    /*void refreshBorder(){
         for(Location loc : border) {
             Block block = corner1().getWorld().getBlockAt(loc);
             if(block.isEmpty() || block.getType() == Material.WOOL) {
@@ -262,13 +266,15 @@ public class PlotBorder {
                 block.setData((byte) plot.getState().getState());
             }
         }
-    }
+    }*/
     
     void removeBorder() {
         for(Location loc : border) {
             Block block = corner1().getWorld().getBlockAt(loc);
-            block.setType(Material.AIR);
-            block.setData((byte) 0);
+            if(block.getType().equals(Material.WOOL)) {
+                block.setType(Material.AIR);
+                block.setData((byte) 0);
+            }
         }
         border.removeAll(border);
     }
