@@ -62,6 +62,10 @@ public class Plot {
     @Setter
     private PlotBuild plotbuild;
     
+    @Getter
+    @Setter
+    private boolean usingRestoreData = true;
+    
     public Plot(PlotBuild plotbuild, Location corner1, Location corner2) throws InvalidPlotLocationException {
         if(corner1 == null || corner2 == null || corner1.getWorld() != corner2.getWorld()) {
             throw new InvalidPlotLocationException();
@@ -247,6 +251,9 @@ public class Plot {
     
     private void reset() throws InvalidRestoreDataException {
         List <MaterialData> restoreData = PluginData.getRestoreData(plotbuild, this);
+        if (restoreData == null) {
+            return;
+        }
         int miny = 0;
         int maxy = getCorner1().getWorld().getMaxHeight()-1;
         if(getPlotbuild().isCuboid()) {

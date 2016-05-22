@@ -19,6 +19,7 @@
 package com.mcmiddleearth.plotbuild;
 
 import com.mcmiddleearth.plotbuild.command.PlotCommandExecutor;
+import com.mcmiddleearth.plotbuild.conversations.NewPlotConversationFactory;
 import com.mcmiddleearth.plotbuild.conversations.PlotBuildConversationFactory;
 import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.listeners.PlayerListener;
@@ -48,6 +49,7 @@ public class PlotBuildPlugin extends JavaPlugin {
         getCommand("plot").setExecutor(new PlotCommandExecutor());
         PluginData.loadData();
         PluginData.setConfFactory(new PlotBuildConversationFactory(this));
+        PluginData.setNewPlotFactory(new NewPlotConversationFactory(this));
         getLogger().info("Enabled!");
     }
     
