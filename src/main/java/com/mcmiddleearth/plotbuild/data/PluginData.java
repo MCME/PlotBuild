@@ -209,6 +209,19 @@ public class PluginData {
         return null;
     }
     
+    public static void refreshPlotNearbyBorders(Plot centerPlot) {
+        Selection selection = new Selection();
+        selection.setFirstPoint(centerPlot.getCorner1().getBlock().getRelative(-2, -2, -2).getLocation());
+        selection.setSecondPoint(centerPlot.getCorner2().getBlock().getRelative(2, 2, 2).getLocation());
+        for(PlotBuild plotbuild:plotbuildsList) {
+            for(Plot plot:plotbuild.getPlots()) {
+                if(plot.isIntersecting(selection, centerPlot.getPlotbuild().isCuboid())) {
+                    plot.placeSigns();
+                }
+            }
+        }
+    }
+    
     public static void addOfflineMessage(OfflinePlayer player, String message) {
         if(offlineMessages.containsKey(player.getUniqueId())) {
             List<String> messages = offlineMessages.get(player.getUniqueId());
