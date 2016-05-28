@@ -114,12 +114,12 @@ public class PlotList extends PlotBuildCommand {
     private void showPlotList(CommandSender cs, PlotBuild plotbuild, int page) {
         List<String> plotList = new ArrayList<>();
         for(Plot plot : plotbuild.getPlots()) {
-            plotList.add("{ text:\""+ChatColor.AQUA+MessageUtil.getNOPREFIX()
+            plotList.add("{\"text\":\""+ChatColor.AQUA+MessageUtil.getNOPREFIX()
                                  +"Plot #"+plot.getID()+" "
                                  +MessageUtil.chatColorForPlotState(plot.getState())
                                  +plot.getState().getStateMessage()+"\", "
-                          +"clickEvent:{ action:run_command,"
-                                      + "value:\"/plot warp "+plotbuild.getName()+" "+
+                          +"\"clickEvent\":{\"action\":\"suggest_command\","
+                                      + "\"value\":\"/plot warp "+plotbuild.getName()+" "+
                                                + plot.getID() +"\"}}");
         }
         int maxPage=(plotList.size()-1)/10+1;
