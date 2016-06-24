@@ -20,6 +20,7 @@ package com.mcmiddleearth.plotbuild.command;
 
 import com.mcmiddleearth.plotbuild.plotbuild.PlotBuild;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
+import com.mcmiddleearth.plotbuild.utils.StringUtil;
 import java.util.List;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -39,7 +40,13 @@ public class PlotHistory extends PlotBuildCommand {
     
     @Override
     protected void execute(CommandSender cs, String... args) {
-        PlotBuild plotbuild = checkPlotBuild((Player) cs, 0, args);
+        int nameIndex = 0;
+        int pageIndex = 1;
+        if (args.length > 0 && StringUtil.isPositiveInteger(args[0])) {
+            nameIndex = args.length + 1;
+            pageIndex = 0;
+        }
+        PlotBuild plotbuild = checkPlotBuild((Player) cs, nameIndex, args);
         if(plotbuild == null) {
             return;
         }
@@ -52,9 +59,9 @@ public class PlotHistory extends PlotBuildCommand {
         if(maxPage<1) {
             maxPage = 1;
         }
-        if(args.length>0) {
+        if(args.length>pageIndex) {
             try {
-                page = Integer.parseInt(args[0]);
+                page = Integer.parseInt(args[pageIndex]);
             } catch (NumberFormatException ex) {
                 page = 1;
             }
@@ -63,7 +70,7 @@ public class PlotHistory extends PlotBuildCommand {
             page = maxPage;
         }
         sendHistoryHeaderMessage(cs, plotbuild.getName(), page, maxPage);
-        //for(int i = (page-1)*10; i < history.size() && i < (page-1)*10+10; i++) {
+        
         for(int i = history.size()-1-(page-1)*10; i >= 0 && i > history.size()-1-(page-1)*10-10; i--) {
             sendHistoryEntryMessage(cs, history.get(i));
         }
