@@ -37,7 +37,7 @@ public class PlotList extends PlotBuildCommand {
     public PlotList(String... permissionNodes) {
         super(0, false, permissionNodes);
         setShortDescription(": Lists all plotbuilds or all plots of a plotbuild.");
-        setUsageDescription(" [plotbuild] [#page#]: Without a specified plotbuild lists all running Plotbuilds along with number of unclaimed plots. With a given plotbuild displays all plots with their current states. Without a given page number the first page of list will be displayed.");
+        setUsageDescription(" [plotbuild] [page#]: Without a specified plotbuild lists all running Plotbuilds along with number of unclaimed plots. With a given plotbuild displays all plots with their current states. Without a given page number the first page of list will be displayed.");
     }
     
     @Override
