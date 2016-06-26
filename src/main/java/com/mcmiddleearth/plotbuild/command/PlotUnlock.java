@@ -69,7 +69,7 @@ public class PlotUnlock extends PlotBuildCommand {
         Set<UUID> builders = plotbuild.getBuilders();
         for(UUID player : builders) {
             if(BukkitUtil.isOnline(player) && !player.equals(((Player) cs).getUniqueId())) {
-                MessageUtil.sendInfoMessage(Bukkit.getPlayer(player), cs.getName() + "unlocked plotbuild "
+                MessageUtil.sendInfoMessage(Bukkit.getPlayer(player), cs.getName() + " unlocked plotbuild "
                                                +plotbuild.getName()+".");
             }
         }
@@ -91,7 +91,7 @@ public class PlotUnlock extends PlotBuildCommand {
         Set<UUID> builders = PluginData.getBuilders();
         for(UUID player : builders) {
             if(BukkitUtil.isOnline(player) && !player.equals(((Player) cs).getUniqueId())) {
-                MessageUtil.sendInfoMessage(Bukkit.getPlayer(player), cs.getName() + "unlocked all plotbuilds.");
+                MessageUtil.sendInfoMessage(Bukkit.getPlayer(player), cs.getName() + " unlocked all plotbuilds.");
             }
         }
     }

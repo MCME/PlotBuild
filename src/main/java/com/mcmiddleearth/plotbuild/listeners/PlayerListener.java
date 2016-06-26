@@ -43,6 +43,7 @@ import org.bukkit.event.hanging.HangingPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.inventory.EquipmentSlot;
 
 /**
  *
@@ -71,7 +72,7 @@ public class PlayerListener implements Listener{
         }
         Player player = event.getPlayer();
         Selection selection = PluginData.getCurrentSelection(player);
-        if(player.getItemInHand().getType().equals(Material.FEATHER)) {
+        if(player.getItemInHand().getType().equals(Material.FEATHER) && event.getHand() != EquipmentSlot.OFF_HAND) {
             if(event.getAction().equals(Action.LEFT_CLICK_BLOCK) && PluginData.canSelectArea(player)){
         	selection.setFirstPoint(event.getClickedBlock().getLocation());
                 sendFirstPointSetMessage(player, selection);

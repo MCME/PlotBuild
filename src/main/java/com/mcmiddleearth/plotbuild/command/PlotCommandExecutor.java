@@ -66,6 +66,8 @@ public class PlotCommandExecutor implements CommandExecutor {
         addCommandHandler("end", new PlotEnd(Permission.STAFF));
         addCommandHandler("warp", new PlotWarp(Permission.USER));
         addCommandHandler("remove", new PlotRemove(Permission.STAFF));
+        addCommandHandler("pos1", new PlotPos1(Permission.STAFF));
+        addCommandHandler("pos2", new PlotPos2(Permission.STAFF));
     }
     
     @Override
