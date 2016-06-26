@@ -21,6 +21,7 @@ package com.mcmiddleearth.plotbuild.utils;
 import com.mcmiddleearth.plotbuild.constants.PlotState;
 import com.mcmiddleearth.plotbuild.data.PluginData;
 import java.lang.reflect.Constructor;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import lombok.Getter;
@@ -87,6 +88,67 @@ public class MessageUtil {
                                     + "\"value\":\""+ onClickCommand +"\"}}");
     }
         
+    public static void sendTooltipMessage(Player sender, String message, String tooltip) {
+            sendNoPrefixRawMessage(sender,"{\"text\":\""+message+"\", "
+                                    +"\"hoverEvent\":{\"action\":\"show_text\","
+                                    + "\"value\":\""+ tooltip +"\"}}");
+    }
+        
+    public static String hoverFormat(String hoverMessage,String headerSeparator, boolean header) {
+        class MyScanner {
+            private final Scanner scanner;
+            public String currentToken=null;
+            public MyScanner(String string) {
+                scanner = new Scanner(string);
+                scanner.useDelimiter(" ");
+                if(scanner.hasNext()) {
+                    currentToken = scanner.next();
+                }
+            }
+            public String next() {
+                if(scanner.hasNext()) {
+                    currentToken = scanner.next();
+                } else {
+                    currentToken = null;
+                }
+                return currentToken;
+            }
+            public boolean hasCurrent() {
+                return currentToken != null;
+            }
+            public boolean hasNext() {
+                return scanner.hasNext();
+            }
+        }
+        String result = (header?ChatColor.GOLD:ChatColor.YELLOW)+"";
+        int separator = -1;
+        if(header) {
+            separator = hoverMessage.indexOf(headerSeparator);
+            result = result.concat(hoverMessage.substring(0,separator+1)+"\n");
+        }
+        MyScanner scanner = new MyScanner(hoverMessage.substring(separator+1));
+        while (scanner.hasCurrent()) {
+            String line = ChatColor.YELLOW+scanner.currentToken+" ";
+            scanner.next();
+            while(scanner.hasCurrent() && line.length()+scanner.currentToken.length()<40) {
+                if(scanner.currentToken.equals("\n")) {
+                    break;
+                } else {
+                    line = line.concat(scanner.currentToken+" ");
+                    scanner.next();
+                }
+            }
+            if(scanner.hasCurrent()) {
+                line = line.concat("\n");
+                if(scanner.currentToken.equals("\n")) {
+                    scanner.next();
+                }
+            }
+            result = result.concat(line);
+        }
+        return result;
+    }
+    
     public static void sendOfflineMessage(OfflinePlayer offlinePlayer, String message) {
         Player player=null;
         for(Player search : Bukkit.getOnlinePlayers()) {
