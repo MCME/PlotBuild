@@ -35,7 +35,7 @@ public class PlotWarp extends PlotBuildCommand {
     public PlotWarp(String... permissionNodes) {
         super(0, true, permissionNodes);
         setShortDescription(": Teleports player to plotbuild.");
-        setUsageDescription(" [name] [number]: Without a given number teleports a player to the first owned plot of the plotbuild name or the current plotbuild if no name is specified. If the player doesn't own a plot he is teleported to first plot of plotbuild. Otherwise to the plot with the given number.");
+        setUsageDescription(" [plotbuild] [plot#]: Teleports a player to the plot with the given [plot#] of [plotbuild] or the current plotbuild if no [plotbuild] is specified. Without a given [plot#] teleports a player to the first owned plot. If the player doesn't own a plot he is teleported to first plot of [plotbuild].");
     }
     
     @Override

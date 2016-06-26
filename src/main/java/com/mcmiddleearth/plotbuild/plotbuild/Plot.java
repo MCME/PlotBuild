@@ -31,6 +31,10 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.ItemFrame;
+import org.bukkit.entity.Painting;
 import org.bukkit.material.MaterialData;
 
 /**
@@ -254,6 +258,15 @@ public class Plot {
         List <MaterialData> restoreData = PluginData.getRestoreData(plotbuild, this);
         if (restoreData == null) {
             return;
+        }
+        List<Entity> entities = new ArrayList<>();
+        entities.addAll(getCorner1().getWorld().getEntitiesByClass(Painting.class));
+        entities.addAll(getCorner1().getWorld().getEntitiesByClass(ItemFrame.class));
+        entities.addAll(getCorner1().getWorld().getEntitiesByClass(ArmorStand.class));
+        for(Entity entity: entities) {
+            if(isInside(entity.getLocation())) {
+                entity.remove();
+            }
         }
         int miny = 0;
         int maxy = getCorner1().getWorld().getMaxHeight()-1;

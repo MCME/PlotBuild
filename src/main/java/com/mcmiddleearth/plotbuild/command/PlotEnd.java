@@ -42,7 +42,7 @@ public class PlotEnd extends PlotBuildCommand {
         super(1, true, permissionNodes);
         setAdditionalPermissionsEnabled(true);
         setShortDescription(": Ends plotbuild.");
-        setUsageDescription(" <name> [-k]: Ends plotbuild <name>. With [-k] keeps current plot state. Otherwise all plots that that have not yet been accepted are reset to their initial states.");
+        setUsageDescription(" <name> [-k]: Ends plotbuild <name>. With [-k] keeps current plot state. Otherwise all plots that have not yet been accepted are reset to their initial states.");
     }
 
     @Override

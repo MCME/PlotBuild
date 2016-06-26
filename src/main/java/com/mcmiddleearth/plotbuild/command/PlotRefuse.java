@@ -37,7 +37,7 @@ public class PlotRefuse extends InsidePlotCommand {
         super(0, true, permissionNodes);
         setAdditionalPermissionsEnabled(true);
         setShortDescription(": Markes a plot for improvement.");
-        setUsageDescription(": When inside a finished plot can be used if there are still changes needed. Turns border to yellow wool. ");
+        setUsageDescription(": When inside a finished plot can be used if there are still changes needed. Turns borders to yellow wool. ");
     }
     
     @Override
