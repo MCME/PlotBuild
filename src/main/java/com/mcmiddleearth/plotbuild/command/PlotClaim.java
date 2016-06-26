@@ -18,12 +18,19 @@
  */
 package com.mcmiddleearth.plotbuild.command;
 
+import com.mcmiddleearth.plotbuild.PlotBuildPlugin;
 import com.mcmiddleearth.plotbuild.constants.PlotState;
 import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
+import java.io.IOException;
+import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  *
@@ -67,11 +74,31 @@ public class PlotClaim extends InsidePlotCommand {
             sendPlayerBannedMessage(cs);
             return;
         }
+        if(PluginData.getClaimCooldownList().contains(((Player)cs).getUniqueId())) {
+            sendCooldownErrorMessage(cs);
+            return;
+        }
+        if(plot.isUsingRestoreData()) {
+            try {
+                PluginData.savePlotRestoreData(plot);
+            } catch (IOException ex) {
+                sendRestoreDataErrorMessage(cs, plot);
+                return;
+            }
+        }
         if(!plot.claim((Player) cs)) {
             sendNoSignPlaceMessage(cs);
         }
         sendPlotClaimedMessage(cs);
         plot.getPlotbuild().log(((Player) cs).getName()+" claimed plot "+plot.getID()+".");
+        final UUID playerId= ((Player)cs).getUniqueId();
+        PluginData.getClaimCooldownList().add(playerId);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                PluginData.getClaimCooldownList().remove(playerId);
+            }
+        }.runTaskLater(PlotBuildPlugin.getPluginInstance(), PluginData.getClaimCooldownTics());
         PluginData.saveData();
     }
 
@@ -103,5 +130,16 @@ public class PlotClaim extends InsidePlotCommand {
         MessageUtil.sendErrorMessage(cs, "You are banned from this plotbuild.");
     }
 
+    private void sendCooldownErrorMessage(CommandSender cs) {
+        MessageUtil.sendErrorMessage(cs, "You have to wait "+(PluginData.getClaimCooldownTics()/20)+" seconds after claiming a plot before you may claim another one.");
+    }
+    
+    private void sendRestoreDataErrorMessage(CommandSender cs, Plot plot) {
+        MessageUtil.sendErrorMessage(cs, "Failed to save restore data for this plot. Ask staff for help.");
+        for(UUID staffId: plot.getPlotbuild().getOfflineStaffList()) {
+            MessageUtil.sendOfflineMessage(Bukkit.getOfflinePlayer(staffId),"Failed to save restore data for plot #"
+                                           +plot.getID()+" of plotbuild "+ plot.getPlotbuild().getName()+"."); 
+        }
+    }
 
 }
