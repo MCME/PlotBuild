@@ -18,6 +18,7 @@
  */
 package com.mcmiddleearth.plotbuild.plotbuild;
 
+import com.mcmiddleearth.plotbuild.PlotBuildPlugin;
 import com.mcmiddleearth.plotbuild.constants.PlotState;
 import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.data.Selection;
@@ -36,6 +37,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Painting;
 import org.bukkit.material.MaterialData;
+import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  *
@@ -295,7 +297,13 @@ public class Plot {
                 }
             }
         }
-        PluginData.restoreEntities(plotbuild,this);
+        final Plot thisPlot = this;
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                PluginData.restoreEntities(plotbuild,thisPlot);
+            }
+        }.runTaskLater(PlotBuildPlugin.getPluginInstance(),10);
     }
     
     public int getID() {

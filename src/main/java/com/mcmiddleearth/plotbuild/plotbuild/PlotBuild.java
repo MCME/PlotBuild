@@ -175,6 +175,7 @@ public class PlotBuild {
     public List<UUID> getOfflineStaffList() {
         return staffList;
     }
+    
     public void addBanned(OfflinePlayer player) {
         bannedPlayers.add(player.getUniqueId());
     }

@@ -20,3 +20,12 @@
 # ---------------------------------------------------------------------------- #
 
 # enableFlight: true
+
+# ---------------------------------------------------------------------------- #
+#                                                                              #
+#   Uncomment the line below if you want to change the time a player has to    #
+#   wait until he can claim another plot. Number is cooldown time in seconds.  #
+#   Without this setting default is 20 seconds.                                #
+# ---------------------------------------------------------------------------- #
+
+# claimCooldown: 20

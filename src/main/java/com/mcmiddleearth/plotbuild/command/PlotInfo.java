@@ -56,7 +56,7 @@ public class PlotInfo extends InsidePlotCommand{
     }
 
     private void sendNoInfoMessage(CommandSender cs) {
-        MessageUtil.sendInfoMessage(cs, "Sorry there no further informations on this plotbuild. Please ask staff for instructions.");
+        MessageUtil.sendInfoMessage(cs, "Sorry there is no further information about this plotbuild. Please ask staff for instructions.");
     }
 
     private void sendInfoMessage(CommandSender cs, String info) {
