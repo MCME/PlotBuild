@@ -35,7 +35,7 @@ public class PlotCreate extends AbstractCommand {
     public PlotCreate(String... permissionNodes) {
         super(1, true, permissionNodes);
         setShortDescription(": Creates a new plotbuild.");
-        setUsageDescription(" <name> [bordertype] [height] [-p] [-3D]: Defines a new plotbuild called [name]. [bordertype] defines whether the plot border should be on the 'ground' (default), 'float' in air, at [y-value] height, or have no visible borders at all 'none'. The optional flag [-p] makes the plotbuild private, which makes it impossible to claim and invite players to a plot. Instead staff can assign players to a plot. With the [-3D] flag the plots are cuboid otherwise rectangular with full height of the map.");
+        setUsageDescription(" <name> [bordertype] [height] [-p] [-3D]: Defines a new plotbuild called [name]. [bordertype] defines whether the plot border should be on the 'ground' (default), 'float' in air, at level of [height], or have no visible borders at all 'none'. The optional flag [-p] makes the plotbuild private, which makes it impossible to claim and invite players to a plot. Instead staff can assign players to a plot. With the [-3D] flag the plots are cuboid otherwise rectangular with full height of the map.");
     }
     
     @Override

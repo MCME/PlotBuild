@@ -19,10 +19,15 @@
 package com.mcmiddleearth.plotbuild.command;
 
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
+import com.mcmiddleearth.plotbuild.utils.StringUtil;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 /**
  *
@@ -33,15 +38,14 @@ public class PlotHelp extends AbstractCommand{
     public PlotHelp(String... permissionNodes) {
         super(0, false, permissionNodes);
         setShortDescription(": displays help about plotbuild commands.");
-        setUsageDescription(" [command]: Shows a description for [command]. If [command] is not specified a list of short descriptions for all plotbuild commands are shown.");
+        setUsageDescription(" [command | page#]: Shows a description for [command]. If [command] is not specified a list of short descriptions for all plotbuild commands are shown. Point at a description with mouse cursor for detailed help.");
     }
     
     @Override
     protected void execute(CommandSender cs, String... args) {
-        sendHelpStartMessage(cs);
         Map <String, AbstractCommand> commands = ((PlotCommandExecutor)Bukkit.getPluginCommand("plot").getExecutor())
                                                            .getCommands();
-        if(args.length>0){
+        if(args.length>0 && !StringUtil.isPositiveInteger(args[0])){
             AbstractCommand command = commands.get(args[0]);
             if(command==null) {
                 sendNoSuchCommandMessage(cs, args[0]);
@@ -61,21 +65,53 @@ public class PlotHelp extends AbstractCommand{
         }
         else {
             Set<String> keys = commands.keySet();
+            List<String> helpList = new ArrayList<>();
+            List<String> tooltipList = new ArrayList<>();
             for(String key : keys) {
-                String description = commands.get(key).getShortDescription();
-                if(description!=null){
-                    sendDescriptionMessage(cs, key, description);
+                String shortDescription = commands.get(key).getShortDescription();
+                if(shortDescription!=null) {
+                    helpList.add(ChatColor.DARK_AQUA+"/plot "+key+ChatColor.WHITE+shortDescription);
+                    tooltipList.add(MessageUtil.hoverFormat("/plot "+key+commands.get(key).getUsageDescription(),":",true));
+                }
+            }
+            int page=1;
+            int maxPage=(helpList.size()-1)/10+1;
+            if(maxPage<1) {
+                maxPage = 1;
+            }
+            if(args.length>0) {
+                try {
+                    page = Integer.parseInt(args[0]);
+                } catch (NumberFormatException ex) {
+                    page = 1;
+                }
+            }
+            if(page>maxPage) {
+                page = maxPage;
+            }
+            sendHelpHeaderMessage(cs, page, maxPage);
+
+            for(int i = helpList.size()-1-(page-1)*10; i >= 0 && i > helpList.size()-1-(page-1)*10-10; i--) {
+                if(cs instanceof Player && tooltipList.get(i)!=null) {
+                    MessageUtil.sendTooltipMessage((Player) cs, helpList.get(i),tooltipList.get(i));
                 }
                 else {
-                    sendNoDescriptionMessage(cs, key);
+                    MessageUtil.sendNoPrefixInfoMessage(cs, helpList.get(i));
                 }
+            }
+            if(cs instanceof Player && page<maxPage) {
+                MessageUtil.sendClickableMessage((Player) cs, ChatColor.AQUA+">> Click for next page <<", "/plot help "+(page+1));
             }
         }
         sendManualMessage(cs);
     }
 
     private void sendHelpStartMessage(CommandSender cs) {
-        MessageUtil.sendInfoMessage(cs, "Help for plotbuild plugin.");
+        MessageUtil.sendInfoMessage(cs, "Help for PlotBuild plugin.");
+    }
+
+    private void sendHelpHeaderMessage(CommandSender cs, int page, int maxPage) {
+        MessageUtil.sendInfoMessage(cs, "Help for PlotBuild plugin. [page "+page+"/"+maxPage+"]:");
     }
 
     private void sendNoSuchCommandMessage(CommandSender cs, String arg) {

@@ -77,6 +77,12 @@ public class PluginData {
     private static NewPlotConversationFactory newPlotFactory;
     
     @Getter
+    private static int claimCooldownTics = 400;
+    
+    @Getter
+    private static final List<UUID> claimCooldownList = new ArrayList<>();
+    
+    @Getter
     private static final List <UUID> switchedToCreative = new ArrayList<>(); 
     
     @Getter
@@ -278,6 +284,7 @@ public class PluginData {
     public static void loadData() {
         PlotBuildPlugin.getPluginInstance().getLogger().info("Loading plotbuilds...");
         protectedWorlds = PlotBuildPlugin.getPluginInstance().getConfig().getStringList("protectedWorlds");
+        claimCooldownTics = PlotBuildPlugin.getPluginInstance().getConfig().getInt("claimCooldown",20)*20;
         FilenameFilter pbFilter = new FilenameFilter() {
 
             @Override
@@ -338,6 +345,7 @@ public class PluginData {
         File plotDir = new File(plotBuildDir, plotbuild.getName());
         File plotRestoreData = new File(plotDir, Integer.toString(plotbuild.getPlots().indexOf(plot)) + ".e");
         try {
+Logger.getGlobal().info(plotRestoreData.toString());
             EntityUtil.restore(plotRestoreData, new ArrayList<Entity>());
         } catch (IOException ex) {
             Logger.getLogger(PluginData.class.getName()).log(Level.SEVERE, null, ex);
@@ -407,12 +415,12 @@ public class PluginData {
     
     private static void savePlot(Plot plot, File plotDir, int i) throws IOException {
         File plotDataFile = new File(plotDir, Integer.toString(i) + ".p");
-        File plotRestoreFile = new File(plotDir, Integer.toString(i) + ".r");
-        File plotEntityRestoreFile = new File(plotDir, Integer.toString(i) + ".e");
-        boolean saveRestoreData = !plotRestoreFile.exists();
+        //File plotRestoreFile = new File(plotDir, Integer.toString(i) + ".r");
+        //File plotEntityRestoreFile = new File(plotDir, Integer.toString(i) + ".e");
+        //boolean saveRestoreData = !plotRestoreFile.exists();
         plotDataFile.createNewFile();
-        plotRestoreFile.createNewFile();
-        if(plotDataFile.exists() && plotRestoreFile.exists()) {
+        //plotRestoreFile.createNewFile();
+        if(plotDataFile.exists() ){//&& plotRestoreFile.exists()) {
             FileWriter fw = new FileWriter(plotDataFile.toString());
             PrintWriter writer = new PrintWriter(fw);
             writer.println(plot.isUsingRestoreData());
@@ -433,13 +441,20 @@ public class PluginData {
                              + l.getBlockZ());
             }
             writer.close();
-            if(saveRestoreData) {
-                savePlotRestoreData(plot, plotRestoreFile);
+            /*if(saveRestoreData) {
+                savePlotRestoreBlockData(plot, plotRestoreFile);
                 savePlotRestoreEntityData(plot, plotEntityRestoreFile);
-            }
+            }*/
         } else {
             throw new IOException();
         }
+    }
+    
+    public static void savePlotRestoreData(Plot plot) throws IOException {
+        File plotDir = new File(plotBuildDir,plot.getPlotbuild().getName());
+        int plotIndex = plot.getPlotbuild().getPlots().indexOf(plot);
+        savePlotRestoreBlockData(plot, new File(plotDir, Integer.toString(plotIndex) + ".r"));
+        savePlotRestoreEntityData(plot, new File(plotDir, Integer.toString(plotIndex) + ".e"));
     }
     
     private static void savePlotRestoreEntityData(Plot plot, File file) {
@@ -465,7 +480,7 @@ public class PluginData {
         }
     }
     
-    private static void savePlotRestoreData(Plot plot, File file) throws IOException {
+    private static void savePlotRestoreBlockData(Plot plot, File file) throws IOException {
         FileWriter fw = new FileWriter(file.toString());
         PrintWriter writer = new PrintWriter(fw);
         if (plot.isUsingRestoreData()) {
@@ -605,5 +620,5 @@ public class PluginData {
         }
         scanner.close();
     }
-
+    
 }

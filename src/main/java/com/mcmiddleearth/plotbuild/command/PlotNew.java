@@ -39,7 +39,7 @@ public class PlotNew extends PlotBuildCommand {
         super(0, true, permissionNodes);
         setAdditionalPermissionsEnabled(true);
         setShortDescription(": Creates a new plot.");
-        setUsageDescription(" [-r] [name]: Creates a new plot to the current plotbuild, respectively to plotbuild [name] if specified. To select the area of the plot right/left click opposite corner. The y-values of the corners are only used for cuboid plot in plotbuilds with -3D flag. If -r flag is set, plot restore data will not be saved.");
+        setUsageDescription(" [-r] [name]: Creates a new plot to the current plotbuild, respectively to plotbuild [name] if specified. To select the area of the plot right/left click opposite corners with feather in main hand. The height of the corners are only used for cuboid plot in plotbuilds with -3D flag. If -r flag is set, plot restore data will not be saved.");
     }
     
     @Override

@@ -41,7 +41,7 @@ public class PlotDelete extends InsidePlotCommand {
         super(0, true, permissionNodes);
         setAdditionalPermissionsEnabled(true);
         setShortDescription(": deletes a plot.");
-        setUsageDescription(" [-k]: When inside a plot removes build perms and borders and build perms. By default also the changes made inside the plot are rolled back, however the flag [-k] can be used to keep the changes.");
+        setUsageDescription(" [-k]: When inside a plot removes build perms and borders. By default also the changes made inside the plot are rolled back, however the flag [-k] can be used to keep the changes.");
     }
     
     @Override

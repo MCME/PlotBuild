@@ -38,36 +38,36 @@ public class PlotCommandExecutor implements CommandExecutor {
     private final Map <String, AbstractCommand> commands = new LinkedHashMap <>();
     
     public PlotCommandExecutor() {
-        addCommandHandler("create", new PlotCreate(Permission.STAFF));
-        addCommandHandler("setinfo", new PlotSetInfo(Permission.STAFF));
-        addCommandHandler("sign", new PlotSign(Permission.STAFF));
-        addCommandHandler("info", new PlotInfo(Permission.USER));
-        addCommandHandler("help", new PlotHelp(Permission.USER));
-        addCommandHandler("current", new PlotCurrent(Permission.STAFF));
-        addCommandHandler("addstaff", new PlotAddstaff(Permission.STAFF));
-        addCommandHandler("removestaff", new PlotRemoveStaff(Permission.STAFF));
-        addCommandHandler("new", new PlotNew(Permission.STAFF));
-        addCommandHandler("list", new PlotList(Permission.USER));
-        addCommandHandler("claim", new PlotClaim(Permission.USER));
-        addCommandHandler("assign", new PlotAssign(Permission.STAFF));
-        addCommandHandler("invite", new PlotInvite(Permission.USER));
-        addCommandHandler("leave", new PlotLeave(Permission.USER));
-        addCommandHandler("finish", new PlotFinish(Permission.USER));
-        addCommandHandler("unclaim", new PlotUnclaim(Permission.USER));
-        addCommandHandler("accept", new PlotAccept(Permission.STAFF));
-        addCommandHandler("refuse", new PlotRefuse(Permission.STAFF));
-        addCommandHandler("clear", new PlotClear(Permission.STAFF));
-        addCommandHandler("delete", new PlotDelete(Permission.STAFF));
-        addCommandHandler("ban", new PlotBan(Permission.STAFF));
-        addCommandHandler("unban", new PlotUnban(Permission.STAFF));
-        addCommandHandler("history", new PlotHistory(Permission.STAFF));
-        addCommandHandler("lock", new PlotLock(Permission.STAFF));
-        addCommandHandler("unlock", new PlotUnlock(Permission.STAFF));
-        addCommandHandler("end", new PlotEnd(Permission.STAFF));
         addCommandHandler("warp", new PlotWarp(Permission.USER));
+        addCommandHandler("unlock", new PlotUnlock(Permission.STAFF));
+        addCommandHandler("unclaim", new PlotUnclaim(Permission.USER));
+        addCommandHandler("unban", new PlotUnban(Permission.STAFF));
+        addCommandHandler("sign", new PlotSign(Permission.STAFF));
+        addCommandHandler("setinfo", new PlotSetInfo(Permission.STAFF));
+        addCommandHandler("removestaff", new PlotRemoveStaff(Permission.STAFF));
         addCommandHandler("remove", new PlotRemove(Permission.STAFF));
-        addCommandHandler("pos1", new PlotPos1(Permission.STAFF));
+        addCommandHandler("refuse", new PlotRefuse(Permission.STAFF));
         addCommandHandler("pos2", new PlotPos2(Permission.STAFF));
+        addCommandHandler("pos1", new PlotPos1(Permission.STAFF));
+        addCommandHandler("new", new PlotNew(Permission.STAFF));
+        addCommandHandler("lock", new PlotLock(Permission.STAFF));
+        addCommandHandler("list", new PlotList(Permission.USER));
+        addCommandHandler("leave", new PlotLeave(Permission.USER));
+        addCommandHandler("invite", new PlotInvite(Permission.USER));
+        addCommandHandler("info", new PlotInfo(Permission.USER));
+        addCommandHandler("history", new PlotHistory(Permission.STAFF));
+        addCommandHandler("help", new PlotHelp(Permission.USER));
+        addCommandHandler("finish", new PlotFinish(Permission.USER));
+        addCommandHandler("end", new PlotEnd(Permission.STAFF));
+        addCommandHandler("delete", new PlotDelete(Permission.STAFF));
+        addCommandHandler("current", new PlotCurrent(Permission.STAFF));
+        addCommandHandler("create", new PlotCreate(Permission.STAFF));
+        addCommandHandler("clear", new PlotClear(Permission.STAFF));
+        addCommandHandler("claim", new PlotClaim(Permission.USER));
+        addCommandHandler("ban", new PlotBan(Permission.STAFF));
+        addCommandHandler("assign", new PlotAssign(Permission.STAFF));
+        addCommandHandler("addstaff", new PlotAddstaff(Permission.STAFF));
+        addCommandHandler("accept", new PlotAccept(Permission.STAFF));
     }
     
     @Override

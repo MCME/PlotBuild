@@ -37,7 +37,7 @@ public class PlotInvite extends InsidePlotCommand {
     public PlotInvite(String... permissionNodes) {
         super(1, true, permissionNodes);
         setShortDescription(": invites a player to join a plot team.");
-        setUsageDescription(" <player>: When inside a plot a builder of the plot, adds <player> to the plot. Both players then can build inside that plot.");
+        setUsageDescription(" <player>: When inside an own plot adds <player> to the plot team. The invited player gets equal rights as the player who originally claimed the plot.");
     }
     
     @Override

@@ -18,6 +18,7 @@
  */
 package com.mcmiddleearth.plotbuild.plotbuild;
 
+import com.mcmiddleearth.plotbuild.PlotBuildPlugin;
 import com.mcmiddleearth.plotbuild.constants.PlotState;
 import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.data.Selection;
@@ -31,7 +32,12 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.ItemFrame;
+import org.bukkit.entity.Painting;
 import org.bukkit.material.MaterialData;
+import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  *
@@ -255,6 +261,15 @@ public class Plot {
         if (restoreData == null) {
             return;
         }
+        List<Entity> entities = new ArrayList<>();
+        entities.addAll(getCorner1().getWorld().getEntitiesByClass(Painting.class));
+        entities.addAll(getCorner1().getWorld().getEntitiesByClass(ItemFrame.class));
+        entities.addAll(getCorner1().getWorld().getEntitiesByClass(ArmorStand.class));
+        for(Entity entity: entities) {
+            if(isInside(entity.getLocation())) {
+                entity.remove();
+            }
+        }
         int miny = 0;
         int maxy = getCorner1().getWorld().getMaxHeight()-1;
         if(getPlotbuild().isCuboid()) {
@@ -282,7 +297,13 @@ public class Plot {
                 }
             }
         }
-        PluginData.restoreEntities(plotbuild,this);
+        final Plot thisPlot = this;
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                PluginData.restoreEntities(plotbuild,thisPlot);
+            }
+        }.runTaskLater(PlotBuildPlugin.getPluginInstance(),10);
     }
     
     public int getID() {

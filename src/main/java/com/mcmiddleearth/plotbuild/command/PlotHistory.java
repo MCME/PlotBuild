@@ -35,7 +35,7 @@ public class PlotHistory extends PlotBuildCommand {
         super(0, true, permissionNodes);
         setAdditionalPermissionsEnabled(true);
         setShortDescription(": action logs for a plotbuild");
-        setUsageDescription(" [name] [#]: Displays all actions that happened in current plotbuild / plotbuild [name]. [#] is the page of the history list to be shown.");
+        setUsageDescription(" [name] [page#]: Displays all actions that happened in current plotbuild resp. plotbuild [name]. [#] is the page of the history list to be shown.");
     }
     
     @Override
