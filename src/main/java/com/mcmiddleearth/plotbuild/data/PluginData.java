@@ -26,6 +26,7 @@ import com.mcmiddleearth.plotbuild.conversations.NewPlotConversationFactory;
 import com.mcmiddleearth.plotbuild.conversations.PlotBuildConversationFactory;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.plotbuild.PlotBuild;
+import com.mcmiddleearth.plotbuild.utils.BlockUtil;
 import com.mcmiddleearth.plotbuild.utils.EntityUtil;
 import com.mcmiddleearth.plotbuild.utils.FileUtil;
 import com.mcmiddleearth.plotbuild.utils.ListUtil;
@@ -54,6 +55,8 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
@@ -341,6 +344,17 @@ public class PluginData {
         return ret;
     }
     
+    public static void restoreComplexBlocks(PlotBuild plotbuild, Plot plot) {
+        File plotDir = new File(plotBuildDir, plotbuild.getName());
+        File plotRestoreData = new File(plotDir, Integer.toString(plotbuild.getPlots().indexOf(plot)) + ".rc");
+        try {
+Logger.getGlobal().info(plotRestoreData.toString());
+            BlockUtil.restore(plotRestoreData, new ArrayList<Entity>(), new ArrayList<BlockState>(), true);
+        } catch (IOException | InvalidConfigurationException ex) {
+            Logger.getLogger(PluginData.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     public static void restoreEntities(PlotBuild plotbuild, Plot plot) {
         File plotDir = new File(plotBuildDir, plotbuild.getName());
         File plotRestoreData = new File(plotDir, Integer.toString(plotbuild.getPlots().indexOf(plot)) + ".e");
@@ -492,14 +506,20 @@ Logger.getGlobal().info(plotRestoreData.toString());
                 miny = plot.getCorner1().getBlockY();
                 maxy = plot.getCorner2().getBlockY();
             }
+            List<Object> complexBlocks = new ArrayList<>();
             for(int x = plot.getCorner1().getBlockX(); x <= plot.getCorner2().getBlockX(); ++x) {
                 for(int y = miny; y <= maxy; ++y) {
                     for(int z = plot.getCorner1().getBlockZ(); z <= plot.getCorner2().getBlockZ(); ++z) {
-                        writer.println(world.getBlockAt(x, y, z).getType());
-                        writer.println(world.getBlockAt(x, y, z).getData());
+                        Block block = world.getBlockAt(x, y, z);
+                        writer.println(block.getType());
+                        writer.println(block.getData());
+                        if(!BlockUtil.isSimple(block)) {
+                            complexBlocks.add(block);
+                        }
                     }
                 }
             }
+            BlockUtil.store(new File(file.toString()+"c"), complexBlocks);
         } else {
             writer.println("<!NODATA!>");
         }

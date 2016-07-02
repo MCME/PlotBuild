@@ -239,7 +239,7 @@ public class Plot {
     }
     
     public void delete(boolean keep) throws InvalidRestoreDataException{
-        if(!keep) {
+        if(!keep && state != PlotState.UNCLAIMED) {
             reset();
         }
         state = PlotState.REMOVED;
@@ -297,13 +297,14 @@ public class Plot {
                 }
             }
         }
+        PluginData.restoreComplexBlocks(plotbuild, this);
         final Plot thisPlot = this;
         new BukkitRunnable() {
             @Override
             public void run() {
                 PluginData.restoreEntities(plotbuild,thisPlot);
             }
-        }.runTaskLater(PlotBuildPlugin.getPluginInstance(),10);
+        }.runTaskLater(PlotBuildPlugin.getPluginInstance(),4);
     }
     
     public int getID() {
