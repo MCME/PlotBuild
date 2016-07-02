@@ -303,7 +303,7 @@ public class Plot {
             public void run() {
                 PluginData.restoreEntities(plotbuild,thisPlot);
             }
-        }.runTaskLater(PlotBuildPlugin.getPluginInstance(),10);
+        }.runTaskLater(PlotBuildPlugin.getPluginInstance(),4);
     }
     
     public int getID() {
