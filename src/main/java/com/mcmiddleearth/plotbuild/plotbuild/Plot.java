@@ -239,7 +239,7 @@ public class Plot {
     }
     
     public void delete(boolean keep) throws InvalidRestoreDataException{
-        if(!keep) {
+        if(!keep && state != PlotState.UNCLAIMED) {
             reset();
         }
         state = PlotState.REMOVED;
@@ -297,6 +297,7 @@ public class Plot {
                 }
             }
         }
+        PluginData.restoreComplexBlocks(plotbuild, this);
         final Plot thisPlot = this;
         new BukkitRunnable() {
             @Override
