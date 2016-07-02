@@ -18,6 +18,7 @@
  */
 package com.mcmiddleearth.plotbuild.command;
 
+import com.mcmiddleearth.plotbuild.PlotBuildPlugin;
 import com.mcmiddleearth.plotbuild.constants.PlotState;
 import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.exceptions.InvalidRestoreDataException;
@@ -31,6 +32,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  *
@@ -60,7 +62,7 @@ public class PlotEnd extends PlotBuildCommand {
         //this query calls endPlotBuild
     }
     
-    public static void endPlotBuild(Player cs, PlotBuild plotbuild, boolean keep) {
+    public static void endPlotBuild(final Player cs, final PlotBuild plotbuild, boolean keep) {
         for(Plot p : plotbuild.getPlots()) {
             if(p.getState() != PlotState.REMOVED) {
                 try {
@@ -76,11 +78,17 @@ public class PlotEnd extends PlotBuildCommand {
                 }
             }
         }
-        if(PluginData.deletePlotBuild(plotbuild)) {
-            sendPlotbuildDeletedMessage(cs);
-        } else {
-            sendPlotbuildDeleteFailedMessage(cs);
-        }
+        // Wait 30 ticks until restoring of entities in deleted plots is finished
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if(PluginData.deletePlotBuild(plotbuild)) {
+                    sendPlotbuildDeletedMessage(cs);
+                } else {
+                    sendPlotbuildDeleteFailedMessage(cs);
+                }
+            }
+        }.runTaskLater(PlotBuildPlugin.getPluginInstance(), 30); 
     }
     
     private static void sendPlotbuildDeletedMessage(CommandSender cs) {
