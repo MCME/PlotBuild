@@ -21,7 +21,6 @@ import java.util.logging.Level;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import com.mojang.authlib.GameProfile;
 import org.bukkit.Bukkit;
 import org.bukkit.SkullType;
 import org.bukkit.block.Block;
@@ -45,7 +44,7 @@ public class HeadUtil {
             skullData.setSkullType(SkullType.PLAYER);
             Field profileField = head.getItemMeta().getClass().getDeclaredField("profile");
             profileField.setAccessible(true);
-            GameProfile profile = (GameProfile) profileField.get(head.getItemMeta());
+            Object profile = profileField.get(head.getItemMeta());
             profileField = skullData.getClass().getDeclaredField("profile");
             profileField.setAccessible(true);
             profileField.set(skullData, profile);
@@ -63,7 +62,7 @@ public class HeadUtil {
         try {
             Field profileField = skullBlockState.getClass().getDeclaredField("profile");
             profileField.setAccessible(true);
-            GameProfile profile = (GameProfile) profileField.get(skullBlockState);
+            Object profile = profileField.get(skullBlockState);
 
             ItemStack head = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
             ItemMeta headMeta = head.getItemMeta();
