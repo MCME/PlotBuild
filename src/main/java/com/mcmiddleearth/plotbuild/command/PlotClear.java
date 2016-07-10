@@ -18,6 +18,7 @@
  */
 package com.mcmiddleearth.plotbuild.command;
 
+import com.mcmiddleearth.plotbuild.constants.PlotState;
 import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.exceptions.InvalidRestoreDataException;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
@@ -50,6 +51,10 @@ public class PlotClear extends InsidePlotCommand {
             return;
         }
         if(!hasPermissionsForPlotBuild((Player) cs, plot.getPlotbuild())) {
+            return;
+        }
+        if(plot.getState().equals(PlotState.UNCLAIMED)) {
+            sendUnclaimedPlotErrorMessage(cs);
             return;
         }
         boolean unclaim=false;
@@ -102,6 +107,10 @@ public class PlotClear extends InsidePlotCommand {
         MessageUtil.sendOfflineMessage(builder, "Your plot #" + id
                                                      + " of plotbuild " + name 
                                                      + " was resetted to initial state by "+ cs.getName()+".");
+    }
+
+    private void sendUnclaimedPlotErrorMessage(CommandSender cs) {
+        MessageUtil.sendErrorMessage(cs, "You can't clear an unclaimed plot. Restore data are saved when a plot is claimed.");
     }
     
 }

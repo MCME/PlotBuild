@@ -33,7 +33,7 @@ import org.bukkit.entity.Player;
 public class PlotPos2 extends PlotBuildCommand {
 
     public PlotPos2(String... permissionNodes) {
-        super(1, true, permissionNodes);
+        super(3, true, permissionNodes);
         setAdditionalPermissionsEnabled(true);
         setShortDescription(": Sets second point of selection to given coordinates.");
         setUsageDescription(" <x> <y> <z>: This command can be used to set second point of selection to coordinates x, y, z.");
@@ -41,11 +41,13 @@ public class PlotPos2 extends PlotBuildCommand {
     
     @Override
     protected void execute(CommandSender cs, String... args) {
-        PlotBuild plotbuild = checkPlotBuild((Player) cs, 1, args);
+        PlotBuild plotbuild = PluginData.getCurrentPlotbuild((Player)cs);
         if(plotbuild == null) {
+            sendNoCurrentPlotbuildMessage(cs);
             return;
         }
         if(!hasPermissionsForPlotBuild((Player) cs, plotbuild)) {
+            sendNoPermsErrorMessage(cs);
             return;
         }
         

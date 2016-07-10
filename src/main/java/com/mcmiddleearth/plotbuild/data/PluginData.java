@@ -348,7 +348,6 @@ public class PluginData {
         File plotDir = new File(plotBuildDir, plotbuild.getName());
         File plotRestoreData = new File(plotDir, Integer.toString(plotbuild.getPlots().indexOf(plot)) + ".rc");
         try {
-Logger.getGlobal().info(plotRestoreData.toString());
             BlockUtil.restore(plotRestoreData, new ArrayList<Entity>(), new ArrayList<BlockState>(), true);
         } catch (IOException | InvalidConfigurationException ex) {
             Logger.getLogger(PluginData.class.getName()).log(Level.SEVERE, null, ex);
@@ -359,7 +358,6 @@ Logger.getGlobal().info(plotRestoreData.toString());
         File plotDir = new File(plotBuildDir, plotbuild.getName());
         File plotRestoreData = new File(plotDir, Integer.toString(plotbuild.getPlots().indexOf(plot)) + ".e");
         try {
-Logger.getGlobal().info(plotRestoreData.toString());
             EntityUtil.restore(plotRestoreData, new ArrayList<Entity>());
         } catch (IOException ex) {
             Logger.getLogger(PluginData.class.getName()).log(Level.SEVERE, null, ex);
