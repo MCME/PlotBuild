@@ -257,6 +257,9 @@ public class Plot {
     }
     
     private void reset() throws InvalidRestoreDataException {
+        if(state.equals(PlotState.UNCLAIMED)) {
+            return;
+        }
         List <MaterialData> restoreData = PluginData.getRestoreData(plotbuild, this);
         if (restoreData == null) {
             return;
