@@ -231,10 +231,10 @@ public class Plot {
     }
     
     public boolean clear(boolean unclaim) throws InvalidRestoreDataException {
+        reset();
         if(unclaim) {
             unclaim();
         }
-        reset();
         return border.placeSigns();
     }
     
