@@ -24,6 +24,7 @@ import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.utils.BukkitUtil;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
+import java.io.IOException;
 import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -71,6 +72,14 @@ public class PlotAssign extends InsidePlotCommand {
         if(plot.countOwners()>=8) {
             sendMaxTeamSize(cs);
             return;
+        }
+        if(plot.isUsingRestoreData()) {
+            try {
+                PluginData.savePlotRestoreData(plot);
+            } catch (IOException ex) {
+                sendRestoreDataErrorMessage(cs, plot);
+                return;
+            }
         }
         boolean signsPlaced;
         if(plot.getState()==PlotState.UNCLAIMED) {
@@ -132,4 +141,11 @@ public class PlotAssign extends InsidePlotCommand {
         MessageUtil.sendErrorMessage(cs, "The player you want to assign, has no permission to use plotbuild.");
     }
     
+    private void sendRestoreDataErrorMessage(CommandSender cs, Plot plot) {
+        MessageUtil.sendErrorMessage(cs, "Failed to save restore data for this plot. Ask staff for help.");
+        for(UUID staffId: plot.getPlotbuild().getOfflineStaffList()) {
+            MessageUtil.sendOfflineMessage(Bukkit.getOfflinePlayer(staffId),"Failed to save restore data for plot #"
+                                           +plot.getID()+" of plotbuild "+ plot.getPlotbuild().getName()+"."); 
+        }
+    }
 }
