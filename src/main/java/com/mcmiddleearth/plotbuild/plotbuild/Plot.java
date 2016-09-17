@@ -203,8 +203,8 @@ public class Plot {
     
     public boolean unclaim() throws InvalidRestoreDataException{
         owners.removeAll(owners);
-        state = PlotState.UNCLAIMED;
         reset();
+        state = PlotState.UNCLAIMED;
         //border.refreshBorder();
         return border.placeSigns();
     }

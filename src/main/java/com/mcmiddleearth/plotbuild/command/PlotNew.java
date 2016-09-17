@@ -79,7 +79,7 @@ public class PlotNew extends PlotBuildCommand {
     }
     
     public static void createPlot(PlotBuild plotbuild, Selection selection, CommandSender cs, boolean useRestoreData) {
-        Plot newPlot=null;
+        Plot newPlot;
         try {
             newPlot = new Plot(plotbuild, selection.getFirstPoint(),selection.getSecondPoint());
             newPlot.setUsingRestoreData(useRestoreData);
@@ -87,6 +87,9 @@ public class PlotNew extends PlotBuildCommand {
             sendInvalidSelectionMessage(cs);
             Logger.getLogger(PlotNew.class.getName()).log(Level.SEVERE, null, ex);
             return;
+        }
+        if(!newPlot.placeSigns()) {
+            sendNoSignPlaceMessage(cs);
         }
         sendPlotCreatedMessage(cs);
         PluginData.clearSelection((Player)cs);

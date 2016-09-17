@@ -102,7 +102,7 @@ public abstract class AbstractCommand {
         MessageUtil.sendErrorMessage(cs, "No plotbuild with this name.");
     }   
 
-    protected void sendNoSignPlaceMessage(CommandSender cs) {
+    protected static void sendNoSignPlaceMessage(CommandSender cs) {
         MessageUtil.sendErrorMessage(cs, "No suited place for plot signs was found.");
     }
 
