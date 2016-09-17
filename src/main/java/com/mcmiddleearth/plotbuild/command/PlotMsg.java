@@ -52,7 +52,10 @@ public class PlotMsg extends InsidePlotCommand {
         if(plot==null) {
             return;
         }
-        if(!hasPermissionsForPlotBuild((Player) cs, plot.getPlotbuild())) {
+        if(!(plot.isOwner((Player)cs) 
+                || plot.getPlotbuild().isStaff((Player)cs) 
+                || ((Player)cs).hasPermission(Permission.STAFF))) {
+            sendNoPermError(cs);
             return;
         }
         String message = ChatColor.GOLD+"["+ChatColor.RED+((Player)cs).getName()
@@ -65,7 +68,13 @@ public class PlotMsg extends InsidePlotCommand {
         for(UUID builder: plot.getOfflineOwners()) {
                 MessageUtil.sendOfflineMessage(Bukkit.getOfflinePlayer(builder), message);
         }
-        MessageUtil.sendInfoMessage(cs, message);
+        if(!plot.isOwner((Player)cs)) {
+            MessageUtil.sendInfoMessage(cs, message);
+        }
         plot.getPlotbuild().log(((Player) cs).getName()+" messaged to build team of plot #"+plot.getID()+": "+message);
+    }
+
+    private void sendNoPermError(CommandSender cs) {
+        MessageUtil.sendErrorMessage(cs, "Only plotbuild staff and build team members of a plot may use this command.");
     }
   }
