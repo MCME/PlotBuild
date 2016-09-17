@@ -81,15 +81,19 @@ public class PlotList extends PlotBuildCommand {
             List<String> messageList = new ArrayList<>();
             List<String> commandList = new ArrayList<>();
             for(PlotBuild plotbuild : PluginData.getPlotbuildsList()) {
+                String locked = (plotbuild.isLocked()?"(LOCKED)":"");
+                String privat = (plotbuild.isPriv()?"(PRIVATE)":"");
                 if(cs instanceof Player) {
                     messageList.add(ChatColor.AQUA+MessageUtil.getNOPREFIX()+plotbuild.getName()
                                                             +" (unclaimed plots: " 
-                                                            + Integer.toString(plotbuild.countUnclaimedPlots()) + ")");
+                                                            + Integer.toString(plotbuild.countUnclaimedPlots()) + ")"
+                                                            + ChatColor.RED+locked+privat);
                     commandList.add("/plot list "+plotbuild.getName());
                 } else {
                     messageList.add(plotbuild.getName()
                                         +" (unclaimed plots: " 
-                                        + Integer.toString(plotbuild.countUnclaimedPlots()) + ")");
+                                        + Integer.toString(plotbuild.countUnclaimedPlots()) + ")"
+                                        +locked+privat);
                 }
             }
             int maxPage=(messageList.size()-1)/10+1;
@@ -129,15 +133,18 @@ public class PlotList extends PlotBuildCommand {
         if(page>maxPage) {
             page = maxPage;
         }
-        sendPlotlistHeaderMessage(cs, plotbuild.getName(), page, maxPage);
+        sendPlotlistHeaderMessage(cs, plotbuild, page, maxPage);
         for(int i = (page-1)*10; i < plotList.size() && i < (page-1)*10+10; i++) {
             sendPlotListEntryMessage(cs, plotList.get(i));
         }
         
     }
 
-    private void sendPlotlistHeaderMessage(CommandSender cs, String name, int page, int maxPage) {
-        MessageUtil.sendInfoMessage(cs, "Plots of plotbuild "+name+" [page "+page+"/"+maxPage+"]:");
+    private void sendPlotlistHeaderMessage(CommandSender cs, PlotBuild plotbuild, int page, int maxPage) {
+        String locked = (plotbuild.isLocked()?"(LOCKED)":"");
+        String privat = (plotbuild.isPriv()?"(PRIVATE)":"");
+        MessageUtil.sendInfoMessage(cs, plotbuild.getName()+ChatColor.RED+locked+privat+ChatColor.AQUA
+                                                             +" [page "+page+"/"+maxPage+"]:");
     }
 
     private void sendPlotListEntryMessage(CommandSender cs, String get) {

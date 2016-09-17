@@ -89,7 +89,10 @@ public class PlotBorder {
     
     boolean placeSigns(){
         refreshEntityLocations();
-        if(border.size()>0 && plot.getState()!=PlotState.REMOVED) {
+        if(plot.getState()!=PlotState.REMOVED) {
+            if(border.size()==0) {
+                return false;
+            }
             removeSigns();
             removeBorder();
             placeBorder();
@@ -168,23 +171,24 @@ public class PlotBorder {
             if(signBlock.getType()==Material.WALL_SIGN){
                 signBlock.setType(Material.AIR);
             }
-        }
-        Location signLoc = border.get(0);
-        int signBlockX = signLoc.getBlockX();
-        int signBlockZ = signLoc.getBlockZ();
-        List<Location> removeList = new ArrayList<>();
-        for(Location loc : border) {
-            if(loc != signLoc 
-                    && loc.getBlockX()==signBlockX && loc.getBlockZ()==signBlockZ 
-                    && (plotbuild().getBorderType()!=BorderType.BOX || loc.getBlockY()<corner1().getBlockY()-1 
-                                                                    || loc.getBlockY()>corner2().getBlockY()+1)) {
-                if(loc.getBlock().getType() == Material.WOOL) {
-                    loc.getBlock().setType(Material.AIR);
+         //}
+            Location signLoc = border.get(0);
+            int signBlockX = signLoc.getBlockX();
+            int signBlockZ = signLoc.getBlockZ();
+            List<Location> removeList = new ArrayList<>();
+            for(Location loc : border) {
+                if(loc != signLoc 
+                        && loc.getBlockX()==signBlockX && loc.getBlockZ()==signBlockZ 
+                        && (plotbuild().getBorderType()!=BorderType.BOX || loc.getBlockY()<corner1().getBlockY()-1 
+                                                                        || loc.getBlockY()>corner2().getBlockY()+1)) {
+                    if(loc.getBlock().getType() == Material.WOOL) {
+                        loc.getBlock().setType(Material.AIR);
+                    }
+                    removeList.add(loc);
                 }
-                removeList.add(loc);
             }
+            border.removeAll(removeList);
         }
-        border.removeAll(removeList);
     }
     
     void placeBorder(){
@@ -212,7 +216,8 @@ public class PlotBorder {
  
     private void placeBorderColumn(int x, int y, int z){
     	Block currentBlock=corner1().getWorld().getBlockAt(x,y,z);
-    	if(plotbuild().getBorderType()==BorderType.GROUND){
+    	if(plotbuild().getBorderType()==BorderType.GROUND
+                || plotbuild().getBorderType()==BorderType.NONE){
             if(currentBlock.isEmpty()) {
                 do {
                     currentBlock = corner1().getWorld().getBlockAt(x,y,z);
@@ -269,14 +274,16 @@ public class PlotBorder {
     }*/
     
     void removeBorder() {
-        for(Location loc : border) {
-            Block block = corner1().getWorld().getBlockAt(loc);
-            if(block.getType().equals(Material.WOOL)) {
-                block.setType(Material.AIR);
-                block.setData((byte) 0);
+        if(border.size()>0) {
+            for(Location loc : border) {
+                Block block = corner1().getWorld().getBlockAt(loc);
+                if(block.getType().equals(Material.WOOL)) {
+                    block.setType(Material.AIR);
+                    block.setData((byte) 0);
+                }
             }
+            border.removeAll(border);
         }
-        border.removeAll(border);
     }
     
     void setBorder(LinkedList<Location> border) {
