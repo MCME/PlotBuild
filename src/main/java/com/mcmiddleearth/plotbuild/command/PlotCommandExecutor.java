@@ -50,7 +50,7 @@ public class PlotCommandExecutor implements CommandExecutor {
         addCommandHandler("pos2", new PlotPos2(Permission.STAFF));
         addCommandHandler("pos1", new PlotPos1(Permission.STAFF));
         addCommandHandler("new", new PlotNew(Permission.STAFF));
-        addCommandHandler("msg", new PlotMsg(Permission.STAFF));
+        addCommandHandler("msg", new PlotMsg(Permission.USER));
         addCommandHandler("lock", new PlotLock(Permission.STAFF));
         addCommandHandler("list", new PlotList(Permission.USER));
         addCommandHandler("leave", new PlotLeave(Permission.USER));
