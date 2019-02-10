@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -53,13 +54,13 @@ public class PlotBorder {
             if(signBlock.getType()!=Material.AIR)
                 return false;
             signBlock = signBlock.getRelative(0,0,1);
-            if(signBlock.getType()!=Material.AIR && signBlock.getType()!=Material.WOOL)
+            if(signBlock.getType()!=Material.AIR && !isBorderBlock(signBlock))//.getType()!=Material.WOOL)
                 return false;
             signBlock = signBlock.getRelative(0,1,0);
-            if(signBlock.getType()!=Material.AIR && signBlock.getType()!=Material.WOOL)
+            if(signBlock.getType()!=Material.AIR && !isBorderBlock(signBlock))//signBlock.getType()!=Material.WOOL)
                 return false;
             signBlock = signBlock.getRelative(0,1,0);
-            if(signBlock.getType()!=Material.AIR && signBlock.getType()!=Material.WOOL)
+            if(signBlock.getType()!=Material.AIR && !isBorderBlock(signBlock))//signBlock.getType()!=Material.WOOL)
                 return false;
             return true;
     }
@@ -181,7 +182,7 @@ public class PlotBorder {
                         && loc.getBlockX()==signBlockX && loc.getBlockZ()==signBlockZ 
                         && (plotbuild().getBorderType()!=BorderType.BOX || loc.getBlockY()<corner1().getBlockY()-1 
                                                                         || loc.getBlockY()>corner2().getBlockY()+1)) {
-                    if(loc.getBlock().getType() == Material.WOOL) {
+                    if(isBorderBlock(loc.getBlock())) {// == Material.WOOL) {
                         loc.getBlock().setType(Material.AIR);
                     }
                     removeList.add(loc);
@@ -257,8 +258,9 @@ public class PlotBorder {
         
     private void placeWoolBlock(Block block) {
         if(block.isEmpty() && ! isEntityBlock(block.getLocation())) {
-            block.setType(Material.WOOL);
-            block.setData((byte) plot.getState().getState());            
+            block.setType(plot.getState().getBorder());//Material.WOOL);
+//Logger.getGlobal().info("Place boder block: "+plot.getState().getBorder().name());
+            //1.13 removed: block.setData((byte) plot.getState().getState());            
             border.add(block.getLocation());
         }
     }
@@ -277,9 +279,9 @@ public class PlotBorder {
         if(border.size()>0) {
             for(Location loc : border) {
                 Block block = corner1().getWorld().getBlockAt(loc);
-                if(block.getType().equals(Material.WOOL)) {
+                if(isBorderBlock(block)) {
                     block.setType(Material.AIR);
-                    block.setData((byte) 0);
+                    //1.13 removed: block.setData((byte) 0);
                 }
             }
             border.removeAll(border);
@@ -328,6 +330,17 @@ public class PlotBorder {
     private boolean isEntityBlock(Location loc) {
         for(Location entityLoc : entityLocs) {
             if(BukkitUtil.isSameBlock(entityLoc, loc)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    private boolean isBorderBlock(Block block) {
+        Material search = block.getType();
+        for(PlotState state: PlotState.values()) {
+            Material mat = state.getBorder();
+            if(search.equals(mat)) {
                 return true;
             }
         }

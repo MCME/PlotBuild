@@ -18,26 +18,34 @@
  */
 package com.mcmiddleearth.plotbuild.plotbuild;
 
-import com.mcmiddleearth.plotbuild.PlotBuildPlugin;
+import com.boydti.fawe.object.clipboard.ReadOnlyClipboard;
+import com.boydti.fawe.object.schematic.Schematic;
+import com.boydti.fawe.util.EditSessionBuilder;
 import com.mcmiddleearth.plotbuild.constants.PlotState;
 import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.data.Selection;
 import com.mcmiddleearth.plotbuild.exceptions.InvalidPlotLocationException;
 import com.mcmiddleearth.plotbuild.exceptions.InvalidRestoreDataException;
+import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.Vector;
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.bukkit.BukkitWorld;
+import com.sk89q.worldedit.extent.clipboard.BlockArrayClipboard;
+import com.sk89q.worldedit.extent.clipboard.Clipboard;
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
+import com.sk89q.worldedit.regions.CuboidRegion;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.ItemFrame;
-import org.bukkit.entity.Painting;
-import org.bukkit.material.MaterialData;
-import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  *
@@ -256,58 +264,60 @@ public class Plot {
         return border.getBorder();
     }
     
+    public void save() throws IOException {
+        new MCMEPlotFormat().save(this);
+    }
+    
     private void reset() throws InvalidRestoreDataException {
-        if(state.equals(PlotState.UNCLAIMED)) {
+        try {
+            new MCMEPlotFormat().load(this);
+            /*List <MaterialData> restoreData = PluginData.getRestoreData(plotbuild, this);
+            if (restoreData == null) {
             return;
-        }
-        List <MaterialData> restoreData = PluginData.getRestoreData(plotbuild, this);
-        if (restoreData == null) {
-            return;
-        }
-        List<Entity> entities = new ArrayList<>();
-        entities.addAll(getCorner1().getWorld().getEntitiesByClass(Painting.class));
-        entities.addAll(getCorner1().getWorld().getEntitiesByClass(ItemFrame.class));
-        entities.addAll(getCorner1().getWorld().getEntitiesByClass(ArmorStand.class));
-        for(Entity entity: entities) {
-            if(isInside(entity.getLocation())) {
-                entity.remove();
             }
-        }
-        int miny = 0;
-        int maxy = getCorner1().getWorld().getMaxHeight()-1;
-        if(getPlotbuild().isCuboid()) {
+            List<Entity> entities = new ArrayList<>();
+            entities.addAll(getCorner1().getWorld().getEntitiesByClass(Painting.class));
+            entities.addAll(getCorner1().getWorld().getEntitiesByClass(ItemFrame.class));
+            entities.addAll(getCorner1().getWorld().getEntitiesByClass(ArmorStand.class));
+            for(Entity entity: entities) {
+            if(isInside(entity.getLocation())) {
+            entity.remove();
+            }
+            }
+            int miny = 0;
+            int maxy = getCorner1().getWorld().getMaxHeight()-1;
+            if(getPlotbuild().isCuboid()) {
             miny = getCorner1().getBlockY();
             maxy = getCorner2().getBlockY();
-        }
-        Selection sel = new Selection();
-        sel.setFirstPoint(corner1);
-        sel.setSecondPoint(corner2);
-        if(restoreData.size() != sel.getArea() * (maxy - miny + 1)) {
-            throw new InvalidRestoreDataException();
-        }
-        int listindex = 0;
-        for(int x = getCorner1().getBlockX(); x <= getCorner2().getBlockX(); ++x) {
-            for(int y = miny; y <= maxy; ++y) {
-                for(int z = getCorner1().getBlockZ(); z <= getCorner2().getBlockZ(); ++z) {
-                    Location loc = new Location(getCorner1().getWorld(), x, y, z);
-                    loc.getBlock().setType(restoreData.get(listindex).getItemType(), false);
-                    loc.getBlock().setData(restoreData.get(listindex).getData(), false);
-                    /*BlockState bstate = loc.getBlock().getState();
-                    bstate.setType(restoreData.get(listindex).getItemType());
-                    bstate.setRawData(restoreData.get(listindex).getData());
-                    bstate.update(false);*/
-                    listindex++;
-                }
             }
-        }
-        PluginData.restoreComplexBlocks(plotbuild, this);
-        final Plot thisPlot = this;
-        new BukkitRunnable() {
+            Selection sel = new Selection();
+            sel.setFirstPoint(corner1);
+            sel.setSecondPoint(corner2);
+            if(restoreData.size() != sel.getArea() * (maxy - miny + 1)) {
+            throw new InvalidRestoreDataException();
+            }
+            int listindex = 0;
+            for(int x = getCorner1().getBlockX(); x <= getCorner2().getBlockX(); ++x) {
+            for(int y = miny; y <= maxy; ++y) {
+            for(int z = getCorner1().getBlockZ(); z <= getCorner2().getBlockZ(); ++z) {
+            Location loc = new Location(getCorner1().getWorld(), x, y, z);
+            loc.getBlock().setType(restoreData.get(listindex).getItemType(), false);
+            loc.getBlock().setData(restoreData.get(listindex).getData(), false);
+            listindex++;
+            }
+            }
+            }
+            PluginData.restoreComplexBlocks(plotbuild, this);
+            final Plot thisPlot = this;
+            new BukkitRunnable() {
             @Override
             public void run() {
-                PluginData.restoreEntities(plotbuild,thisPlot);
+            PluginData.restoreEntities(plotbuild,thisPlot);
             }
-        }.runTaskLater(PlotBuildPlugin.getPluginInstance(),4);
+            }.runTaskLater(PlotBuildPlugin.getPluginInstance(),4);*/
+        } catch (IOException ex) {
+            throw new InvalidRestoreDataException();
+        }
     }
     
     public int getID() {
