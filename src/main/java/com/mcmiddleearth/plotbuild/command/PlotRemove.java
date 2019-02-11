@@ -20,10 +20,10 @@ package com.mcmiddleearth.plotbuild.command;
 
 import static com.mcmiddleearth.plotbuild.command.AbstractCommand.sendRestoreErrorMessage;
 import com.mcmiddleearth.plotbuild.data.PluginData;
-import com.mcmiddleearth.plotbuild.exceptions.InvalidRestoreDataException;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.utils.BukkitUtil;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
+import com.mcmiddleearth.pluginutil.plotStoring.InvalidRestoreDataException;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;

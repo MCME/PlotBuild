@@ -18,40 +18,37 @@
  */
 package com.mcmiddleearth.plotbuild.plotbuild;
 
-import com.boydti.fawe.object.clipboard.ReadOnlyClipboard;
-import com.boydti.fawe.object.schematic.Schematic;
-import com.boydti.fawe.util.EditSessionBuilder;
 import com.mcmiddleearth.plotbuild.constants.PlotState;
 import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.data.Selection;
 import com.mcmiddleearth.plotbuild.exceptions.InvalidPlotLocationException;
-import com.mcmiddleearth.plotbuild.exceptions.InvalidRestoreDataException;
-import com.sk89q.worldedit.EditSession;
-import com.sk89q.worldedit.Vector;
-import com.sk89q.worldedit.WorldEdit;
-import com.sk89q.worldedit.bukkit.BukkitWorld;
-import com.sk89q.worldedit.extent.clipboard.BlockArrayClipboard;
-import com.sk89q.worldedit.extent.clipboard.Clipboard;
-import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
-import com.sk89q.worldedit.regions.CuboidRegion;
-import java.io.File;
+import com.mcmiddleearth.pluginutil.plotStoring.IStoragePlot;
+import com.mcmiddleearth.pluginutil.plotStoring.InvalidRestoreDataException;
+import com.mcmiddleearth.pluginutil.plotStoring.MCMEPlotFormat;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 
 /**
  *
  * @author Ivan1pl, Eriol_Eandur
  */
-public class Plot {
+public class Plot implements IStoragePlot {
     
     private static final int allowedDist = 5; //area around own plot in which a player gets creative mode
     @Getter
@@ -80,6 +77,8 @@ public class Plot {
     @Setter
     private boolean usingRestoreData = true;
     
+    private static final String ext = ".mcme";
+
     public Plot(PlotBuild plotbuild, Location corner1, Location corner2) throws InvalidPlotLocationException {
         if(corner1 == null || corner2 == null || corner1.getWorld() != corner2.getWorld()) {
             throw new InvalidPlotLocationException();
@@ -265,12 +264,24 @@ public class Plot {
     }
     
     public void save() throws IOException {
-        new MCMEPlotFormat().save(this);
+        if (this.isUsingRestoreData()) {
+            try(DataOutputStream out = new DataOutputStream(
+                                       new BufferedOutputStream(
+                                       new GZIPOutputStream(
+                                       new FileOutputStream(PluginData.getFile(this, ext)))))) {
+                new MCMEPlotFormat().save(this, out);
+                out.flush();
+                out.close();
+            }
+        }
     }
     
     private void reset() throws InvalidRestoreDataException {
-        try {
-            new MCMEPlotFormat().load(this);
+        try(DataInputStream in = new DataInputStream(
+                                 new BufferedInputStream(
+                                 new GZIPInputStream(
+                                 new FileInputStream(PluginData.getFile(this, ext)))))) {
+            new MCMEPlotFormat().load(this, in);
             /*List <MaterialData> restoreData = PluginData.getRestoreData(plotbuild, this);
             if (restoreData == null) {
             return;
@@ -322,5 +333,32 @@ public class Plot {
     
     public int getID() {
         return plotbuild.getPlots().indexOf(this)+1;
+    }
+    
+    @Override
+    public World getWorld() {
+        return corner1.getWorld();
+    }
+    
+    @Override
+    public Location getLowCorner() {
+        int miny = 0;
+        if(getPlotbuild().isCuboid()) {
+            miny = getCorner1().getBlockY();
+        }
+        return new Location(corner1.getWorld(), corner1.getBlockX(),
+                                                miny,
+                                                corner1.getBlockZ());
+    }
+    
+    @Override
+    public Location getHighCorner() {
+        int maxy = corner1.getWorld().getMaxHeight()-1;
+        if(getPlotbuild().isCuboid()) {
+            maxy = getCorner2().getBlockY();
+        }
+        return new Location(corner2.getWorld(), corner2.getBlockX(),
+                                                maxy,
+                                                corner2.getBlockZ());
     }
 }

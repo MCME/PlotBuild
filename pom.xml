@@ -92,13 +92,6 @@
             <type>jar</type>
         </dependency>
         <dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>craftbukkit</artifactId>
-            <scope>system</scope>
-            <systemPath>D:\Programme\Minecraft\spigot\1.13\CraftBukkit\target\craftbukkit-1.13.2-R0.1-SNAPSHOT.jar</systemPath>
-            <version>1.13.2-R0.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
             <groupId>com.boydti</groupId>
             <artifactId>fawe-api</artifactId>
             <version>own</version>
@@ -115,6 +108,11 @@
                     <artifactId>bukkit</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.mcmiddleearth</groupId>
+            <artifactId>PluginUtils</artifactId>
+            <version>1.2-SNAPSHOT-native-005</version>
         </dependency>
     </dependencies>
 </project>
