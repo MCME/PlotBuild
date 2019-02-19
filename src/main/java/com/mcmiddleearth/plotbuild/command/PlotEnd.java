@@ -19,6 +19,7 @@
 package com.mcmiddleearth.plotbuild.command;
 
 import com.mcmiddleearth.plotbuild.PlotBuildPlugin;
+import static com.mcmiddleearth.plotbuild.command.AbstractCommand.sendRestoreErrorMessage;
 import com.mcmiddleearth.plotbuild.constants.PlotState;
 import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
@@ -55,6 +56,10 @@ public class PlotEnd extends PlotBuildCommand {
             sendNoPlotbuildFoundMessage(cs);
             return;
         }
+        if(plotbuild.isSaveInProgress()) {
+            sendPlotBuildNotReadyMessage(cs);
+            return;
+        }
         if(!hasPermissionsForPlotBuild((Player) cs, plotbuild)) {
             return;
         }
@@ -63,7 +68,58 @@ public class PlotEnd extends PlotBuildCommand {
     }
     
     public static void endPlotBuild(final Player cs, final PlotBuild plotbuild, boolean keep) {
-        for(Plot p : plotbuild.getPlots()) {
+        new BukkitRunnable() {
+            int i=0;
+            int tick = 0;
+            boolean restoreRunning = false;
+            @Override
+            public void run() {
+                if(!restoreRunning) {
+                    if(i<plotbuild.getPlots().size()) {
+                        Plot p = plotbuild.getPlots().get(i);
+                        i++;
+                        if(p.getState() != PlotState.REMOVED) {
+                            for(UUID builder: p.getOfflineOwners()) {
+                                if(!builder.equals(((Player)cs).getUniqueId())) {
+                                    sendBuilderDeletedMessage(cs, Bukkit.getOfflinePlayer(builder), p.getPlotbuild().getName(), p.getID());
+                                }
+                            }
+                            p.delete();
+                            if(!keep){
+                                restoreRunning = true;
+                                p.reset(new CommandExecutionFinishTask(cs) {
+                                    @Override
+                                    public void run() {
+                                        restoreRunning=false;
+                                    }
+                                    @Override
+                                    public void sendErrorMessage() {
+                                        super.sendErrorMessage();
+                                        restoreRunning = false;
+                                    }
+                                });
+                            }
+                        }
+                    } else {
+                        cancel();
+                        if(PluginData.deletePlotBuild(plotbuild)) {
+                            sendPlotbuildDeletedMessage(cs);
+                        } else {
+                            sendPlotbuildDeleteFailedMessage(cs);
+                        }
+                    }
+                } else {
+                    tick++;
+                    if(tick>20) {
+                        restoreRunning = false;
+                        tick=0;
+                    }
+                }
+                    
+            }
+        }.runTaskTimer(PlotBuildPlugin.getPluginInstance(), 1, 10);
+    
+        /*for(Plot p : plotbuild.getPlots()) {
             if(p.getState() != PlotState.REMOVED) {
                 try {
                     for(UUID builder: p.getOfflineOwners()) {
@@ -77,9 +133,9 @@ public class PlotEnd extends PlotBuildCommand {
                     sendRestoreErrorMessage(cs);
                 }
             }
-        }
+        }*/
         // Wait 30 ticks until restoring of entities in deleted plots is finished
-        new BukkitRunnable() {
+        /*new BukkitRunnable() {
             @Override
             public void run() {
                 if(PluginData.deletePlotBuild(plotbuild)) {
@@ -88,7 +144,7 @@ public class PlotEnd extends PlotBuildCommand {
                     sendPlotbuildDeleteFailedMessage(cs);
                 }
             }
-        }.runTaskLater(PlotBuildPlugin.getPluginInstance(), 30); 
+        }.runTaskLater(PlotBuildPlugin.getPluginInstance(), 30); */
     }
     
     private static void sendPlotbuildDeletedMessage(CommandSender cs) {

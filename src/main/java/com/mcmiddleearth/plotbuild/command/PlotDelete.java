@@ -51,6 +51,10 @@ public class PlotDelete extends InsidePlotCommand {
         if(plot==null) {
             return;
         }
+        if(plot.isSaveInProgress()) {
+            sendPlotNotReadyMessage(cs);
+            return;
+        }
         if(!hasPermissionsForPlotBuild((Player) cs, plot.getPlotbuild())) {
             return;
         }
@@ -74,16 +78,30 @@ public class PlotDelete extends InsidePlotCommand {
             }
             logMessage1 =  " deleted and cleared ";
         }
-        try {
-            plot.delete(keep);
-        } catch (InvalidRestoreDataException ex) {
-            Logger.getLogger(PlotDelete.class.getName()).log(Level.SEVERE, null, ex);
-            sendRestoreErrorMessage(cs);
-            logMessage1 = " deleted ";
-            logMessage2 = " Changes were kept as there was an error during clearing of the plot.";
+        plot.delete();
+        if(keep) {
+            finishDeleteExecution(cs,plot, logMessage1);
+        } else {
+            String finalLogMessage1 = logMessage1;
+            plot.reset(new CommandExecutionFinishTask(cs) {
+                @Override
+                public void run() {
+                    finishDeleteExecution(cs, plot, finalLogMessage1);
+                /*try {
+                } catch (InvalidRestoreDataException ex) {
+                    Logger.getLogger(PlotDelete.class.getName()).log(Level.SEVERE, null, ex);
+                    sendRestoreErrorMessage(cs);
+                    logMessage1 = " deleted ";
+                    logMessage2 = " Changes were kept as there was an error during clearing of the plot.";
+                }*/
+                }
+            });
         }
+    }
+    
+    private void finishDeleteExecution(CommandSender cs, Plot plot, String finalLogMessage1) {
         PlotBuild plotbuild = plot.getPlotbuild();
-        plotbuild.log(((Player) cs).getName()+logMessage1+"plot "+plot.getID()+"."+logMessage2);
+        plotbuild.log(((Player) cs).getName()+finalLogMessage1+"plot "+plot.getID()+".");//+logMessage2);
         PluginData.saveData();
         if(plotbuild.countUnfinishedPlots()==0) {
             PluginData.getConfFactory().startQuery((Player)cs, getLastPlotDeletedQuery(plotbuild), plotbuild, true);

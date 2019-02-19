@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.logging.Logger;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.OfflinePlayer;
@@ -80,6 +81,15 @@ public class PlotBuild {
         this.priv = priv;
         this.cuboid = cuboid;
         this.borderHeight = borderHeight;
+    }
+    
+    public boolean isSaveInProgress() {
+        for(Plot p: plots) {
+            if(p.isSaveInProgress()) {
+                return true;
+            }
+        }
+        return false;
     }
     
     public int countUnclaimedPlots() {
@@ -141,6 +151,7 @@ public class PlotBuild {
                 break;
             }
         }
+Logger.getGlobal().info("Unban: "+player.getName()+" - "+found);
         if(found !=null) {
             bannedPlayers.remove(found);
         }

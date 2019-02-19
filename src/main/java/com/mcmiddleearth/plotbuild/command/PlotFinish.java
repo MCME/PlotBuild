@@ -46,6 +46,10 @@ public class PlotFinish extends InsidePlotCommand {
         if(plot==null) {
             return;
         }
+        if(plot.isSaveInProgress()) {
+            sendPlotNotReadyMessage(cs);
+            return;
+        }
         if(plot.getState()==PlotState.FINISHED) {
             sendPlotAlreadyFinishedMessage(cs);
             return;

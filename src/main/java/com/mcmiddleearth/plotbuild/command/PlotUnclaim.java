@@ -47,6 +47,10 @@ public class PlotUnclaim extends InsidePlotCommand {
         if(plot==null) {
             return;
         }
+        if(plot.isSaveInProgress()) {
+            sendPlotNotReadyMessage(cs);
+            return;
+        }
         if(plot.countOwners()>1) {
             sendMoreOwnersMessage(cs);
             return;
@@ -55,18 +59,24 @@ public class PlotUnclaim extends InsidePlotCommand {
             sendNotClaimedMessage(cs);
             return;
         }
-        try {
-            if(!plot.unclaim()){
-                sendNoSignPlaceMessage(cs);
+        /*try {
             }
         } catch (InvalidRestoreDataException ex) {
             Logger.getLogger(PlotDelete.class.getName()).log(Level.SEVERE, null, ex);
             sendRestoreErrorMessage(cs);
             logMessage = " There was an error during clearing of the plot.";
-        }
-        sendPlotUnclaimedMessage(cs);
-        plot.getPlotbuild().log(((Player) cs).getName()+" unclaimed plot "+plot.getID()+"."+logMessage);
-        PluginData.saveData();
+        }*/
+        plot.reset(new CommandExecutionFinishTask(cs) {
+            @Override 
+            public void run() {
+                if(!plot.unclaim()){
+                    sendNoSignPlaceMessage(cs);
+                }
+                sendPlotUnclaimedMessage(cs);
+                plot.getPlotbuild().log(((Player) cs).getName()+" unclaimed plot "+plot.getID()+"."+logMessage);
+                PluginData.saveData();
+            }
+        });
     }
 
    private void sendNotClaimedMessage(CommandSender cs) {

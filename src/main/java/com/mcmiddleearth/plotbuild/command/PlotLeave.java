@@ -45,6 +45,10 @@ public class PlotLeave extends InsidePlotCommand {
         if(plot==null) {
             return;
         }
+        if(plot.isSaveInProgress()) {
+            sendPlotNotReadyMessage(cs);
+            return;
+        }
         if(plot.countOwners()<2) {
             sendNoMoreOwnersMessage(cs);
             return;

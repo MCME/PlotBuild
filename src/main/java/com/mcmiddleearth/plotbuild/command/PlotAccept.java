@@ -50,6 +50,10 @@ public class PlotAccept extends InsidePlotCommand {
         if(plot==null) {
             return;
         }
+        if(plot.isSaveInProgress()) {
+            sendPlotNotReadyMessage(cs);
+            return;
+        }
         if(!hasPermissionsForPlotBuild((Player) cs, plot.getPlotbuild())) {
             return;
         }
@@ -57,11 +61,7 @@ public class PlotAccept extends InsidePlotCommand {
             sendNotFinishedMessage(cs);
             return;
         }*/
-        try {
-            plot.accept();
-        } catch (InvalidRestoreDataException ex) {
-            Logger.getLogger(PlotAccept.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        plot.accept();
         sendAcceptMessage(cs);
         for(UUID builder: plot.getOfflineOwners()) {
             if(!builder.equals(((Player)cs).getUniqueId())) {

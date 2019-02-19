@@ -50,6 +50,10 @@ public class PlotClaim extends InsidePlotCommand {
         if(plot==null) {
             return;
         }
+        if(plot.isSaveInProgress()) {
+            sendPlotNotReadyMessage(cs);
+            return;
+        }
         if(plot.getPlotbuild().isPriv()) {
             sendPlotbuildPrivateMessage(cs);
             return;
@@ -79,28 +83,37 @@ public class PlotClaim extends InsidePlotCommand {
             return;
         }
         if(plot.isUsingRestoreData()) {
-            try {
-                //1.13 remove: PluginData.savePlotRestoreData(plot);
-                plot.save();
-            } catch (IOException ex) {
-                sendRestoreDataErrorMessage(cs, plot);
-                return;
-            }
+            plot.save(new ClaimFinishTask(plot,cs));
+        } else {
+            new ClaimFinishTask(plot,cs).runTask(PlotBuildPlugin.getPluginInstance());
         }
-        if(!plot.claim((Player) cs)) {
-            sendNoSignPlaceMessage(cs);
+    }
+    
+    private class ClaimFinishTask extends CommandExecutionFinishTask {
+        private Plot plot;
+        
+        public ClaimFinishTask(Plot plot, CommandSender cs) {
+            super(cs);
+            this.plot = plot;
         }
-        sendPlotClaimedMessage(cs);
-        plot.getPlotbuild().log(((Player) cs).getName()+" claimed plot "+plot.getID()+".");
-        final UUID playerId= ((Player)cs).getUniqueId();
-        PluginData.getClaimCooldownList().add(playerId);
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                PluginData.getClaimCooldownList().remove(playerId);
+                
+        @Override 
+        public void run() {
+            if(!plot.claim((Player) cs)) {
+                sendNoSignPlaceMessage(cs);
             }
-        }.runTaskLater(PlotBuildPlugin.getPluginInstance(), PluginData.getClaimCooldownTics());
-        PluginData.saveData();
+            sendPlotClaimedMessage(cs);
+            plot.getPlotbuild().log(((Player) cs).getName()+" claimed plot "+plot.getID()+".");
+            final UUID playerId= ((Player)cs).getUniqueId();
+            PluginData.getClaimCooldownList().add(playerId);
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    PluginData.getClaimCooldownList().remove(playerId);
+                }
+            }.runTaskLater(PlotBuildPlugin.getPluginInstance(), PluginData.getClaimCooldownTics());
+            PluginData.saveData();
+        }
     }
 
     private void sendPlotClaimedMessage(CommandSender cs) {

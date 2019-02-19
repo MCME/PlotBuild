@@ -18,6 +18,8 @@
  */
 package com.mcmiddleearth.plotbuild.plotbuild;
 
+import com.mcmiddleearth.plotbuild.PlotBuildPlugin;
+import com.mcmiddleearth.plotbuild.command.CommandExecutionFinishTask;
 import com.mcmiddleearth.plotbuild.constants.PlotState;
 import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.data.Selection;
@@ -25,8 +27,11 @@ import com.mcmiddleearth.plotbuild.exceptions.InvalidPlotLocationException;
 import com.mcmiddleearth.pluginutil.plotStoring.IStoragePlot;
 import com.mcmiddleearth.pluginutil.plotStoring.InvalidRestoreDataException;
 import com.mcmiddleearth.pluginutil.plotStoring.MCMEPlotFormat;
+import com.mcmiddleearth.pluginutil.plotStoring.MCMEPlotFormat.StoragePlotSnapshot;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.FileInputStream;
@@ -36,6 +41,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 import lombok.Getter;
@@ -43,6 +50,7 @@ import lombok.Setter;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
+import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  *
@@ -77,6 +85,9 @@ public class Plot implements IStoragePlot {
     @Setter
     private boolean usingRestoreData = true;
     
+    @Getter
+    private boolean saveInProgress = false; 
+    
     private static final String ext = ".mcme";
 
     public Plot(PlotBuild plotbuild, Location corner1, Location corner2) throws InvalidPlotLocationException {
@@ -106,6 +117,7 @@ public class Plot implements IStoragePlot {
         this.border.setBorder(border);
     }
     
+    @Override
     public boolean isInside(Location location) {
         return isInside(location, 0);
     }
@@ -208,9 +220,8 @@ public class Plot implements IStoragePlot {
         return border.placeSigns();
     }
     
-    public boolean unclaim() throws InvalidRestoreDataException{
+    public boolean unclaim(){
         owners.removeAll(owners);
-        reset();
         state = PlotState.UNCLAIMED;
         //border.refreshBorder();
         return border.placeSigns();
@@ -233,22 +244,18 @@ public class Plot implements IStoragePlot {
         return border.placeSigns();
     }
     
-    public void accept() throws InvalidRestoreDataException{
-        delete(true);
+    public void accept() {
+        delete();
     }
     
-    public boolean clear(boolean unclaim) throws InvalidRestoreDataException {
-        reset();
+    public boolean clear(boolean unclaim){
         if(unclaim) {
             unclaim();
         }
         return border.placeSigns();
     }
     
-    public void delete(boolean keep) throws InvalidRestoreDataException{
-        if(!keep && state != PlotState.UNCLAIMED) {
-            reset();
-        }
+    public void delete(){
         state = PlotState.REMOVED;
         border.removeSigns();
         border.removeBorder();
@@ -263,25 +270,79 @@ public class Plot implements IStoragePlot {
         return border.getBorder();
     }
     
-    public void save() throws IOException {
+    public void save(final CommandExecutionFinishTask finishTask) {
         if (this.isUsingRestoreData()) {
-            try(DataOutputStream out = new DataOutputStream(
-                                       new BufferedOutputStream(
-                                       new GZIPOutputStream(
-                                       new FileOutputStream(PluginData.getFile(this, ext)))))) {
-                new MCMEPlotFormat().save(this, out);
-                out.flush();
-                out.close();
-            }
+            final Plot plot = this;
+            StoragePlotSnapshot snapshot = new MCMEPlotFormat.StoragePlotSnapshot(plot);
+            saveInProgress = true;
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    try(DataOutputStream out = new DataOutputStream(
+                                               new BufferedOutputStream(
+                                               new GZIPOutputStream(
+                                               new FileOutputStream(PluginData.getFile(plot, ext)))))) {
+                        new MCMEPlotFormat().save(plot, out, snapshot);
+                        out.flush();
+                        out.close();
+                        finishTask.runTask(PlotBuildPlugin.getPluginInstance());
+                    } catch (IOException ex) {
+                        Logger.getLogger(Plot.class.getName()).log(Level.SEVERE, null, ex);
+                        finishTask.errorMessage="Error while storing plot data: "+ex.getMessage();
+                        finishTask.sendErrorMessage();
+                    } finally {
+                        saveInProgress = false;
+                    }
+                }
+            }.runTaskAsynchronously(PlotBuildPlugin.getPluginInstance());
         }
     }
     
-    private void reset() throws InvalidRestoreDataException {
-        try(DataInputStream in = new DataInputStream(
+    public void reset(final CommandExecutionFinishTask finishTask) {
+        /*try(DataInputStream in = new DataInputStream(
                                  new BufferedInputStream(
                                  new GZIPInputStream(
-                                 new FileInputStream(PluginData.getFile(this, ext)))))) {
-            new MCMEPlotFormat().load(this, in);
+                                 new FileInputStream(PluginData.getFile(this, ext)))))) {*/
+        if(state == PlotState.UNCLAIMED) {
+           finishTask.runTask(PlotBuildPlugin.getPluginInstance());
+           return;
+        }
+        final Plot plot = this;
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                try(BufferedInputStream in = new BufferedInputStream(
+                                         new GZIPInputStream(
+                                         new FileInputStream(PluginData.getFile(plot, ext))));
+                    ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+                    byte[] buffer = new byte[1024];
+                    int readBytes = 0;
+                    do {
+                        readBytes = in.read(buffer,0,buffer.length);
+                        out.write(buffer, 0, readBytes);
+                    } while(readBytes == buffer.length);
+                    final byte[] data = out.toByteArray();
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            try(DataInputStream in = new DataInputStream(new ByteArrayInputStream(data))) {
+                                new MCMEPlotFormat().load(plot, in);
+                            }   catch (IOException | InvalidRestoreDataException ex) {
+                                Logger.getLogger(Plot.class.getName()).log(Level.SEVERE, null, ex);
+                                finishTask.errorMessage="Error while restoring plot: "+ex.getMessage();
+                                finishTask.sendErrorMessage();
+                            }
+                            finishTask.runTask(PlotBuildPlugin.getPluginInstance());
+                        }
+                    }.runTask(PlotBuildPlugin.getPluginInstance());
+                } catch (IOException ex) {
+                    Logger.getLogger(Plot.class.getName()).log(Level.SEVERE, null, ex);
+                    finishTask.errorMessage="Error while reading plot restore data: "+ex.getMessage();
+                    finishTask.sendErrorMessage();
+                    finishTask.runTask(PlotBuildPlugin.getPluginInstance());
+                }
+            }
+        }.runTaskAsynchronously(PlotBuildPlugin.getPluginInstance());
             /*List <MaterialData> restoreData = PluginData.getRestoreData(plotbuild, this);
             if (restoreData == null) {
             return;
@@ -326,9 +387,6 @@ public class Plot implements IStoragePlot {
             PluginData.restoreEntities(plotbuild,thisPlot);
             }
             }.runTaskLater(PlotBuildPlugin.getPluginInstance(),4);*/
-        } catch (IOException ex) {
-            throw new InvalidRestoreDataException();
-        }
     }
     
     public int getID() {
