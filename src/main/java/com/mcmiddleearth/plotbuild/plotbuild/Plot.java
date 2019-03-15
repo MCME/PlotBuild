@@ -27,7 +27,7 @@ import com.mcmiddleearth.plotbuild.exceptions.InvalidPlotLocationException;
 import com.mcmiddleearth.pluginutil.plotStoring.IStoragePlot;
 import com.mcmiddleearth.pluginutil.plotStoring.InvalidRestoreDataException;
 import com.mcmiddleearth.pluginutil.plotStoring.MCMEPlotFormat;
-import com.mcmiddleearth.pluginutil.plotStoring.MCMEPlotFormat.StoragePlotSnapshot;
+import com.mcmiddleearth.pluginutil.plotStoring.StoragePlotSnapshot;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
@@ -273,7 +273,7 @@ public class Plot implements IStoragePlot {
     public void save(final CommandExecutionFinishTask finishTask) {
         if (this.isUsingRestoreData()) {
             final Plot plot = this;
-            StoragePlotSnapshot snapshot = new MCMEPlotFormat.StoragePlotSnapshot(plot);
+            StoragePlotSnapshot snapshot = new StoragePlotSnapshot(plot);
             saveInProgress = true;
             new BukkitRunnable() {
                 @Override
