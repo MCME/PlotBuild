@@ -19,10 +19,10 @@
 package com.mcmiddleearth.plotbuild.command;
 
 import com.mcmiddleearth.plotbuild.data.PluginData;
-import com.mcmiddleearth.plotbuild.exceptions.InvalidRestoreDataException;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.plotbuild.PlotBuild;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
+import com.mcmiddleearth.pluginutil.plotStoring.InvalidRestoreDataException;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -50,6 +50,10 @@ public class PlotAccept extends InsidePlotCommand {
         if(plot==null) {
             return;
         }
+        if(plot.isSaveInProgress()) {
+            sendPlotNotReadyMessage(cs);
+            return;
+        }
         if(!hasPermissionsForPlotBuild((Player) cs, plot.getPlotbuild())) {
             return;
         }
@@ -57,11 +61,7 @@ public class PlotAccept extends InsidePlotCommand {
             sendNotFinishedMessage(cs);
             return;
         }*/
-        try {
-            plot.accept();
-        } catch (InvalidRestoreDataException ex) {
-            Logger.getLogger(PlotAccept.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        plot.accept();
         sendAcceptMessage(cs);
         for(UUID builder: plot.getOfflineOwners()) {
             if(!builder.equals(((Player)cs).getUniqueId())) {

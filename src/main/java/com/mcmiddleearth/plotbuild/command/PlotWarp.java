@@ -78,18 +78,72 @@ public class PlotWarp extends PlotBuildCommand {
         else {
             loc = plot.getCorner1().getBlock().getRelative(0,1,0).getLocation();
         }
-        for(int i=0; i<100; i++) {
-            if(loc.getBlock().isEmpty() && loc.getBlock().getRelative(0,1,0).isEmpty()) {
-                loc.setX(loc.getX() +0.5);
-                loc.setY(loc.getY() + 0.5);
-                ((Player) cs).teleport(loc);
+        if(plot.getPlotbuild().isCuboid()) {
+            if(teleportToPlotCenter(plot, (Player) cs)){// || teleportToPlotPlace(plot, (Player) cs)) {
                 return;
             }
-            loc = loc.getBlock().getRelative(randomStep(), 1, randomStep()).getLocation();
+        } else {
+            if(teleportToRandomPlace(loc, (Player) cs)){// || teleportToPlotPlace(plot, (Player) cs)) {
+                return;
+            }
         }
         sendNoSavePlaceErrorMessage(cs);
     }
+    
+    private boolean teleportToPlotCenter(Plot plot, Player p) {
+        Location cor1 = plot.getCorner1();
+        Location cor2 = plot.getCorner2();
+        Location loc = new Location(cor1.getWorld(),(cor1.getX()+cor2.getX())/2,
+                                                           cor1.getY(),
+                                                           (cor1.getZ()+cor2.getZ())/2);
+        for(int j=0; j<30;j++) {
+            for(int i=0;i<cor2.getY()-cor1.getY();i++) {
+                Location search  = loc.getBlock().getRelative(0, i, 0).getLocation();
+                if(isSave(search)) {
+                    p.teleport(search);
+                    return true;
+                }
+            }
+            loc = loc.getBlock().getRelative(randomStep(), 0, randomStep()).getLocation();
+        }
+        return false;
+    }
+    
+    private boolean teleportToPlotPlace(Plot plot, Player p) {
+        for(int i=plot.getCorner1().getBlockX(); i<plot.getCorner2().getBlockX();i++) {
+            for(int j=plot.getCorner1().getBlockZ();j<plot.getCorner2().getBlockZ();j++) {
+                for(int k=plot.getCorner1().getBlockY();
+                        k<(plot.getPlotbuild().isCuboid()?plot.getCorner2().getBlockY():
+                                                          plot.getCorner2().getBlockY()+10);k++) {
+                    Location search = new Location(plot.getCorner1().getWorld(),i,j,k);
+                    if(isSave(search)) {
+                        p.teleport(search);
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
 
+    private boolean  teleportToRandomPlace(Location loc, Player p) {
+        for(int i=0; i<100; i++) {
+            if(isSave(loc)) {
+                loc.setX(loc.getX() +0.5);
+                loc.setY(loc.getY() + 0.5);
+                p.teleport(loc);
+                return true;
+            }
+            loc = loc.getBlock().getRelative(randomStep(), 1, randomStep()).getLocation();
+        }
+        return false;
+    }
+    
+    private boolean isSave(Location loc) {
+        return loc.getBlock().isEmpty() && loc.getBlock().getRelative(0,1,0).isEmpty();
+                                        //&& !loc.getBlock().getRelative(0,-1,0).isEmpty();
+    }
+    
     private int randomStep() {
         if(Math.random()>0.5) {
             return 1;

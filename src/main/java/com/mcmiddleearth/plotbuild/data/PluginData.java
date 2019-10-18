@@ -26,7 +26,7 @@ import com.mcmiddleearth.plotbuild.conversations.NewPlotConversationFactory;
 import com.mcmiddleearth.plotbuild.conversations.PlotBuildConversationFactory;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.plotbuild.PlotBuild;
-import com.mcmiddleearth.plotbuild.utils.BlockUtil;
+//import com.mcmiddleearth.plotbuild.utils.BlockUtil;
 import com.mcmiddleearth.plotbuild.utils.EntityUtil;
 import com.mcmiddleearth.plotbuild.utils.FileUtil;
 import com.mcmiddleearth.plotbuild.utils.ListUtil;
@@ -320,7 +320,7 @@ public class PluginData {
         }
     }
     
-    public static List <MaterialData> getRestoreData(PlotBuild plotbuild, Plot plot) {
+    /*public static List <MaterialData> getRestoreData(PlotBuild plotbuild, Plot plot) {
         File plotDir = new File(plotBuildDir, plotbuild.getName());
         File plotRestoreData = new File(plotDir, Integer.toString(plotbuild.getPlots().indexOf(plot)) + ".r");
         ArrayList <MaterialData> ret = new ArrayList<>();
@@ -364,7 +364,7 @@ public class PluginData {
         } catch (InvalidConfigurationException ex) {
             Logger.getLogger(PluginData.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
+    }*/
     
     public static boolean deletePlotBuild(PlotBuild plotbuild) {
         File plotBuildFile = new File(plotBuildDir, plotbuild.getName()+".pb");
@@ -462,7 +462,13 @@ public class PluginData {
         }
     }
     
-    public static void savePlotRestoreData(Plot plot) throws IOException {
+    public static File getFile(Plot plot, String extension) {
+        File plotDir = new File(plotBuildDir,plot.getPlotbuild().getName());
+        int plotIndex = plot.getPlotbuild().getPlots().indexOf(plot);
+        return  new File(plotDir, Integer.toString(plotIndex) + extension);
+    }
+    
+    /*public static void savePlotRestoreData(Plot plot) throws IOException {
         File plotDir = new File(plotBuildDir,plot.getPlotbuild().getName());
         int plotIndex = plot.getPlotbuild().getPlots().indexOf(plot);
         savePlotRestoreBlockData(plot, new File(plotDir, Integer.toString(plotIndex) + ".r"));
@@ -522,7 +528,7 @@ public class PluginData {
             writer.println("<!NODATA!>");
         }
         writer.close();
-    }
+    }*/
     
     private static void loadPlotBuild(File f) throws FileNotFoundException {
         String name = f.getName();

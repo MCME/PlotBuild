@@ -106,6 +106,14 @@ public abstract class AbstractCommand {
         MessageUtil.sendErrorMessage(cs, "No suited place for plot signs was found.");
     }
 
+    protected static void sendPlotNotReadyMessage(CommandSender cs) {
+        MessageUtil.sendErrorMessage(cs, "Plot is not ready. Try again later.");
+    }
+
+    protected static void sendPlotBuildNotReadyMessage(CommandSender cs) {
+        MessageUtil.sendErrorMessage(cs, "Plotbuild is not ready. Try again later.");
+    }
+
     protected boolean hasPermissionsForPlotBuild(Player p, PlotBuild plotbuild) {
         if(permissionNodes != null && !plotbuild.isStaff(p)) {
             for(String permission : permissionNodes) {

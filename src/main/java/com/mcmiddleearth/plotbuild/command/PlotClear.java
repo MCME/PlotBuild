@@ -18,11 +18,13 @@
  */
 package com.mcmiddleearth.plotbuild.command;
 
+import com.mcmiddleearth.plotbuild.PlotBuildPlugin;
+import static com.mcmiddleearth.plotbuild.command.AbstractCommand.sendNoSignPlaceMessage;
 import com.mcmiddleearth.plotbuild.constants.PlotState;
 import com.mcmiddleearth.plotbuild.data.PluginData;
-import com.mcmiddleearth.plotbuild.exceptions.InvalidRestoreDataException;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
+import com.mcmiddleearth.pluginutil.plotStoring.InvalidRestoreDataException;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -50,6 +52,10 @@ public class PlotClear extends InsidePlotCommand {
         if(plot==null) {
             return;
         }
+        if(plot.isSaveInProgress()) {
+            sendPlotNotReadyMessage(cs);
+            return;
+        }
         if(!hasPermissionsForPlotBuild((Player) cs, plot.getPlotbuild())) {
             return;
         }
@@ -60,33 +66,51 @@ public class PlotClear extends InsidePlotCommand {
         boolean unclaim=false;
         if(args.length > 0 && args[0].equalsIgnoreCase("-u")) {
             unclaim = true;
-            sendClearAndUnclaimMessgage(cs);
-            for(UUID builder: plot.getOfflineOwners()) {
-                if(!builder.equals(((Player)cs).getUniqueId())) {
-                    sendBuilderClearedAndUnclaimedMessage(cs, Bukkit.getOfflinePlayer(builder), plot.getPlotbuild().getName(), plot.getID());
+        }
+        if(plot.isUsingRestoreData()) {
+            plot.reset(new ClearFinishTask(plot,cs,unclaim));
+        } else {
+            new ClearFinishTask(plot,cs,unclaim).runTask(PlotBuildPlugin.getPluginInstance());
+        }
+    }
+    
+    private class ClearFinishTask extends CommandExecutionFinishTask {
+        
+        private Plot plot;
+        private boolean unclaim;
+        
+        public ClearFinishTask(Plot plot, CommandSender cs, boolean unclaim) {
+            super(cs);
+            this.unclaim = unclaim;
+            this.plot = plot;
+        }
+                
+        @Override
+        public void run() { 
+        if(!plot.clear(unclaim)) {
+            sendNoSignPlaceMessage(cs);
+        }
+            if(unclaim) {
+                sendClearAndUnclaimMessgage(cs);
+                for(UUID builder: plot.getOfflineOwners()) {
+                    if(!builder.equals(((Player)cs).getUniqueId())) {
+                        sendBuilderClearedAndUnclaimedMessage(cs, Bukkit.getOfflinePlayer(builder), plot.getPlotbuild().getName(), plot.getID());
+                    }
                 }
             }
-        }
-        else {
-            sendClearMessage(cs);
-            for(UUID builder: plot.getOfflineOwners()) {
-                sendBuilderClearedMessage(cs, Bukkit.getOfflinePlayer(builder), plot.getPlotbuild().getName(), plot.getID());
+            else {
+                sendClearMessage(cs);
+                for(UUID builder: plot.getOfflineOwners()) {
+                    sendBuilderClearedMessage(cs, Bukkit.getOfflinePlayer(builder), plot.getPlotbuild().getName(), plot.getID());
+                }
             }
-        }
-        try {
-            if(!plot.clear(unclaim)) {
-                sendNoSignPlaceMessage(cs);
+            String logMessage = " cleared plot ";
+            if(unclaim) {
+                logMessage = " cleared and unclaimed plot ";
             }
-        } catch (InvalidRestoreDataException ex) {
-            Logger.getLogger(PlotClear.class.getName()).log(Level.SEVERE, null, ex);
-            sendRestoreErrorMessage(cs);
+            plot.getPlotbuild().log(((Player) cs).getName()+logMessage+plot.getID()+".");
+            PluginData.saveData();
         }
-        String logMessage = " cleared plot ";
-        if(unclaim) {
-            logMessage = " cleared and unclaimed plot ";
-        }
-        plot.getPlotbuild().log(((Player) cs).getName()+logMessage+plot.getID()+".");
-        PluginData.saveData();
     }
 
     private void sendClearAndUnclaimMessgage(CommandSender cs) {

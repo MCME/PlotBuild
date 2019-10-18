@@ -66,7 +66,7 @@ public class PlotNew extends PlotBuildCommand {
                 sendPlotIntersectingMessage(cs, intersectingPlot.getPlotbuild().getName());
                 return;
             }
-            if (selection.getArea() <= 2500 || !useRestoreData) {
+            if (selection.getArea() <= 25000 || !useRestoreData) {
                 createPlot(plotbuild, selection, cs, useRestoreData);
             } else {
                 PluginData.getNewPlotFactory().startConversation((Player) cs, plotbuild, selection);

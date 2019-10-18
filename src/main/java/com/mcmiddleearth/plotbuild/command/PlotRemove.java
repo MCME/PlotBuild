@@ -18,15 +18,11 @@
  */
 package com.mcmiddleearth.plotbuild.command;
 
-import static com.mcmiddleearth.plotbuild.command.AbstractCommand.sendRestoreErrorMessage;
 import com.mcmiddleearth.plotbuild.data.PluginData;
-import com.mcmiddleearth.plotbuild.exceptions.InvalidRestoreDataException;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.utils.BukkitUtil;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -47,8 +43,12 @@ public class PlotRemove extends InsidePlotCommand {
     
     @Override
     protected void execute(CommandSender cs, String... args) {
-        Plot plot = checkInPlot((Player) cs);
+        final Plot plot = checkInPlot((Player) cs);
         if(plot==null) {
+            return;
+        }
+        if(plot.isSaveInProgress()) {
+            sendPlotNotReadyMessage(cs);
             return;
         }
         if(!hasPermissionsForPlotBuild((Player) cs, plot.getPlotbuild())) {
@@ -62,22 +62,34 @@ public class PlotRemove extends InsidePlotCommand {
             sendNotOwnerMessage(cs,removedPlayer.getName());
             return;
         }
-        String logMessage="";
+        final String logMessage="";
         if(plot.countOwners()==1) {
-            try {
-                if(!plot.unclaim()){
-                    sendNoSignPlaceMessage(cs);
-                }
+            /*try {
             } catch (InvalidRestoreDataException ex) {
                 Logger.getLogger(PlotDelete.class.getName()).log(Level.SEVERE, null, ex);
                 sendRestoreErrorMessage(cs);
                 logMessage = " There was an error during clearing of the plot.";
-            }
+            }*/
+            OfflinePlayer finalRemovedPlayer = removedPlayer;
+            plot.reset(new CommandExecutionFinishTask(cs) {
+                @Override
+                public void run() {
+                    if(!plot.unclaim()){
+                        sendNoSignPlaceMessage(cs);
+                    }
+                    finishRemoveExecution(plot,cs,finalRemovedPlayer,logMessage);
+                }
+            });
         } else {
             if(!plot.remove(removedPlayer)) {
                 sendNoSignPlaceMessage(cs);
             }
+            finishRemoveExecution(plot,cs,removedPlayer, logMessage);
         }
+    }
+    
+    private void finishRemoveExecution(Plot plot, CommandSender cs, 
+                                       OfflinePlayer removedPlayer, String logMessage) {
         boolean signsPlaced;
         sendRemovedMessage(cs, removedPlayer.getName());
         if(cs!=removedPlayer.getPlayer()) {
@@ -91,7 +103,7 @@ public class PlotRemove extends InsidePlotCommand {
         }
         plot.getPlotbuild().log(((Player) cs).getName()+" removed "+removedPlayer.getName()+" from plot #"+plot.getID()+"."+logMessage);
         PluginData.saveData();
-        }
+    }
   
     private void sendNotOwnerMessage(CommandSender cs, String name) {
         MessageUtil.sendErrorMessage(cs, name + " is not in the building team of this plot.");

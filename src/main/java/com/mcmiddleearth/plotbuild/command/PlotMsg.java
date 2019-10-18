@@ -43,7 +43,7 @@ public class PlotMsg extends InsidePlotCommand {
         super(1, true, permissionNodes);
         setAdditionalPermissionsEnabled(true);
         setShortDescription(": Sends a message to all owners of a plot.");
-        setUsageDescription(" <player> <message>: Sends a message to all build team members of a plot even if they are offline. An offline player will get the message when he joins again.");
+        setUsageDescription(" <message>: Sends a message to all build team members of a plot even if they are offline. An offline player will get the message when he joins again.");
     }
     
     @Override
