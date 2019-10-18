@@ -18,16 +18,14 @@
  */
 package com.mcmiddleearth.plotbuild.command;
 
+import static com.mcmiddleearth.plotbuild.command.AbstractCommand.sendNoSignPlaceMessage;
 import com.mcmiddleearth.plotbuild.constants.PlotState;
 import com.mcmiddleearth.plotbuild.data.PluginData;
-import com.mcmiddleearth.plotbuild.exceptions.InvalidRestoreDataException;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.plotbuild.PlotBuild;
 import com.mcmiddleearth.plotbuild.utils.BukkitUtil;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -47,10 +45,14 @@ public class PlotBan extends PlotBuildCommand {
     }
     
     @Override
-    protected void execute(CommandSender cs, String... args) {
+    protected void execute(final CommandSender cs, String... args) {
         String logMessage = "";
         PlotBuild plotbuild = checkPlotBuild((Player) cs, 1, args);
         if(plotbuild == null) {
+            return;
+        }
+        if(plotbuild.isSaveInProgress()) {
+            sendPlotBuildNotReadyMessage(cs);
             return;
         }
         if(!hasPermissionsForPlotBuild((Player) cs, plotbuild)) {
@@ -72,28 +74,36 @@ public class PlotBan extends PlotBuildCommand {
             sendBanYourselfMessage(cs);
             return;
         }
-        boolean signsPlaced = true;
+        boolean signsPlaced;
         for(Plot plot : plotbuild.getPlots()) {
             if(plot.getState()!=PlotState.REMOVED && plot.isOwner(banned)) {
                 if(plot.countOwners()==1) {
-                    try {
-                        signsPlaced = plot.unclaim();
-                    } catch (InvalidRestoreDataException ex) {
-                        Logger.getLogger(PlotDelete.class.getName()).log(Level.SEVERE, null, ex);
-                        sendRestoreErrorMessage(cs);
-                        logMessage = " There was an error during clearing of a plot.";
-                    }
+                    OfflinePlayer finalBanned = banned;
+                    String finalLogMessage = logMessage;
+                    plot.reset(new CommandExecutionFinishTask(cs){
+                        @Override
+                        public void run() {
+                            boolean signsPlaced = plot.unclaim();
+                            finishExecution(signsPlaced,plotbuild,finalBanned,cs,finalLogMessage);
+                        }
+                    });
                 }
                 else {
                     signsPlaced = plot.leave(banned);
                     for(UUID builder: plot.getOfflineOwners()) {
                         if(!builder.equals(((Player) cs).getUniqueId())) {
                             sendOtherBuilderMessage(cs, Bukkit.getOfflinePlayer(builder), banned, plot.getPlotbuild().getName(), plot.getID());
-                }
-            }
+                        }
+                    }
+                    finishExecution(signsPlaced, plotbuild, banned, cs, logMessage);
                 }
             }
         }
+    }
+    
+    private void finishExecution(boolean signsPlaced, PlotBuild plotbuild, 
+                                 OfflinePlayer banned, CommandSender cs,
+                                 String logMessage) {
         if(!signsPlaced) {
             sendNoSignPlaceMessage(cs);
         }

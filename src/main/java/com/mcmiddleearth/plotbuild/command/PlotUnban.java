@@ -51,7 +51,7 @@ public class PlotUnban extends PlotBuildCommand {
             return;
         }
         OfflinePlayer banned = BukkitUtil.matchPlayer(args[0]);
-        if(!plotbuild.getOfflineBannedPlayers().contains(banned.getUniqueId())) {
+        if(banned==null || !plotbuild.getOfflineBannedPlayers().contains(banned.getUniqueId())) {
             banned = null;
             for(UUID search : plotbuild.getOfflineBannedPlayers()) {
                 if(Bukkit.getOfflinePlayer(search).getName().equals(args[0])) {

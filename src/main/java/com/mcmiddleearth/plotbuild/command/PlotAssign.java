@@ -18,6 +18,8 @@
  */
 package com.mcmiddleearth.plotbuild.command;
 
+import com.mcmiddleearth.plotbuild.PlotBuildPlugin;
+import static com.mcmiddleearth.plotbuild.command.AbstractCommand.sendNoSignPlaceMessage;
 import com.mcmiddleearth.plotbuild.constants.Permission;
 import com.mcmiddleearth.plotbuild.constants.PlotState;
 import com.mcmiddleearth.plotbuild.data.PluginData;
@@ -30,6 +32,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  *
@@ -48,6 +51,10 @@ public class PlotAssign extends InsidePlotCommand {
     protected void execute(CommandSender cs, String... args) {
         Plot plot = checkInPlot((Player) cs);
         if(plot==null) {
+            return;
+        }
+        if(plot.isSaveInProgress()) {
+            sendPlotNotReadyMessage(cs);
             return;
         }
         if(!hasPermissionsForPlotBuild((Player) cs, plot.getPlotbuild())) {
@@ -74,36 +81,49 @@ public class PlotAssign extends InsidePlotCommand {
             return;
         }
         if(plot.isUsingRestoreData()) {
-            try {
-                PluginData.savePlotRestoreData(plot);
-            } catch (IOException ex) {
-                sendRestoreDataErrorMessage(cs, plot);
-                return;
+            plot.save(new AssignFinishTask(plot, cs, assignedPlayer));
+        } else {
+            new AssignFinishTask(plot, cs, assignedPlayer).runTask(PlotBuildPlugin.getPluginInstance());
+        }
+    }
+    
+    private class AssignFinishTask extends CommandExecutionFinishTask {
+        private Plot plot;
+        private OfflinePlayer assignedPlayer;
+        
+        public AssignFinishTask(Plot plot, CommandSender cs, OfflinePlayer assignedPlayer) {
+            super(cs);
+            this.plot = plot;
+            this.cs = cs;
+            this.assignedPlayer = assignedPlayer;
+        }
+                
+        @Override 
+        public void run() {
+            boolean signsPlaced;
+            if(plot.getState()==PlotState.UNCLAIMED) {
+                signsPlaced = plot.claim(assignedPlayer);
             }
-        }
-        boolean signsPlaced;
-        if(plot.getState()==PlotState.UNCLAIMED) {
-            signsPlaced = plot.claim(assignedPlayer);
-        }
-        else {
-            signsPlaced = plot.invite(assignedPlayer);
-        }
-        if(!signsPlaced) {
-            sendNoSignPlaceMessage(cs);
-        }
-        sendAssignedMessage(cs, assignedPlayer.getName());
-        if(cs!=assignedPlayer.getPlayer()) {
-            sendAssignedPlayerMessage(cs, assignedPlayer, plot.getPlotbuild().getName(), plot.getID());
-        }
-        for(UUID builder: plot.getOfflineOwners()) {
-            if(!builder.equals(((Player)cs).getUniqueId()) && !builder.equals(assignedPlayer.getUniqueId())) {
-                sendOtherBuilderMessage(cs, Bukkit.getOfflinePlayer(builder), 
-                                        assignedPlayer, plot.getPlotbuild().getName(), plot.getID());
+            else {
+                signsPlaced = plot.invite(assignedPlayer);
             }
+            if(!signsPlaced) {
+                sendNoSignPlaceMessage(cs);
+            }
+            sendAssignedMessage(cs, assignedPlayer.getName());
+            if(cs!=assignedPlayer.getPlayer()) {
+                sendAssignedPlayerMessage(cs, assignedPlayer, plot.getPlotbuild().getName(), plot.getID());
+            }
+            for(UUID builder: plot.getOfflineOwners()) {
+                if(!builder.equals(((Player)cs).getUniqueId()) && !builder.equals(assignedPlayer.getUniqueId())) {
+                    sendOtherBuilderMessage(cs, Bukkit.getOfflinePlayer(builder), 
+                                            assignedPlayer, plot.getPlotbuild().getName(), plot.getID());
+                }
+            }
+            plot.getPlotbuild().log(((Player) cs).getName()+" assigned "+assignedPlayer.getName()+" to plot #"+plot.getID()+".");
+            PluginData.saveData();
         }
-        plot.getPlotbuild().log(((Player) cs).getName()+" assigned "+assignedPlayer.getName()+" to plot #"+plot.getID()+".");
-        PluginData.saveData();
-        }
+    }
   
     private void sendAlreadyMemberMessage(CommandSender cs, String name) {
         MessageUtil.sendErrorMessage(cs, name + " is already owner of an other plot in this plotbuild.");

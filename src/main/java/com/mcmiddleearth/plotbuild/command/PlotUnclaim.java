@@ -20,9 +20,9 @@ package com.mcmiddleearth.plotbuild.command;
 
 import com.mcmiddleearth.plotbuild.constants.PlotState;
 import com.mcmiddleearth.plotbuild.data.PluginData;
-import com.mcmiddleearth.plotbuild.exceptions.InvalidRestoreDataException;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
+import com.mcmiddleearth.pluginutil.plotStoring.InvalidRestoreDataException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.command.CommandSender;
@@ -47,6 +47,10 @@ public class PlotUnclaim extends InsidePlotCommand {
         if(plot==null) {
             return;
         }
+        if(plot.isSaveInProgress()) {
+            sendPlotNotReadyMessage(cs);
+            return;
+        }
         if(plot.countOwners()>1) {
             sendMoreOwnersMessage(cs);
             return;
@@ -55,18 +59,24 @@ public class PlotUnclaim extends InsidePlotCommand {
             sendNotClaimedMessage(cs);
             return;
         }
-        try {
-            if(!plot.unclaim()){
-                sendNoSignPlaceMessage(cs);
+        /*try {
             }
         } catch (InvalidRestoreDataException ex) {
             Logger.getLogger(PlotDelete.class.getName()).log(Level.SEVERE, null, ex);
             sendRestoreErrorMessage(cs);
             logMessage = " There was an error during clearing of the plot.";
-        }
-        sendPlotUnclaimedMessage(cs);
-        plot.getPlotbuild().log(((Player) cs).getName()+" unclaimed plot "+plot.getID()+"."+logMessage);
-        PluginData.saveData();
+        }*/
+        plot.reset(new CommandExecutionFinishTask(cs) {
+            @Override 
+            public void run() {
+                if(!plot.unclaim()){
+                    sendNoSignPlaceMessage(cs);
+                }
+                sendPlotUnclaimedMessage(cs);
+                plot.getPlotbuild().log(((Player) cs).getName()+" unclaimed plot "+plot.getID()+"."+logMessage);
+                PluginData.saveData();
+            }
+        });
     }
 
    private void sendNotClaimedMessage(CommandSender cs) {
