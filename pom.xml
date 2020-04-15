@@ -3,15 +3,13 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.mcmiddleearth</groupId>
     <artifactId>PlotBuild</artifactId>
-    <version>1.1</version>
+    <version>1.2</version>
     <packaging>jar</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     
     <build>
-    <!-- <sourceDirectory>${project.build.directory}/generated-sources/delombok</sourceDirectory> -->
-    
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -22,23 +20,6 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
-            <!--<plugin>
-                <groupId>org.projectlombok</groupId>
-                <artifactId>lombok-maven-plugin</artifactId>
-                <version>1.18.4.0</version>
-                <executions>
-                    <execution>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>delombok</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <addOutputDirectory>false</addOutputDirectory>
-                    <sourceDirectory>src/main/java</sourceDirectory>
-                </configuration>
-            </plugin>-->       
         </plugins>
         <resources>
           <resource>
@@ -73,12 +54,6 @@
     </repositories>
     <dependencies>
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.16.12</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>18.0</version>
@@ -87,16 +62,9 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.13.2-R0.1-SNAPSHOT</version>
+            <version>1.15.2-R0.1-SNAPSHOT</version>
             <scope>compile</scope>
             <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>com.boydti</groupId>
-            <artifactId>fawe-api</artifactId>
-            <version>own</version>
-            <scope>system</scope>
-            <systemPath>D:\SystemRepository\FastAsyncWorldEdit-bukkit-1.13.186.jar</systemPath>
         </dependency>
         <dependency>
           <groupId>com.sk89q.worldedit</groupId>
@@ -112,7 +80,7 @@
         <dependency>
             <groupId>com.mcmiddleearth</groupId>
             <artifactId>PluginUtils</artifactId>
-            <version>1.2-SNAPSHOT-native-009</version>
+            <version>1.2.4</version>
         </dependency>
     </dependencies>
 </project>

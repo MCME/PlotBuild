@@ -21,8 +21,6 @@ package com.mcmiddleearth.plotbuild.command;
 import com.mcmiddleearth.plotbuild.constants.Permission;
 import com.mcmiddleearth.plotbuild.plotbuild.PlotBuild;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
-import lombok.Getter;
-import lombok.Setter;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -34,16 +32,10 @@ public abstract class AbstractCommand {
     
     private final String[] permissionNodes;
     
-    @Getter
     private final int minArgs;
-    
     private boolean playerOnly = true;
     
-    @Getter
-    @Setter
     private String usageDescription, shortDescription;
-    
-    @Setter
     private boolean additionalPermissionsEnabled = false;
     
     public AbstractCommand(int minArgs, boolean playerOnly, String... permissionNodes) {
@@ -139,5 +131,28 @@ public abstract class AbstractCommand {
         }
         return true;
     }
-    
+
+    public int getMinArgs() {
+        return minArgs;
+    }
+
+    public String getUsageDescription() {
+        return usageDescription;
+    }
+
+    public void setUsageDescription(String usageDescription) {
+        this.usageDescription = usageDescription;
+    }
+
+    public String getShortDescription() {
+        return shortDescription;
+    }
+
+    public void setShortDescription(String shortDescription) {
+        this.shortDescription = shortDescription;
+    }
+
+    public void setAdditionalPermissionsEnabled(boolean additionalPermissionsEnabled) {
+        this.additionalPermissionsEnabled = additionalPermissionsEnabled;
+    }
 }

@@ -26,44 +26,20 @@ import com.mcmiddleearth.plotbuild.conversations.NewPlotConversationFactory;
 import com.mcmiddleearth.plotbuild.conversations.PlotBuildConversationFactory;
 import com.mcmiddleearth.plotbuild.plotbuild.Plot;
 import com.mcmiddleearth.plotbuild.plotbuild.PlotBuild;
-//import com.mcmiddleearth.plotbuild.utils.BlockUtil;
-import com.mcmiddleearth.plotbuild.utils.EntityUtil;
 import com.mcmiddleearth.plotbuild.utils.FileUtil;
 import com.mcmiddleearth.plotbuild.utils.ListUtil;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.Set;
-import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import lombok.Getter;
-import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.ItemFrame;
-import org.bukkit.entity.Painting;
 import org.bukkit.entity.Player;
-import org.bukkit.material.MaterialData;
+
+import java.io.*;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+//import com.mcmiddleearth.plotbuild.utils.BlockUtil;
 
 /**
  *
@@ -71,44 +47,27 @@ import org.bukkit.material.MaterialData;
  */
 public class PluginData {
     
-    @Setter
-    @Getter
     private static PlotBuildConversationFactory confFactory;
-    
-    @Setter
-    @Getter
     private static NewPlotConversationFactory newPlotFactory;
     
-    @Getter
     private static int claimCooldownTics = 400;
-    
-    @Getter
+
     private static final List<UUID> claimCooldownList = new ArrayList<>();
-    
-    @Getter
-    private static final List <UUID> switchedToCreative = new ArrayList<>(); 
-    
-    @Getter
+    private static final List <UUID> switchedToCreative = new ArrayList<>();
     private static final List <PlotBuild> plotbuildsList = new ArrayList <>();
     
     private static final Map <UUID, PlotBuild> currentPlotbuild = new LinkedHashMap <>();
-    
     private static final Map <UUID, Selection> selections = new LinkedHashMap <>();
-    
     private static final Map <UUID, List<String>> offlineMessages = new LinkedHashMap<>();
     
-    @Getter
     private static final Set <String> missingWorlds = new HashSet<>();
     
-    @Getter
     private static boolean loaded = false;
     
-    @Getter
     private static List <String> protectedWorlds = new ArrayList<>();
     
     private static final File plotBuildDir = new File(PlotBuildPlugin.getPluginInstance().getDataFolder()
                                                     + File.separator + "plotbuilds");
-    
     private static final File messageFile = new File(PlotBuildPlugin.getPluginInstance().getDataFolder()
                                                    + File.separator + "offlineMessages.msg");
     static {
@@ -644,5 +603,48 @@ public class PluginData {
         }
         scanner.close();
     }
-    
+
+    public static PlotBuildConversationFactory getConfFactory() {
+        return confFactory;
+    }
+
+    public static void setConfFactory(PlotBuildConversationFactory confFactory) {
+        PluginData.confFactory = confFactory;
+    }
+
+    public static NewPlotConversationFactory getNewPlotFactory() {
+        return newPlotFactory;
+    }
+
+    public static void setNewPlotFactory(NewPlotConversationFactory newPlotFactory) {
+        PluginData.newPlotFactory = newPlotFactory;
+    }
+
+    public static int getClaimCooldownTics() {
+        return claimCooldownTics;
+    }
+
+    public static List<UUID> getClaimCooldownList() {
+        return claimCooldownList;
+    }
+
+    public static List<UUID> getSwitchedToCreative() {
+        return switchedToCreative;
+    }
+
+    public static List<PlotBuild> getPlotbuildsList() {
+        return plotbuildsList;
+    }
+
+    public static Set<String> getMissingWorlds() {
+        return missingWorlds;
+    }
+
+    public static boolean isLoaded() {
+        return loaded;
+    }
+
+    public static List<String> getProtectedWorlds() {
+        return protectedWorlds;
+    }
 }

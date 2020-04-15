@@ -19,6 +19,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Painting;
@@ -66,13 +67,6 @@ public class PlotBorder {
     }
     
     private boolean findSignBlock() {
-        /*int nbOfTries;
-        if(plotbuild().isCuboid()) {
-            nbOfTries = 4*(corner2().getBlockY()-corner1().getBlockY()+2*(corner2().getBlockZ()-corner1().getBlockZ()));
-        }
-        else {
-            nbOfTries = 2*(corner2().getBlockZ()-corner1().getBlockZ());
-        }*/
         for(int i = 0; i<border.size();i++){// && i<nbOfTries;i++) {
             Location loc = border.get(i);
             Block block = corner1().getWorld().getBlockAt(loc);
@@ -101,8 +95,8 @@ public class PlotBorder {
                 return false;
             }
             Block signBlock = border.get(0).getBlock().getRelative(0, 3, -1);
-            if(signBlock.isEmpty() || signBlock.getType()==Material.WALL_SIGN) {
-                signBlock.setType(Material.WALL_SIGN);
+            if(signBlock.isEmpty() || isWallSign(signBlock.getBlockData())) {
+                signBlock.setType(Material.LEGACY_WALL_SIGN);
                 if(signBlock.getState() instanceof Sign) {
                     Sign sign = (Sign) signBlock.getState();
                     sign.setLine(0,plotbuild().getName()); 
@@ -113,9 +107,9 @@ public class PlotBorder {
             }
             signBlock = signBlock.getRelative(0,-1,0);
             List<UUID> owners = plot.getOfflineOwners();
-            if(signBlock.isEmpty() || signBlock.getType()==Material.WALL_SIGN) {
+            if(signBlock.isEmpty() || isWallSign(signBlock.getBlockData())) {
                 if(owners.size()>0) {
-                    signBlock.setType(Material.WALL_SIGN);
+                    signBlock.setType(Material.LEGACY_WALL_SIGN);
                     if(signBlock.getState() instanceof Sign) {
                         Sign sign = (Sign) signBlock.getState();
                         for(int i = 0; i<4; i++) {
@@ -134,9 +128,9 @@ public class PlotBorder {
                 }
             }
             signBlock = signBlock.getRelative(0,-1,0);
-            if(signBlock.isEmpty() || signBlock.getType()==Material.WALL_SIGN) {
+            if(signBlock.isEmpty() || isWallSign(signBlock.getBlockData())) {
                 if(owners.size()>4) {
-                    signBlock.setType(Material.WALL_SIGN);
+                    signBlock.setType(Material.LEGACY_WALL_SIGN);
                     if(signBlock.getState() instanceof Sign) {
                         Sign sign = (Sign) signBlock.getState();
                         for(int i = 4; i<8; i++) {
@@ -161,18 +155,17 @@ public class PlotBorder {
     void removeSigns(){
         if(border.size()>0) {
             Block signBlock = border.get(0).getBlock().getRelative(0, 3, -1);
-            if(signBlock.getType()==Material.WALL_SIGN) {
+            if(isWallSign(signBlock.getBlockData())) {
                 signBlock.setType(Material.AIR);
             }
             signBlock = signBlock.getRelative(0,-1,0);
-            if(signBlock.getType()==Material.WALL_SIGN){
+            if(isWallSign(signBlock.getBlockData())){
                 signBlock.setType(Material.AIR);
             }
             signBlock = signBlock.getRelative(0,-1,0);
-            if(signBlock.getType()==Material.WALL_SIGN){
+            if(isWallSign(signBlock.getBlockData())){
                 signBlock.setType(Material.AIR);
             }
-         //}
             Location signLoc = border.get(0);
             int signBlockX = signLoc.getBlockX();
             int signBlockZ = signLoc.getBlockZ();
@@ -345,5 +338,9 @@ public class PlotBorder {
             }
         }
         return false;
+    }
+
+    private Boolean isWallSign(BlockData blockData) {
+        return blockData instanceof org.bukkit.block.data.type.WallSign;
     }
 }

@@ -1,7 +1,9 @@
 name: ${project.artifactId}
 main: com.mcmiddleearth.plotbuild.PlotBuildPlugin
 version: ${project.version}
-api-version: 1.13
+api-version: 1.15
+softdepend: [bukkit, worldedit-bukkit, guava]
+depend: [PluginUtils]
 description: PlotBuild plugin
 commands:
     plot:

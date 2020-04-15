@@ -18,8 +18,6 @@
  */
 package com.mcmiddleearth.plotbuild.constants;
 
-import lombok.Getter;
-
 /**
  *
  * @author Ivan1pl
@@ -30,7 +28,6 @@ public enum BorderType {
     NONE    ("none"),
     BOX    ("box");
     
-    @Getter
     private final String type;
     
     BorderType(String type) {
@@ -44,5 +41,9 @@ public enum BorderType {
             }
         }
         return null;
+    }
+
+    public String getType() {
+        return type;
     }
 }

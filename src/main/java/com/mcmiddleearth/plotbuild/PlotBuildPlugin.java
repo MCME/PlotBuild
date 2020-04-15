@@ -25,7 +25,6 @@ import com.mcmiddleearth.plotbuild.data.PluginData;
 import com.mcmiddleearth.plotbuild.listeners.PlayerListener;
 import com.mcmiddleearth.plotbuild.listeners.WorldListener;
 import com.mcmiddleearth.plotbuild.utils.EntityUtil;
-import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -36,7 +35,6 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public class PlotBuildPlugin extends JavaPlugin {
     
-    @Getter
     private static PlotBuildPlugin pluginInstance;
     
     @Override
@@ -60,5 +58,8 @@ public class PlotBuildPlugin extends JavaPlugin {
     public static boolean denyBuild(Player player, Location location) {
         return PluginData.hasNoPermissionsToBuild(player, location);
     }
-     
+
+    public static PlotBuildPlugin getPluginInstance() {
+        return pluginInstance;
+    }
 }
