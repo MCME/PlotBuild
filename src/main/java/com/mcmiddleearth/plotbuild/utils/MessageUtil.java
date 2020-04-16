@@ -20,16 +20,16 @@ package com.mcmiddleearth.plotbuild.utils;
 
 import com.mcmiddleearth.plotbuild.constants.PlotState;
 import com.mcmiddleearth.plotbuild.data.PluginData;
-import java.lang.reflect.Constructor;
-import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.lang.reflect.Constructor;
+import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -38,8 +38,6 @@ import org.bukkit.entity.Player;
 public class MessageUtil {
     
     private static final String PREFIX   = "[PlotBuild] ";
-    
-    @Getter
     private static final String NOPREFIX = "    ";
     
     public static void sendErrorMessage(CommandSender sender, String message) {
@@ -182,5 +180,9 @@ public class MessageUtil {
             default:
                 return ChatColor.DARK_GRAY;
         }
+    }
+
+    public static String getNOPREFIX() {
+        return NOPREFIX;
     }
 }

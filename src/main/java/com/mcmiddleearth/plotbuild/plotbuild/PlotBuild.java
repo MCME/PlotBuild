@@ -20,17 +20,11 @@ package com.mcmiddleearth.plotbuild.plotbuild;
 
 import com.mcmiddleearth.plotbuild.constants.BorderType;
 import com.mcmiddleearth.plotbuild.constants.PlotState;
+import org.bukkit.OfflinePlayer;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-import java.util.logging.Logger;
-import lombok.Getter;
-import lombok.Setter;
-import org.bukkit.OfflinePlayer;
+import java.util.*;
 
 /**
  *
@@ -38,43 +32,24 @@ import org.bukkit.OfflinePlayer;
  */
 public class PlotBuild {
     
-    @Getter
     private final String name;
-    
-    @Getter
-    @Setter
     private String info;
     
-    @Getter
-    @Setter
     private List <Plot> plots = new ArrayList <>();
-    
-    @Setter
     private List <UUID> staffList = new ArrayList <>();
-    
-    @Setter
     private List <UUID> bannedPlayers = new ArrayList <>();
-    
-    @Getter
-    @Setter
     private List <String> history = new ArrayList <>();
     
-    @Getter
-    @Setter
     private boolean locked = false;
     
-    @Getter
     private final boolean priv;
-    
-    @Getter
     private final boolean cuboid;
     
-    @Getter
     private final BorderType borderType;
-    
-    @Getter
     private final int borderHeight;
-    
+
+    private final static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yy'-'MM'-'dd' | 'HH':'mm ");
+
     public PlotBuild(String name, BorderType borderType, int borderHeight, boolean priv, boolean cuboid) {
         this.name = name;
         this.borderType = borderType;
@@ -151,7 +126,6 @@ public class PlotBuild {
                 break;
             }
         }
-Logger.getGlobal().info("Unban: "+player.getName()+" - "+found);
         if(found !=null) {
             bannedPlayers.remove(found);
         }
@@ -191,8 +165,6 @@ Logger.getGlobal().info("Unban: "+player.getName()+" - "+found);
         bannedPlayers.add(player.getUniqueId());
     }
     
-    private final static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yy'-'MM'-'dd' | 'HH':'mm ");
-
     public void log(String entry) {
         history.add(LocalDateTime.now().format(formatter)+entry);
     }
@@ -207,6 +179,64 @@ Logger.getGlobal().info("Unban: "+player.getName()+" - "+found);
         }
         return builders;
     }
-    
-    
+
+    public String getName() {
+        return name;
+    }
+
+    public String getInfo() {
+        return info;
+    }
+
+    public void setInfo(String info) {
+        this.info = info;
+    }
+
+    public List<Plot> getPlots() {
+        return plots;
+    }
+
+    public void setPlots(List<Plot> plots) {
+        this.plots = plots;
+    }
+
+    public void setStaffList(List<UUID> staffList) {
+        this.staffList = staffList;
+    }
+
+    public void setBannedPlayers(List<UUID> bannedPlayers) {
+        this.bannedPlayers = bannedPlayers;
+    }
+
+    public List<String> getHistory() {
+        return history;
+    }
+
+    public void setHistory(List<String> history) {
+        this.history = history;
+    }
+
+    public boolean isLocked() {
+        return locked;
+    }
+
+    public void setLocked(boolean locked) {
+        this.locked = locked;
+    }
+
+    public boolean isPriv() {
+        return priv;
+    }
+
+    public boolean isCuboid() {
+        return cuboid;
+    }
+
+    public BorderType getBorderType() {
+        return borderType;
+    }
+
+    public int getBorderHeight() {
+        return borderHeight;
+    }
 }
