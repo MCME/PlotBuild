@@ -20,13 +20,13 @@ package com.mcmiddleearth.plotbuild.command;
 
 import com.mcmiddleearth.plotbuild.constants.Permission;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import lombok.Getter;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  *
@@ -34,7 +34,6 @@ import org.bukkit.command.CommandSender;
  */
 public class PlotCommandExecutor implements CommandExecutor {
 
-    @Getter
     private final Map <String, AbstractCommand> commands = new LinkedHashMap <>();
     
     public PlotCommandExecutor() {
@@ -99,5 +98,8 @@ public class PlotCommandExecutor implements CommandExecutor {
     private void addCommandHandler(String name, AbstractCommand handler) {
         commands.putIfAbsent(name, handler);
     }
-    
+
+    public Map<String, AbstractCommand> getCommands() {
+        return commands;
+    }
 }

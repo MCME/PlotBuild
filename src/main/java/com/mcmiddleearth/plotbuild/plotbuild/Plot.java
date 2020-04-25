@@ -28,15 +28,12 @@ import com.mcmiddleearth.pluginutil.plotStoring.IStoragePlot;
 import com.mcmiddleearth.pluginutil.plotStoring.InvalidRestoreDataException;
 import com.mcmiddleearth.pluginutil.plotStoring.MCMEPlotFormat;
 import com.mcmiddleearth.pluginutil.plotStoring.StoragePlotSnapshot;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
+import org.bukkit.scheduler.BukkitRunnable;
+
+import java.io.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -45,12 +42,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
-import lombok.Getter;
-import lombok.Setter;
-import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.World;
-import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  *
@@ -59,10 +50,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class Plot implements IStoragePlot {
     
     private static final int allowedDist = 5; //area around own plot in which a player gets creative mode
-    @Getter
+
     private Location corner1;
-    
-    @Getter
     private Location corner2;
     
     /**
@@ -72,21 +61,12 @@ public class Plot implements IStoragePlot {
      */
     private List <UUID> owners = new ArrayList <>();
     
-    @Getter
     private PlotState state;
-    
     private PlotBorder border;
-    
-    @Getter
-    @Setter
     private PlotBuild plotbuild;
     
-    @Getter
-    @Setter
     private boolean usingRestoreData = true;
-    
-    @Getter
-    private boolean saveInProgress = false; 
+    private boolean saveInProgress = false;
     
     private static final String ext = ".mcme";
 
@@ -418,5 +398,37 @@ public class Plot implements IStoragePlot {
         return new Location(corner2.getWorld(), corner2.getBlockX(),
                                                 maxy,
                                                 corner2.getBlockZ());
+    }
+
+    public Location getCorner1() {
+        return corner1;
+    }
+
+    public Location getCorner2() {
+        return corner2;
+    }
+
+    public PlotState getState() {
+        return state;
+    }
+
+    public PlotBuild getPlotbuild() {
+        return plotbuild;
+    }
+
+    public void setPlotbuild(PlotBuild plotbuild) {
+        this.plotbuild = plotbuild;
+    }
+
+    public boolean isUsingRestoreData() {
+        return usingRestoreData;
+    }
+
+    public void setUsingRestoreData(boolean usingRestoreData) {
+        this.usingRestoreData = usingRestoreData;
+    }
+
+    public boolean isSaveInProgress() {
+        return saveInProgress;
     }
 }

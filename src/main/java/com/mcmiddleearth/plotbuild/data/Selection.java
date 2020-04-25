@@ -18,8 +18,6 @@
  */
 package com.mcmiddleearth.plotbuild.data;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.bukkit.Location;
 
 /**
@@ -28,12 +26,7 @@ import org.bukkit.Location;
  */
 public class Selection {
     
-    @Getter
-    @Setter
     Location firstPoint;
-    
-    @Getter
-    @Setter
     Location secondPoint;
     
 
@@ -50,5 +43,21 @@ public class Selection {
     
     public int getVolume() {
         return (Math.abs(firstPoint.getBlockY() - secondPoint.getBlockY()) + 1) * getArea();
+    }
+
+    public Location getFirstPoint() {
+        return firstPoint;
+    }
+
+    public void setFirstPoint(Location firstPoint) {
+        this.firstPoint = firstPoint;
+    }
+
+    public Location getSecondPoint() {
+        return secondPoint;
+    }
+
+    public void setSecondPoint(Location secondPoint) {
+        this.secondPoint = secondPoint;
     }
 }

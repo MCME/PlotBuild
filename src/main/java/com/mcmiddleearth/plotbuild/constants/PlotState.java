@@ -18,7 +18,6 @@
  */
 package com.mcmiddleearth.plotbuild.constants;
 
-import lombok.Getter;
 import org.bukkit.Material;
 
 /**
@@ -33,10 +32,7 @@ public enum PlotState {
     REFUSED   (4, Material.YELLOW_WOOL),
     REMOVED  (13, Material.BROWN_WOOL);
     
-    @Getter
     private final int state;
-    
-    @Getter
     private final Material border;
     
     PlotState(int state, Material border){
@@ -54,5 +50,12 @@ public enum PlotState {
             default: return "Illegal state.";
         }
     }
-    
+
+    public int getState() {
+        return state;
+    }
+
+    public Material getBorder() {
+        return border;
+    }
 }
