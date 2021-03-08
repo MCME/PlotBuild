@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.mcmiddleearth</groupId>
     <artifactId>PlotBuild</artifactId>
-    <version>1.2</version>
+    <version>1.2.1</version>
     <packaging>jar</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -34,10 +34,6 @@
     </build>
     <repositories>
         <repository>
-            <id>spigot-repo</id>
-            <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
-        </repository>
-        <repository>
             <id>fawe-repo</id>
             <url>http://ci.athion.net/job/FastAsyncWorldEdit/ws/mvn/</url>
         </repository>
@@ -56,15 +52,14 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>18.0</version>
+            <version>29.0-jre</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>bukkit</artifactId>
-            <version>1.15.2-R0.1-SNAPSHOT</version>
-            <scope>compile</scope>
-            <type>jar</type>
+            <groupId>com.destroystokyo.paper</groupId>
+            <artifactId>paper-api</artifactId>
+            <version>1.16.5-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
           <groupId>com.sk89q.worldedit</groupId>
@@ -80,7 +75,7 @@
         <dependency>
             <groupId>com.mcmiddleearth</groupId>
             <artifactId>PluginUtils</artifactId>
-            <version>1.2.4</version>
+            <version>1.4.2</version>
         </dependency>
     </dependencies>
 </project>

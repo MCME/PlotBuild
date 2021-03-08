@@ -121,7 +121,9 @@ public class PlotList extends PlotBuildCommand {
             plotList.add("{\"text\":\""+ChatColor.AQUA+MessageUtil.getNOPREFIX()
                                  +"Plot #"+plot.getID()+" "
                                  +MessageUtil.chatColorForPlotState(plot.getState())
-                                 +plot.getState().getStateMessage()+"\", "
+                                 +plot.getState().getStateMessage()
+                    +"("+plot.getLowCorner().getBlockX()+","+plot.getLowCorner().getBlockY()+","+plot.getLowCorner().getBlockZ()+")"
+                    +"\", "
                           +"\"clickEvent\":{\"action\":\"suggest_command\","
                                       + "\"value\":\"/plot warp "+plotbuild.getName()+" "+
                                                + plot.getID() +"\"}}");
