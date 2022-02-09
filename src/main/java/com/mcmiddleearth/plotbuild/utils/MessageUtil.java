@@ -20,6 +20,7 @@ package com.mcmiddleearth.plotbuild.utils;
 
 import com.mcmiddleearth.plotbuild.constants.PlotState;
 import com.mcmiddleearth.plotbuild.data.PluginData;
+import com.mcmiddleearth.pluginutil.NMSUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -68,19 +69,28 @@ public class MessageUtil {
     public static void sendNoPrefixRawMessage(CommandSender sender, String message) {
         if (sender instanceof Player) {
             try {
-                Object chatBaseComponent = com.mcmiddleearth.pluginutil.NMSUtil.getNMSClass("IChatBaseComponent").getDeclaredClasses()[0].getMethod("a", String.class).invoke(null, message);
+                Object chatBaseComponent = com.mcmiddleearth.pluginutil.NMSUtil.getNMSClass("network.chat.IChatBaseComponent").getDeclaredClasses()[0].getMethod("a", String.class).invoke(null, message);
+                Object chatMessageType = com.mcmiddleearth.pluginutil.NMSUtil.invokeNMS("network.chat.ChatMessageType", "a", new Class[]{byte.class}, null, (byte)0);
+                Constructor<?> titleConstructor = com.mcmiddleearth.pluginutil.NMSUtil.getNMSClass("network.protocol.game.PacketPlayOutChat").getConstructor(com.mcmiddleearth.pluginutil.NMSUtil.getNMSClass("network.chat.IChatBaseComponent"),
+                        com.mcmiddleearth.pluginutil.NMSUtil.getNMSClass("network.chat.ChatMessageType"),
+                        UUID.class);
+                Object chatPacket = titleConstructor.newInstance(chatBaseComponent, chatMessageType, ((Player)sender).getUniqueId());
+                NMSUtil.sendPacket((Player) sender, chatPacket);
+
+                /*Object chatBaseComponent = com.mcmiddleearth.pluginutil.NMSUtil.getNMSClass("IChatBaseComponent").getDeclaredClasses()[0].getMethod("a", String.class).invoke(null, message);
                 Object chatMessageType = com.mcmiddleearth.pluginutil.NMSUtil.invokeNMS("ChatMessageType", "a", new Class[]{byte.class}, null, (byte)0);
                 Constructor<?> titleConstructor = com.mcmiddleearth.pluginutil.NMSUtil.getNMSClass("PacketPlayOutChat").getConstructor(com.mcmiddleearth.pluginutil.NMSUtil.getNMSClass("IChatBaseComponent"),
                         com.mcmiddleearth.pluginutil.NMSUtil.getNMSClass("ChatMessageType"),
                         UUID.class);
                 Object chatPacket = titleConstructor.newInstance(chatBaseComponent, chatMessageType, ((Player)sender).getUniqueId());
-                com.mcmiddleearth.pluginutil.NMSUtil.sendPacket((Player) sender, chatPacket);
+                com.mcmiddleearth.pluginutil.NMSUtil.sendPacket((Player) sender, chatPacket);*/
                 /*Object chatBaseComponent = NMSUtil.getNMSClass("IChatBaseComponent").getDeclaredClasses()[0].getMethod("a", String.class).invoke(null, message);
                 Constructor<?> titleConstructor = NMSUtil.getNMSClass("PacketPlayOutChat").getConstructor(NMSUtil.getNMSClass("IChatBaseComponent"));
                 Object chatPacket = titleConstructor.newInstance(chatBaseComponent);
                 NMSUtil.sendPacket((Player)sender, chatPacket);*/
             } catch(Error | Exception e ) {
                 Logger.getLogger(MessageUtil.class.getName()).log(Level.WARNING, "Error in Plotbuild plugin while accessing NMS class. This plugin version was not made for your server. Please look for an update. Plugin will use Bukkit.dispatchCommand to send '/tellraw ...' instead of directly sending message packets.");
+                Logger.getLogger(com.mcmiddleearth.pluginutil.message.MessageUtil.class.getName()).log(Level.WARNING, null, e);
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "tellraw " + sender.getName()+ " " + message);
             }    
         } else {
