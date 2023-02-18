@@ -27,6 +27,8 @@ import com.mcmiddleearth.plotbuild.utils.MessageUtil;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
+
+import com.mcmiddleearth.pluginutil.message.FancyMessage;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -250,13 +252,15 @@ public class PlayerListener implements Listener{
     private void sendToDoInfoMessage(Player player, List<Plot> plots) {
         MessageUtil.sendInfoMessage(player, "Your active plots:");
         for(Plot plot : plots) {
-            MessageUtil.sendClickableMessage(player, ChatColor.AQUA+MessageUtil.getNOPREFIX()
-                                                     +"- Plot #"+plot.getID()
-                                                     +" of plotbuild " + plot.getPlotbuild().getName()+": "
-                                                     +MessageUtil.chatColorForPlotState(plot.getState())
-                                                     +plot.getState().getStateMessage(),
-                                            "/plot warp "+plot.getPlotbuild().getName()+" "
-                                                     + plot.getID());
+            MessageUtil.sendNoPrefixRawMessage(player,"{\"color\":\"aqua\",\"text\":\""+MessageUtil.getNOPREFIX()
+                    +"Plot #"+plot.getID()+" at "+ plot.getPlotbuild().getName()+" \",\"extra\":[{\"color\":\""
+                    + FancyMessage.colorString(MessageUtil.chatColorForPlotState(plot.getState()))
+                    + "\",\"text\":\""
+                    +plot.getState().getStateMessage()
+                    +"\"}], "
+                    +"\"clickEvent\":{\"action\":\"suggest_command\","
+                    + "\"value\":\"/plot warp "+plot.getPlotbuild().getName()+" "+
+                    + plot.getID() +"\"}}");
         }
         
     }

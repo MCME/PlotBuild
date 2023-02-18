@@ -51,8 +51,8 @@ public class Plot implements IStoragePlot {
     
     private static final int allowedDist = 5; //area around own plot in which a player gets creative mode
 
-    private Location corner1;
-    private Location corner2;
+    private final Location corner1;
+    private final Location corner2;
     
     /**
      * Allways use BukkitTools.isSame(OflinePlayer, OfflinePlayer) or
@@ -62,7 +62,7 @@ public class Plot implements IStoragePlot {
     private List <UUID> owners = new ArrayList <>();
     
     private PlotState state;
-    private PlotBorder border;
+    private final PlotBorder border;
     private PlotBuild plotbuild;
     
     private boolean usingRestoreData = true;
@@ -113,12 +113,9 @@ public class Plot implements IStoragePlot {
            || location.getBlockZ() > corner2.getBlockZ() + tolerance){
             return false;
         }
-        if( plotbuild.isCuboid()
-            && (location.getBlockY() < corner1.getBlockY() - tolerance
-                || location.getBlockY() > corner2.getBlockY() +  tolerance) ) {
-            return false;
-        }
-        return true;
+        return !plotbuild.isCuboid()
+                || (location.getBlockY() >= corner1.getBlockY() - tolerance
+                && location.getBlockY() <= corner2.getBlockY() + tolerance);
     }
     
     public boolean isNear(Location location) {
@@ -128,12 +125,9 @@ public class Plot implements IStoragePlot {
             || location.getBlockZ() > corner2.getBlockZ() + allowedDist){
             return false;
         }
-        if( plotbuild.isCuboid()
-            && (   location.getBlockY() < corner1.getBlockY() - allowedDist
-                || location.getBlockY() > corner2.getBlockY() + allowedDist)) {
-            return false;
-        }
-        return true;
+        return !plotbuild.isCuboid()
+                || (location.getBlockY() >= corner1.getBlockY() - allowedDist
+                && location.getBlockY() <= corner2.getBlockY() + allowedDist);
     }
     
     public boolean isIntersecting(Selection selection, boolean cuboid) {
@@ -153,10 +147,8 @@ public class Plot implements IStoragePlot {
         if(plotbuild.isCuboid() && cuboid) {
             int selMinY = Math.min(selection.getFirstPoint().getBlockY(),selection.getSecondPoint().getBlockY());
             int selMaxY = Math.max(selection.getFirstPoint().getBlockY(),selection.getSecondPoint().getBlockY());
-            if(selMinY > corner2.getBlockY() + spacing 
-                    || selMaxY < corner1.getBlockY() - spacing) {
-                return false;
-            }
+            return selMinY <= corner2.getBlockY() + spacing
+                    && selMaxY >= corner1.getBlockY() - spacing;
         }
         return true;
     }
@@ -201,7 +193,7 @@ public class Plot implements IStoragePlot {
     }
     
     public boolean unclaim(){
-        owners.removeAll(owners);
+        owners.clear();
         state = PlotState.UNCLAIMED;
         //border.refreshBorder();
         return border.placeSigns();
@@ -296,7 +288,7 @@ public class Plot implements IStoragePlot {
                                          new FileInputStream(PluginData.getFile(plot, ext))));
                     ByteArrayOutputStream out = new ByteArrayOutputStream()) {
                     byte[] buffer = new byte[1024];
-                    int readBytes = 0;
+                    int readBytes;
                     do {
                         readBytes = in.read(buffer,0,buffer.length);
                         out.write(buffer, 0, readBytes);
@@ -380,7 +372,7 @@ public class Plot implements IStoragePlot {
     
     @Override
     public Location getLowCorner() {
-        int miny = 0;
+        int miny = getCorner1().getWorld().getMinHeight();
         if(getPlotbuild().isCuboid()) {
             miny = getCorner1().getBlockY();
         }

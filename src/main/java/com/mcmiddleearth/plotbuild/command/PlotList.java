@@ -24,6 +24,8 @@ import com.mcmiddleearth.plotbuild.plotbuild.PlotBuild;
 import com.mcmiddleearth.plotbuild.utils.MessageUtil;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.mcmiddleearth.pluginutil.message.FancyMessage;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -79,16 +81,18 @@ public class PlotList extends PlotBuildCommand {
             MessageUtil.sendInfoMessage(cs, "There are no plotbuilds running. Check again later.");
         } else {
             List<String> messageList = new ArrayList<>();
-            List<String> commandList = new ArrayList<>();
             for(PlotBuild plotbuild : PluginData.getPlotbuildsList()) {
                 String locked = (plotbuild.isLocked()?"(LOCKED)":"");
                 String privat = (plotbuild.isPriv()?"(PRIVATE)":"");
                 if(cs instanceof Player) {
-                    messageList.add(ChatColor.AQUA+MessageUtil.getNOPREFIX()+plotbuild.getName()
-                                                            +" (unclaimed plots: " 
-                                                            + Integer.toString(plotbuild.countUnclaimedPlots()) + ")"
-                                                            + ChatColor.RED+locked+privat);
-                    commandList.add("/plot list "+plotbuild.getName());
+                    messageList.add("{\"color\":\""+FancyMessage.colorString(ChatColor.AQUA)+"\",\"text\":\""
+                            +MessageUtil.getNOPREFIX()+plotbuild.getName()
+                            +" (unclaimed plots: "
+                            + Integer.toString(plotbuild.countUnclaimedPlots()) + ")\","
+                            + "\"extra\":[{\"color\":\""+FancyMessage.colorString(ChatColor.RED)+"\",\"text\":\""+locked+privat
+                            +"\"}], "
+                            +"\"clickEvent\":{\"action\":\"suggest_command\","
+                            + "\"value\":\"/plot list "+plotbuild.getName() +"\"}}");
                 } else {
                     messageList.add(plotbuild.getName()
                                         +" (unclaimed plots: " 
@@ -106,7 +110,7 @@ public class PlotList extends PlotBuildCommand {
             MessageUtil.sendInfoMessage(cs, "Running plotbuilds [page "+page+"/"+maxPage+"]:");
             for(int i = (page-1)*10; i < messageList.size() && i < (page-1)*10+10; i++) {
                 if(cs instanceof Player) {
-                    MessageUtil.sendClickableMessage((Player) cs, messageList.get(i),commandList.get(i));
+                    MessageUtil.sendNoPrefixRawMessage(cs, messageList.get(i));
                 }
                 else {
                     MessageUtil.sendNoPrefixInfoMessage(cs, messageList.get(i));
@@ -118,12 +122,13 @@ public class PlotList extends PlotBuildCommand {
     private void showPlotList(CommandSender cs, PlotBuild plotbuild, int page) {
         List<String> plotList = new ArrayList<>();
         for(Plot plot : plotbuild.getPlots()) {
-            plotList.add("{\"text\":\""+ChatColor.AQUA+MessageUtil.getNOPREFIX()
-                                 +"Plot #"+plot.getID()+" "
-                                 +MessageUtil.chatColorForPlotState(plot.getState())
+            plotList.add("{\"color\":\"aqua\",\"text\":\""+MessageUtil.getNOPREFIX()
+                                 +"Plot #"+plot.getID()+" \",\"extra\":[{\"color\":\""
+                                 + FancyMessage.colorString(MessageUtil.chatColorForPlotState(plot.getState()))
+                                 + "\",\"text\":\""
                                  +plot.getState().getStateMessage()
                     +"("+plot.getLowCorner().getBlockX()+","+plot.getLowCorner().getBlockY()+","+plot.getLowCorner().getBlockZ()+")"
-                    +"\", "
+                    +"\"}], "
                           +"\"clickEvent\":{\"action\":\"suggest_command\","
                                       + "\"value\":\"/plot warp "+plotbuild.getName()+" "+
                                                + plot.getID() +"\"}}");
