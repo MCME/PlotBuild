@@ -380,7 +380,7 @@ public class Plot implements IStoragePlot {
     
     @Override
     public Location getLowCorner() {
-        int miny = 0;
+        int miny = corner1.getWorld().getMinHeight();
         if(getPlotbuild().isCuboid()) {
             miny = getCorner1().getBlockY();
         }
