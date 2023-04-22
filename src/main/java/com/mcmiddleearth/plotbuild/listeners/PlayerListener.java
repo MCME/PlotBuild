@@ -106,7 +106,7 @@ public class PlayerListener implements Listener{
             Player player = event.getPlayer();
             List<UUID> playersSwitchedToCreative = PluginData.getSwitchedToCreative();
             if(PluginData.isNearOwnPlot(player)) {
-                if(player.getGameMode()==GameMode.SURVIVAL) {
+                if(player.getGameMode()==GameMode.SURVIVAL && player.hasPermission(Permission.USER)) {
                     if(!playersSwitchedToCreative.contains(player.getUniqueId())) {
                         playersSwitchedToCreative.add(player.getUniqueId());
                     }
