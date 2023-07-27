@@ -26,11 +26,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.lang.reflect.Constructor;
 import java.util.Scanner;
-import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -67,27 +63,11 @@ public class MessageUtil {
     
     public static void sendNoPrefixRawMessage(CommandSender sender, String message) {
         if (sender instanceof Player) {
-            try {
-                Object chatBaseComponent = com.mcmiddleearth.pluginutil.NMSUtil.getNMSClass("IChatBaseComponent").getDeclaredClasses()[0].getMethod("a", String.class).invoke(null, message);
-                Object chatMessageType = com.mcmiddleearth.pluginutil.NMSUtil.invokeNMS("ChatMessageType", "a", new Class[]{byte.class}, null, (byte)0);
-                Constructor<?> titleConstructor = com.mcmiddleearth.pluginutil.NMSUtil.getNMSClass("PacketPlayOutChat").getConstructor(com.mcmiddleearth.pluginutil.NMSUtil.getNMSClass("IChatBaseComponent"),
-                        com.mcmiddleearth.pluginutil.NMSUtil.getNMSClass("ChatMessageType"),
-                        UUID.class);
-                Object chatPacket = titleConstructor.newInstance(chatBaseComponent, chatMessageType, ((Player)sender).getUniqueId());
-                com.mcmiddleearth.pluginutil.NMSUtil.sendPacket((Player) sender, chatPacket);
-                /*Object chatBaseComponent = NMSUtil.getNMSClass("IChatBaseComponent").getDeclaredClasses()[0].getMethod("a", String.class).invoke(null, message);
-                Constructor<?> titleConstructor = NMSUtil.getNMSClass("PacketPlayOutChat").getConstructor(NMSUtil.getNMSClass("IChatBaseComponent"));
-                Object chatPacket = titleConstructor.newInstance(chatBaseComponent);
-                NMSUtil.sendPacket((Player)sender, chatPacket);*/
-            } catch(Error | Exception e ) {
-                Logger.getLogger(MessageUtil.class.getName()).log(Level.WARNING, "Error in Plotbuild plugin while accessing NMS class. This plugin version was not made for your server. Please look for an update. Plugin will use Bukkit.dispatchCommand to send '/tellraw ...' instead of directly sending message packets.");
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "tellraw " + sender.getName()+ " " + message);
-            }    
+            com.mcmiddleearth.pluginutil.message.MessageUtil.sendRawMessage((Player) sender, message);
         } else {
             sender.sendMessage(NOPREFIX + message);
         }
     }
-    
     public static void sendClickableMessage(Player sender, String message, String onClickCommand) {
             sendNoPrefixRawMessage(sender,"{\"text\":\""+message+"\", "
                                     +"\"clickEvent\":{\"action\":\"suggest_command\","
